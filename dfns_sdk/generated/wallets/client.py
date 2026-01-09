@@ -343,7 +343,6 @@ Export Wallet is deprecated. Please use [Export Key](https://docs.dfns.co/api-re
 Generating Signatures from a Wallet is deprecated. Please use the [Keys](https://docs.dfns.co/api-reference/keys) endpoints instead.
 </Danger>
 
-
         Args:
         wallet_id: Path parameter.
         query: Query parameters.
@@ -365,11 +364,9 @@ Generating Signatures from a Wallet is deprecated. Please use the [Keys](https:/
         """
         Generate Signature.
 
-        
-<Danger>
+        <Danger>
 Generating Signatures from a Wallet is deprecated. Please use the Key's [Generate Signature](https://docs.dfns.co/api-reference/keys/generate-signature) endpoint instead.
 </Danger>
-
 
         Args:
         wallet_id: Path parameter.
@@ -397,7 +394,6 @@ Generating Signatures from a Wallet is deprecated. Please use the Key's [Generat
 <Danger>
 Generating Signatures from a Wallet is deprecated. Please use the [Keys](https://docs.dfns.co/api-reference/keys) endpoints instead.
 </Danger>
-
 
         Args:
         wallet_id: Path parameter.
@@ -592,7 +588,6 @@ In such a case, Dfns exposes this wallet import API endpoint, which can be used 
 Dfns can not guarantee the security of imported wallets, as we have no way to control who had access to the private key prior to import.  For this reason, this feature is restricted to Enterprise customers who have signed a contractual addendum limiting our liability for imported keys.  Please contact your sales representative for more information.
 </Danger>
 
-
         Args:
         body: Request body.
 
@@ -634,13 +629,11 @@ Dfns can not guarantee the security of imported wallets, as we have no way to co
         """
         Transfer Asset.
 
-        
-    Transfer an asset out of the specified wallet to a destination address. 
+        Transfer an asset out of the specified wallet to a destination address. 
     For all fungible token transfers, the transfer amount must be specified in the minimum denomination of that token. 
     For example, use the amount in Satoshi for a Bitcoin transfer, or the amount in Wei for an Ethereum transfer etc.
     
-    See the different options in the Body description below. You can also select your kind of transfers in the payload examples in the different languages. 
-    
+    See the different options in the Body description below. You can also select your kind of transfers in the payload examples in the different languages.
 
         Args:
         wallet_id: The source wallet id (`wa-...`).
@@ -684,7 +677,7 @@ Dfns can not guarantee the security of imported wallets, as we have no way to co
         """
         Untag Wallet.
 
-        Removes the specified tags from a wallet. 
+        Removes the specified tags from a wallet.
 
         Args:
         wallet_id: Path parameter.

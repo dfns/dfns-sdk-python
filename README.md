@@ -83,6 +83,53 @@ with DfnsClient(config) as client:
     print(wallet)
 ```
 
+## Delegated Client (External Signing)
+
+For service accounts that orchestrate signing externally (e.g., using a separate signing service),
+use the `DfnsDelegatedClient`. This client separates user action signing into `*_init()` and
+`*_complete()` method pairs:
+
+```python
+from dfns_sdk import DfnsDelegatedClient, DfnsDelegatedClientConfig
+
+# Configure the delegated client (no signer needed)
+config = DfnsDelegatedClientConfig(
+    auth_token="service-account-token",
+)
+
+with DfnsDelegatedClient(config) as client:
+    # Step 1: Initialize the action (returns challenge)
+    challenge = client.wallets.create_wallet_init(
+        body={"network": "EthereumSepolia"}
+    )
+
+    # Step 2: Sign challenge externally (your signing system)
+    # The challenge contains everything needed to sign:
+    # - challenge["challenge"]: The challenge string to sign
+    # - challenge["challengeIdentifier"]: Unique ID for this challenge
+    signed_assertion = your_external_signer.sign(challenge)
+
+    # Step 3: Complete the action with signed challenge
+    wallet = client.wallets.create_wallet_complete(
+        body={"network": "EthereumSepolia"},
+        signed_challenge={
+            "challengeIdentifier": challenge["challengeIdentifier"],
+            "firstFactor": signed_assertion,
+        },
+    )
+    print(wallet)
+```
+
+### When to Use Delegated vs Regular Client
+
+| Use Case | Client Type |
+|----------|-------------|
+| Single application with embedded signing | `DfnsClient` |
+| Mobile app with local key storage | `DfnsClient` |
+| Backend service with external HSM | `DfnsDelegatedClient` |
+| Multi-step approval workflows | `DfnsDelegatedClient` |
+| Service account orchestrating user actions | `DfnsDelegatedClient` |
+
 ## Available Domains
 
 The client provides access to the following API domains:

@@ -86,7 +86,7 @@ class NetworksClient:
 
         Update an existing Canton Validator configuration.
   
-  Read details about the process [here](https://docs.dfns.co/networks/canton-validators). 
+  Read details about the process [here](https://docs.dfns.co/networks/canton-validators).
 
         Args:
         network: Path parameter.
@@ -157,7 +157,7 @@ class NetworksClient:
 
   The `Shared` option allows you to use a shared validator hosted by DFNS and get started in seconds, while the `Custom` option allows you to connect your own validator and ledger nodes using OAuth2 authentication.
 
-  Read details about the process [here](https://docs.dfns.co/networks/canton-validators). 
+  Read details about the process [here](https://docs.dfns.co/networks/canton-validators).
 
         Args:
         network: Path parameter.

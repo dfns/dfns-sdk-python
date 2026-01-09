@@ -21,6 +21,25 @@ class DfnsClientConfig:
     """Additional headers to include in requests."""
 
 
+@dataclass
+class DfnsDelegatedClientConfig:
+    """
+    Configuration for the delegated Dfns client.
+
+    Delegated clients are used when signing is handled externally,
+    separating the challenge init from the completion phase.
+    """
+
+    auth_token: str
+    """Authentication token (JWT) for the service account."""
+
+    base_url: str = "https://api.dfns.io"
+    """Base URL for the Dfns API."""
+
+    headers: dict[str, str] = field(default_factory=dict)
+    """Additional headers to include in requests."""
+
+
 class DfnsError(Exception):
     """Exception raised by Dfns API errors."""
 

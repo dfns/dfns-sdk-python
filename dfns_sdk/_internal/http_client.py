@@ -2,11 +2,11 @@
 
 import json
 from typing import Any, Optional, TypeVar, TYPE_CHECKING
-from urllib.parse import urlencode, urlparse
+from urllib.parse import urlencode
 
 import httpx
 
-from dfns_sdk.types import DfnsClientConfig, DfnsError
+from dfns_sdk.types import DfnsClientConfig, DfnsDelegatedClientConfig, DfnsError
 
 if TYPE_CHECKING:
     from dfns_sdk.auth import Signer
@@ -14,10 +14,11 @@ if TYPE_CHECKING:
 T = TypeVar("T")
 
 
+
 class HttpClient:
     """HTTP client for Dfns API requests."""
 
-    def __init__(self, config: DfnsClientConfig):
+    def __init__(self, config: "DfnsClientConfig | DfnsDelegatedClientConfig"):
         self.config = config
         self._client = httpx.Client(
             base_url=config.base_url,
@@ -174,6 +175,43 @@ class HttpClient:
 
         return self._handle_response(response)
 
+    def request_with_user_action(
+        self,
+        method: str,
+        path: str,
+        path_params: Optional[dict[str, Any]] = None,
+        query_params: Optional[dict[str, Any]] = None,
+        body: Optional[Any] = None,
+        user_action: str = "",
+    ) -> Any:
+        """
+        Make an HTTP request with a pre-signed user action token.
+
+        This method is used by delegated clients where signing is handled externally.
+
+        Args:
+            method: HTTP method.
+            path: Request path.
+            path_params: Path parameters to substitute.
+            query_params: Query parameters.
+            body: Request body.
+            user_action: Pre-signed user action token.
+
+        Returns:
+            The API response.
+        """
+        url = self._build_url(path, path_params, query_params)
+        headers = self._build_headers(user_action if user_action else None)
+
+        response = self._client.request(
+            method=method,
+            url=url,
+            headers=headers,
+            json=body if body is not None else None,
+        )
+
+        return self._handle_response(response)
+
     def close(self) -> None:
         """Close the HTTP client."""
         self._client.close()
@@ -183,6 +221,7 @@ class HttpClient:
 
     def __exit__(self, *args: Any) -> None:
         self.close()
+
 
 
 class AsyncHttpClient:

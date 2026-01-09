@@ -37,7 +37,7 @@ class KeysClient:
         """
         Create Key.
 
-        Creates a key for the given scheme and curve. Returns the new key entity. 
+        Creates a key for the given scheme and curve. Returns the new key entity.
 
         Args:
         body: Request body.
@@ -71,7 +71,6 @@ This operation is irreversible. The key ownership will be transferred to the end
 </Danger>
 
 In most cases, when you want to implement [Wallet Delegation](https://docs.dfns.co/developers/guides/wallet-delegation), simply create the wallet by directly delegating it to an end user, in which case it will the non-custodial from the start.  There are some rare cases, however, where the key or wallet must be created before the user has accessed to the system.  To accommodate this, we've added the ability to create a key or wallet in delay delegation mode, and then later delegate it (ie. transfer ownership of it) to an end user via this endpoint.
-
 
         Args:
         key_id: Path parameter.
@@ -243,7 +242,6 @@ Dfns is compatible with any blockchain that uses a supported [key format](https:
 If you were using the deprecated `POST /wallets/{walletId}/signatures` endpoint, then you should now use this one. See the [deprecation notice](https://docs.dfns.co/developers/guides/keys-and-multichain-migration-guide) to get more information about how to change your code. TL,DR: from a wallet you can obtain the key as `wallet.signingKey.id`. 
 </Note>
 
-
         Args:
         key_id: Path parameter.
         body: Request body.
@@ -295,7 +293,6 @@ In such a case, Dfns exposes this key import API endpoint, which can be used in 
 <Danger>
 Dfns can not guarantee the security of imported wallets, as we have no way to control who had access to the private key prior to import.  For this reason, this feature is restricted to Enterprise customers who have signed a contractual addendum limiting our liability for imported keys.  Please contact your sales representative for more information.
 </Danger>
-
 
         Args:
         body: Request body.
