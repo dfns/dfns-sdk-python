@@ -465,7 +465,7 @@ Adds a new credential to a user's account. This endpoint is similar to the [Crea
 
 If the user has a credential of kind `PasswordProtectedKey` a temporary one time code needs to be passed in the `loginCode` field.
 
-If the user has at least one discoverable webauthn credential, `username` is optional (usernamless flow).
+If the user has at least one discoverable WebAuthn credential, `username` is optional (username-less flow).
 
         Args:
         body: Request body.
@@ -647,7 +647,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         """
         Initiate SSO Login.
 
-        Initialize the login process with SSO by returning the IdP Url to call.
+        Initialize the login process with SSO by returning the IdP URL to call.
 
         Args:
         body: Request body.
@@ -1381,7 +1381,7 @@ The number of delegated wallets created and the wallet types are determined by t
             user_action=user_action_token,
         )
 
-    def delete_service_account_init(self, service_account_id: str) -> UserActionChallengeResponse:
+    def delete_service_account_init(self, service_account_id: str, query: Optional[T.DeleteServiceAccountQuery] = None) -> UserActionChallengeResponse:
         """
         Initialize Delete Service Account.
 
@@ -1389,6 +1389,7 @@ The number of delegated wallets created and the wallet types are determined by t
 
         Args:
         service_account_id: Path parameter.
+        query: Query parameters.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
@@ -1404,7 +1405,7 @@ The number of delegated wallets created and the wallet types are determined by t
             user_action_payload=payload,
         )
 
-    def delete_service_account_complete(self, service_account_id: str, signed_challenge: SignUserActionChallengeRequest) -> T.DeleteServiceAccountResponse:
+    def delete_service_account_complete(self, service_account_id: str, signed_challenge: SignUserActionChallengeRequest, query: Optional[T.DeleteServiceAccountQuery] = None) -> T.DeleteServiceAccountResponse:
         """
         Complete Delete Service Account.
 
@@ -1413,6 +1414,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Args:
         service_account_id: Path parameter.
         signed_challenge: The signed challenge from external signing.
+        query: Query parameters.
 
         Returns:
             T.DeleteServiceAccountResponse: The API response.
@@ -1426,7 +1428,7 @@ The number of delegated wallets created and the wallet types are determined by t
             method="DELETE",
             path="/auth/service-accounts/{serviceAccountId}",
             path_params={"serviceAccountId": service_account_id},
-            query_params=None,
+            query_params=query,
             body=None,
             user_action=user_action_token,
         )
@@ -1481,7 +1483,7 @@ The number of delegated wallets created and the wallet types are determined by t
             user_action=user_action_token,
         )
 
-    def deactivate_service_account_init(self, service_account_id: str) -> UserActionChallengeResponse:
+    def deactivate_service_account_init(self, service_account_id: str, body: T.DeactivateServiceAccountRequest) -> UserActionChallengeResponse:
         """
         Initialize Deactivate Service Account.
 
@@ -1489,13 +1491,14 @@ The number of delegated wallets created and the wallet types are determined by t
 
         Args:
         service_account_id: Path parameter.
+        body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
         """
         path = "/auth/service-accounts/{serviceAccountId}/deactivate"
         path = path.replace("{serviceAccountId}", str(service_account_id))
-        payload = ""
+        payload = json.dumps(body, separators=(",", ":")) if body else ""
 
         return BaseAuthApi.create_user_action_challenge(
             self._http,
@@ -1504,7 +1507,7 @@ The number of delegated wallets created and the wallet types are determined by t
             user_action_payload=payload,
         )
 
-    def deactivate_service_account_complete(self, service_account_id: str, signed_challenge: SignUserActionChallengeRequest) -> T.DeactivateServiceAccountResponse:
+    def deactivate_service_account_complete(self, service_account_id: str, body: T.DeactivateServiceAccountRequest, signed_challenge: SignUserActionChallengeRequest) -> T.DeactivateServiceAccountResponse:
         """
         Complete Deactivate Service Account.
 
@@ -1512,6 +1515,7 @@ The number of delegated wallets created and the wallet types are determined by t
 
         Args:
         service_account_id: Path parameter.
+        body: Request body.
         signed_challenge: The signed challenge from external signing.
 
         Returns:
@@ -1527,7 +1531,7 @@ The number of delegated wallets created and the wallet types are determined by t
             path="/auth/service-accounts/{serviceAccountId}/deactivate",
             path_params={"serviceAccountId": service_account_id},
             query_params=None,
-            body=None,
+            body=body,
             user_action=user_action_token,
         )
 

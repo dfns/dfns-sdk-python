@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling", "hatch-vcs"]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
 name = "dfns_sdk"
-dynamic = ["version"]
+version = "1.774.0"
 description = "Dfns Python SDK - Auto-generated from OpenAPI specification"
 readme = "README.md"
 license = "MIT"
@@ -24,9 +24,6 @@ dependencies = [
     "httpx>=0.25.0",
     "cryptography>=41.0.0",
 ]
-authors = [
-  {name = "Dfns", email = "support@dfns.co"}
-]
 
 [project.optional-dependencies]
 dev = [
@@ -42,12 +39,6 @@ Repository = "https://github.com/dfns/dfns-sdk-python"
 
 [tool.hatch.build.targets.wheel]
 packages = ["dfns_sdk"]
-
-[tool.hatch.version]
-source = "vcs"
-
-[tool.hatch.build.hooks.vcs]
-version-file = "dfns_sdk/_version.py"
 
 [tool.mypy]
 python_version = "3.10"
