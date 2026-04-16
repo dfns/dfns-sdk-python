@@ -122,7 +122,7 @@ class WebhooksClient:
         """
         Ping Webhook.
 
-        This endpoint is meant for webhook setup and troubleshooting. Calling the endpoint will trigger a fake test event that will be pushed to the webhook url. The fake event will not be saved and not appear in further requests to Webhook Events.
+        This endpoint is meant for webhook setup and troubleshooting. Calling the endpoint will trigger a fake test event that will be pushed to the webhook URL. The fake event will not be saved and not appear in further requests to Webhook Events.
 
         Args:
         webhook_id: Path parameter.
