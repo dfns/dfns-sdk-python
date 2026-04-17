@@ -152,7 +152,7 @@ class DelegatedKeysClient:
         Retrieves a key information by its ID.
 
         Args:
-        key_id: Path parameter.
+        key_id: The key to retrieve.
 
         Returns:
             T.GetKeyResponse: The API response.
@@ -379,7 +379,7 @@ class DelegatedKeysClient:
         List all signature requests for a key.
 
         Args:
-        key_id: Path parameter.
+        key_id: The key to list signatures for.
         query: Query parameters.
 
         Returns:
@@ -401,7 +401,7 @@ class DelegatedKeysClient:
         Creates a user action challenge for external signing.
 
         Args:
-        key_id: Path parameter.
+        key_id: The key to sign with.
         body: Request body.
 
         Returns:
@@ -425,7 +425,7 @@ class DelegatedKeysClient:
         Submits the signed challenge and makes the API request.
 
         Args:
-        key_id: Path parameter.
+        key_id: The key to sign with.
         body: Request body.
         signed_challenge: The signed challenge from external signing.
 
@@ -453,8 +453,8 @@ class DelegatedKeysClient:
         Retrieve a signature request details.
 
         Args:
-        key_id: Path parameter.
-        signature_id: Path parameter.
+        key_id: The key that was used for signing.
+        signature_id: The signature request to retrieve.
 
         Returns:
             T.GetSignatureResponse: The API response.
