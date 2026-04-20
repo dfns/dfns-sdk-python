@@ -2,8 +2,6 @@
 
 import json
 from typing import Any, Literal, Optional, TypedDict, Union
-from warnings import deprecated
-
 
 from ..._internal import HttpClient
 from ...base_auth_api import (
@@ -24,6 +22,112 @@ class DelegatedWalletsClient:
 
     def __init__(self, http_client: HttpClient):
         self._http = http_client
+
+    def abort_transaction_init(self, wallet_id: str, transaction_id: str) -> UserActionChallengeResponse:
+        """
+        Initialize Abort Transaction.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+        wallet_id: Wallet id.
+        transaction_id: Transaction id.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """
+        path = "/wallets/{walletId}/transactions/{transactionId}/abort"
+        path = path.replace("{walletId}", str(wallet_id))
+        path = path.replace("{transactionId}", str(transaction_id))
+        payload = ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="PUT",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def abort_transaction_complete(self, wallet_id: str, transaction_id: str, signed_challenge: SignUserActionChallengeRequest) -> T.AbortTransactionResponse:
+        """
+        Complete Abort Transaction.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+        wallet_id: Wallet id.
+        transaction_id: Transaction id.
+        signed_challenge: The signed challenge from external signing.
+
+        Returns:
+            T.AbortTransactionResponse: The API response.
+        """
+        user_action_result = BaseAuthApi.sign_user_action_challenge(
+            self._http, signed_challenge
+        )
+        user_action_token = user_action_result["userAction"]
+
+        return self._http.request_with_user_action(
+            method="PUT",
+            path="/wallets/{walletId}/transactions/{transactionId}/abort",
+            path_params={"walletId": wallet_id, "transactionId": transaction_id},
+            query_params=None,
+            body=None,
+            user_action=user_action_token,
+        )
+
+    def abort_transfer_init(self, wallet_id: str, transfer_id: str) -> UserActionChallengeResponse:
+        """
+        Initialize Abort Transfer.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+        wallet_id: Wallet id.
+        transfer_id: Transfer id.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """
+        path = "/wallets/{walletId}/transfers/{transferId}/abort"
+        path = path.replace("{walletId}", str(wallet_id))
+        path = path.replace("{transferId}", str(transfer_id))
+        payload = ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="PUT",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def abort_transfer_complete(self, wallet_id: str, transfer_id: str, signed_challenge: SignUserActionChallengeRequest) -> T.AbortTransferResponse:
+        """
+        Complete Abort Transfer.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+        wallet_id: Wallet id.
+        transfer_id: Transfer id.
+        signed_challenge: The signed challenge from external signing.
+
+        Returns:
+            T.AbortTransferResponse: The API response.
+        """
+        user_action_result = BaseAuthApi.sign_user_action_challenge(
+            self._http, signed_challenge
+        )
+        user_action_token = user_action_result["userAction"]
+
+        return self._http.request_with_user_action(
+            method="PUT",
+            path="/wallets/{walletId}/transfers/{transferId}/abort",
+            path_params={"walletId": wallet_id, "transferId": transfer_id},
+            query_params=None,
+            body=None,
+            user_action=user_action_token,
+        )
 
     def activate_wallet_init(self, wallet_id: str, body: dict[str, Any]) -> UserActionChallengeResponse:
         """
@@ -84,7 +188,7 @@ class DelegatedWalletsClient:
         Retrieves a list of transactions requests for the specified wallet.
 
         Args:
-        wallet_id: Path parameter.
+        wallet_id: Wallet id.
         query: Query parameters.
 
         Returns:
@@ -106,7 +210,7 @@ class DelegatedWalletsClient:
         Creates a user action challenge for external signing.
 
         Args:
-        wallet_id: Path parameter.
+        wallet_id: Wallet id.
         body: Request body.
 
         Returns:
@@ -130,7 +234,7 @@ class DelegatedWalletsClient:
         Submits the signed challenge and makes the API request.
 
         Args:
-        wallet_id: Path parameter.
+        wallet_id: Wallet id.
         body: Request body.
         signed_challenge: The signed challenge from external signing.
 
@@ -433,216 +537,6 @@ class DelegatedWalletsClient:
             user_action=user_action_token,
         )
 
-    def delegate_wallet_init(self, wallet_id: str, body: T.DelegateWalletRequest) -> UserActionChallengeResponse:
-        """
-        Initialize Delegate Wallet.
-
-        Creates a user action challenge for external signing.
-
-        Args:
-        wallet_id: Path parameter.
-        body: Request body.
-
-        Returns:
-            UserActionChallengeResponse: The challenge to sign externally.
-        """
-        path = "/wallets/{walletId}/delegate"
-        path = path.replace("{walletId}", str(wallet_id))
-        payload = json.dumps(body, separators=(",", ":")) if body else ""
-
-        return BaseAuthApi.create_user_action_challenge(
-            self._http,
-            user_action_http_method="POST",
-            user_action_http_path=path,
-            user_action_payload=payload,
-        )
-
-    def delegate_wallet_complete(self, wallet_id: str, body: T.DelegateWalletRequest, signed_challenge: SignUserActionChallengeRequest) -> T.DelegateWalletResponse:
-        """
-        Complete Delegate Wallet.
-
-        Submits the signed challenge and makes the API request.
-
-        Args:
-        wallet_id: Path parameter.
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
-
-        Returns:
-            T.DelegateWalletResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
-        user_action_token = user_action_result["userAction"]
-
-        return self._http.request_with_user_action(
-            method="POST",
-            path="/wallets/{walletId}/delegate",
-            path_params={"walletId": wallet_id},
-            query_params=None,
-            body=body,
-            user_action=user_action_token,
-        )
-
-    def export_wallet_init(self, wallet_id: str, body: T.ExportWalletRequest) -> UserActionChallengeResponse:
-        """
-        Initialize Export Wallet.
-
-        Creates a user action challenge for external signing.
-
-        Args:
-        wallet_id: Path parameter.
-        body: Request body.
-
-        Returns:
-            UserActionChallengeResponse: The challenge to sign externally.
-        """
-        path = "/wallets/{walletId}/export"
-        path = path.replace("{walletId}", str(wallet_id))
-        payload = json.dumps(body, separators=(",", ":")) if body else ""
-
-        return BaseAuthApi.create_user_action_challenge(
-            self._http,
-            user_action_http_method="POST",
-            user_action_http_path=path,
-            user_action_payload=payload,
-        )
-
-    def export_wallet_complete(self, wallet_id: str, body: T.ExportWalletRequest, signed_challenge: SignUserActionChallengeRequest) -> T.ExportWalletResponse:
-        """
-        Complete Export Wallet.
-
-        Submits the signed challenge and makes the API request.
-
-        Args:
-        wallet_id: Path parameter.
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
-
-        Returns:
-            T.ExportWalletResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
-        user_action_token = user_action_result["userAction"]
-
-        return self._http.request_with_user_action(
-            method="POST",
-            path="/wallets/{walletId}/export",
-            path_params={"walletId": wallet_id},
-            query_params=None,
-            body=body,
-            user_action=user_action_token,
-        )
-
-    @deprecated("This endpoint is deprecated.")
-    def list_signatures(self, wallet_id: str, query: Optional[T.ListSignaturesQuery] = None) -> T.ListSignaturesResponse:
-        """
-        List Signatures.
-
-        List all signature requests for a specific wallet.
-  
-<Danger>
-Generating Signatures from a Wallet is deprecated. Please use the [Keys](https://docs.dfns.co/api-reference/keys) endpoints instead.
-</Danger>
-
-        Args:
-        wallet_id: Path parameter.
-        query: Query parameters.
-
-        Returns:
-            T.ListSignaturesResponse: The API response.
-        """
-        return self._http.request(
-            method="GET",
-            path="/wallets/{walletId}/signatures",
-            path_params={"walletId": wallet_id},
-            query_params=query,
-            body=None,
-            requires_signature=False,
-        )
-
-    def generate_signature_init(self, wallet_id: str, body: dict[str, Any]) -> UserActionChallengeResponse:
-        """
-        Initialize Generate Signature.
-
-        Creates a user action challenge for external signing.
-
-        Args:
-        wallet_id: Path parameter.
-        body: Request body.
-
-        Returns:
-            UserActionChallengeResponse: The challenge to sign externally.
-        """
-        path = "/wallets/{walletId}/signatures"
-        path = path.replace("{walletId}", str(wallet_id))
-        payload = json.dumps(body, separators=(",", ":")) if body else ""
-
-        return BaseAuthApi.create_user_action_challenge(
-            self._http,
-            user_action_http_method="POST",
-            user_action_http_path=path,
-            user_action_payload=payload,
-        )
-
-    def generate_signature_complete(self, wallet_id: str, body: dict[str, Any], signed_challenge: SignUserActionChallengeRequest) -> T.GenerateSignatureResponse:
-        """
-        Complete Generate Signature.
-
-        Submits the signed challenge and makes the API request.
-
-        Args:
-        wallet_id: Path parameter.
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
-
-        Returns:
-            T.GenerateSignatureResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
-        user_action_token = user_action_result["userAction"]
-
-        return self._http.request_with_user_action(
-            method="POST",
-            path="/wallets/{walletId}/signatures",
-            path_params={"walletId": wallet_id},
-            query_params=None,
-            body=body,
-            user_action=user_action_token,
-        )
-
-    @deprecated("This endpoint is deprecated.")
-    def get_signature(self, wallet_id: str, signature_id: str) -> T.GetSignatureResponse:
-        """
-        Get Signature.
-
-        Retrieves a Transaction Request information by its ID.
-
-<Danger>
-Generating Signatures from a Wallet is deprecated. Please use the [Keys](https://docs.dfns.co/api-reference/keys) endpoints instead.
-</Danger>
-
-        Args:
-        wallet_id: Path parameter.
-        signature_id: Path parameter.
-
-        Returns:
-            T.GetSignatureResponse: The API response.
-        """
-        return self._http.request(
-            method="GET",
-            path="/wallets/{walletId}/signatures/{signatureId}",
-            path_params={"walletId": wallet_id, "signatureId": signature_id},
-            query_params=None,
-            body=None,
-            requires_signature=False,
-        )
-
     def get_transaction(self, wallet_id: str, transaction_id: str) -> T.GetTransactionResponse:
         """
         Get Transaction.
@@ -650,8 +544,8 @@ Generating Signatures from a Wallet is deprecated. Please use the [Keys](https:/
         Retrieve information about a specific transaction.
 
         Args:
-        wallet_id: Path parameter.
-        transaction_id: Path parameter.
+        wallet_id: Wallet id.
+        transaction_id: Transaction id.
 
         Returns:
             T.GetTransactionResponse: The API response.
@@ -672,8 +566,8 @@ Generating Signatures from a Wallet is deprecated. Please use the [Keys](https:/
         Retrieves a Wallet Transfer Request by its ID.
 
         Args:
-        wallet_id: Path parameter.
-        transfer_id: Path parameter.
+        wallet_id: Wallet id.
+        transfer_id: Transfer id.
 
         Returns:
             T.GetTransferResponse: The API response.
@@ -694,7 +588,7 @@ Generating Signatures from a Wallet is deprecated. Please use the [Keys](https:/
         Retrieves a Wallet information by its ID.
 
         Args:
-        wallet_id: Path parameter.
+        wallet_id: The wallet to retrieve.
 
         Returns:
             T.GetWalletResponse: The API response.
@@ -888,7 +782,7 @@ depending on the API you are using).
         Retrieves a list of transfer requests for the specified wallet.
 
         Args:
-        wallet_id: Path parameter.
+        wallet_id: Wallet id.
         query: Query parameters.
 
         Returns:
