@@ -11,7 +11,7 @@ class ListFeeSponsorsResponse(TypedDict, total=False):
 class ListFeeSponsorsQuery(TypedDict, total=False):
     """listFeeSponsors query parameters."""
 
-    limit: NotRequired[str]
+    limit: NotRequired[int]
     pagination_token: NotRequired[str]
 
 class CreateFeeSponsorRequest(TypedDict, total=False):

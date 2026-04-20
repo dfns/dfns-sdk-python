@@ -2,20 +2,21 @@
 
 from .types import DfnsDelegatedClientConfig
 from ._internal import HttpClient
+from .generated.agreements import DelegatedAgreementsClient
+from .generated.allocations import DelegatedAllocationsClient
 from .generated.auth import DelegatedAuthClient
 from .generated.exchanges import DelegatedExchangesClient
 from .generated.fee_sponsors import DelegatedFeeSponsorsClient
 from .generated.keys import DelegatedKeysClient
 from .generated.networks import DelegatedNetworksClient
+from .generated.payouts import DelegatedPayoutsClient
 from .generated.permissions import DelegatedPermissionsClient
 from .generated.policies import DelegatedPoliciesClient
 from .generated.signers import DelegatedSignersClient
 from .generated.staking import DelegatedStakingClient
+from .generated.swaps import DelegatedSwapsClient
 from .generated.wallets import DelegatedWalletsClient
 from .generated.webhooks import DelegatedWebhooksClient
-from .generated.swaps import DelegatedSwapsClient
-from .generated.agreements import DelegatedAgreementsClient
-from .generated.allocations import DelegatedAllocationsClient
 
 
 class DfnsDelegatedClient:
@@ -47,20 +48,21 @@ class DfnsDelegatedClient:
         ... )
     """
 
+    agreements: DelegatedAgreementsClient
+    allocations: DelegatedAllocationsClient
     auth: DelegatedAuthClient
     exchanges: DelegatedExchangesClient
     fee_sponsors: DelegatedFeeSponsorsClient
     keys: DelegatedKeysClient
     networks: DelegatedNetworksClient
+    payouts: DelegatedPayoutsClient
     permissions: DelegatedPermissionsClient
     policies: DelegatedPoliciesClient
     signers: DelegatedSignersClient
     staking: DelegatedStakingClient
+    swaps: DelegatedSwapsClient
     wallets: DelegatedWalletsClient
     webhooks: DelegatedWebhooksClient
-    swaps: DelegatedSwapsClient
-    agreements: DelegatedAgreementsClient
-    allocations: DelegatedAllocationsClient
 
     def __init__(self, config: DfnsDelegatedClientConfig):
         """
@@ -71,20 +73,21 @@ class DfnsDelegatedClient:
         """
         self._config = config
         self._http = HttpClient(config)
+        self.agreements = DelegatedAgreementsClient(self._http)
+        self.allocations = DelegatedAllocationsClient(self._http)
         self.auth = DelegatedAuthClient(self._http)
         self.exchanges = DelegatedExchangesClient(self._http)
         self.fee_sponsors = DelegatedFeeSponsorsClient(self._http)
         self.keys = DelegatedKeysClient(self._http)
         self.networks = DelegatedNetworksClient(self._http)
+        self.payouts = DelegatedPayoutsClient(self._http)
         self.permissions = DelegatedPermissionsClient(self._http)
         self.policies = DelegatedPoliciesClient(self._http)
         self.signers = DelegatedSignersClient(self._http)
         self.staking = DelegatedStakingClient(self._http)
+        self.swaps = DelegatedSwapsClient(self._http)
         self.wallets = DelegatedWalletsClient(self._http)
         self.webhooks = DelegatedWebhooksClient(self._http)
-        self.swaps = DelegatedSwapsClient(self._http)
-        self.agreements = DelegatedAgreementsClient(self._http)
-        self.allocations = DelegatedAllocationsClient(self._http)
 
     def close(self) -> None:
         """Close the client and release resources."""
