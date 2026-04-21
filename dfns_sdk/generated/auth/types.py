@@ -91,7 +91,7 @@ class CreateCredentialResponse(TypedDict, total=False):
 class CreateCredentialChallengeRequest(TypedDict, total=False):
     """createCredentialChallenge request body."""
 
-    kind: TypedDict
+    kind: Literal["Fido2", "Key", "RecoveryKey", "PasswordProtectedKey"]
 
 class ActivateCredentialRequest(TypedDict, total=False):
     """activateCredential request body."""
@@ -566,11 +566,21 @@ class DeleteServiceAccountResponse(TypedDict, total=False):
     user_info: TypedDict
     access_tokens: list[TypedDict]
 
+class DeleteServiceAccountQuery(TypedDict, total=False):
+    """deleteServiceAccount query parameters."""
+
+    force: NotRequired[Any]
+
 class ActivateServiceAccountResponse(TypedDict, total=False):
     """activateServiceAccount response."""
 
     user_info: TypedDict
     access_tokens: list[TypedDict]
+
+class DeactivateServiceAccountRequest(TypedDict, total=False):
+    """deactivateServiceAccount request body."""
+
+    force: NotRequired[bool]
 
 class DeactivateServiceAccountResponse(TypedDict, total=False):
     """deactivateServiceAccount response."""
@@ -584,7 +594,7 @@ class ActivateUserResponse(TypedDict, total=False):
     username: str
     name: str
     user_id: str
-    kind: Literal["AccountUser", "CustomerEmployee", "EndUser"]
+    kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
     org_id: str
     permissions: NotRequired[list[str]]
@@ -600,7 +610,7 @@ class DeactivateUserResponse(TypedDict, total=False):
     username: str
     name: str
     user_id: str
-    kind: Literal["AccountUser", "CustomerEmployee", "EndUser"]
+    kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
     org_id: str
     permissions: NotRequired[list[str]]
@@ -616,7 +626,7 @@ class GetUserResponse(TypedDict, total=False):
     username: str
     name: str
     user_id: str
-    kind: Literal["AccountUser", "CustomerEmployee", "EndUser"]
+    kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
     org_id: str
     permissions: NotRequired[list[str]]
@@ -637,7 +647,7 @@ class UpdateUserResponse(TypedDict, total=False):
     username: str
     name: str
     user_id: str
-    kind: Literal["AccountUser", "CustomerEmployee", "EndUser"]
+    kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
     org_id: str
     permissions: NotRequired[list[str]]
@@ -653,7 +663,7 @@ class DeleteUserResponse(TypedDict, total=False):
     username: str
     name: str
     user_id: str
-    kind: Literal["AccountUser", "CustomerEmployee", "EndUser"]
+    kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
     org_id: str
     permissions: NotRequired[list[str]]
@@ -691,7 +701,7 @@ class CreateUserResponse(TypedDict, total=False):
     username: str
     name: str
     user_id: str
-    kind: Literal["AccountUser", "CustomerEmployee", "EndUser"]
+    kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
     org_id: str
     permissions: NotRequired[list[str]]
