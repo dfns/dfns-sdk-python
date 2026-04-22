@@ -42,6 +42,7 @@ class CreateSwapResponse(TypedDict, total=False):
     date_created: str
     request_body: TypedDict
     requester: TypedDict
+    failure_reason: NotRequired[str]
 
 class RequestSwapQuoteRequest(TypedDict, total=False):
     """requestSwapQuote request body."""
@@ -83,6 +84,7 @@ class GetSwapResponse(TypedDict, total=False):
     date_created: str
     request_body: TypedDict
     requester: TypedDict
+    failure_reason: NotRequired[str]
 
 class GetSwapQuoteResponse(TypedDict, total=False):
     """getSwapQuote response."""
