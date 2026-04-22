@@ -12,14 +12,37 @@ class PermissionsClient:
     def __init__(self, http_client: HttpClient):
         self._http = http_client
 
-    def list_permission_assignments(self, permission_id: str) -> T.ListPermissionAssignmentsResponse:
+    def archive_permission(self, permission_id: str, body: T.ArchivePermissionRequest) -> T.ArchivePermissionResponse:
+        """
+        Archive Permission.
+
+        Archives or unarchives a permission (role). Archived permissions are effectively soft-deleted.
+
+        Args:
+        permission_id: ID of the permission (also referred to as "role" in the dashboard).
+        body: Request body.
+
+        Returns:
+            T.ArchivePermissionResponse: The API response.
+        """
+        return self._http.request(
+            method="PUT",
+            path="/permissions/{permissionId}/archive",
+            path_params={"permissionId": permission_id},
+            query_params=None,
+            body=body,
+            requires_signature=True,
+        )
+
+    def list_permission_assignments(self, permission_id: str, query: Optional[T.ListPermissionAssignmentsQuery] = None) -> T.ListPermissionAssignmentsResponse:
         """
         List Permission Assignments.
 
-        Retrieves a list of permission assignments (success) or gives a reason why it's not possible (failure).
+        Lists all permission (role) assignments for a given permission.
 
         Args:
-        permission_id: Path parameter.
+        permission_id: ID of the permission (also referred to as "role" in the dashboard).
+        query: Query parameters.
 
         Returns:
             T.ListPermissionAssignmentsResponse: The API response.
@@ -28,7 +51,7 @@ class PermissionsClient:
             method="GET",
             path="/permissions/{permissionId}/assignments",
             path_params={"permissionId": permission_id},
-            query_params=None,
+            query_params=query,
             body=None,
             requires_signature=False,
         )
@@ -37,12 +60,10 @@ class PermissionsClient:
         """
         Assign Permission.
 
-        Creates a permission that allows certain specified operations to be executed. 
-  
-  Response is either the permission object itself (success) or a reason why it was not possible to create the permission (failure).
+        Assigns a permission (role) to an identity (user, PAT or service account), granting it access to the operations defined in the permission. Returns the assignment on success (200), or a pending change request if approval is required (202).
 
         Args:
-        permission_id: Path parameter.
+        permission_id: ID of the permission (also referred to as "role" in the dashboard).
         body: Request body.
 
         Returns:
@@ -57,53 +78,11 @@ class PermissionsClient:
             requires_signature=True,
         )
 
-    def revoke_permission(self, permission_id: str, assignment_id: str, query: Optional[T.RevokePermissionQuery] = None) -> None:
-        """
-        Revoke Permission.
-
-        Revokes a permission assignment (success) or gives reason why it’s not possible (failure).
-
-        Args:
-        permission_id: Path parameter.
-        assignment_id: Path parameter.
-        query: Query parameters.
-        """
-        return self._http.request(
-            method="DELETE",
-            path="/permissions/{permissionId}/assignments/{assignmentId}",
-            path_params={"permissionId": permission_id, "assignmentId": assignment_id},
-            query_params=query,
-            body=None,
-            requires_signature=True,
-        )
-
-    def delete_permission(self, permission_id: str, body: T.DeletePermissionRequest) -> T.DeletePermissionResponse:
-        """
-        Delete Permission.
-
-        Delete a specific Permission.
-
-        Args:
-        permission_id: Path parameter.
-        body: Request body.
-
-        Returns:
-            T.DeletePermissionResponse: The API response.
-        """
-        return self._http.request(
-            method="PUT",
-            path="/permissions/{permissionId}/archive",
-            path_params={"permissionId": permission_id},
-            query_params=None,
-            body=body,
-            requires_signature=True,
-        )
-
     def list_permissions(self, query: Optional[T.ListPermissionsQuery] = None) -> T.ListPermissionsResponse:
         """
         List Permissions.
 
-        Retrieves a list of permissions (success) or gives a reason why it's not possible (failure).
+        Lists all permissions (roles) in the organization.
 
         Args:
         query: Query parameters.
@@ -124,7 +103,7 @@ class PermissionsClient:
         """
         Create Permission.
 
-        Creates a permission that allows certain specified operations to be executed.
+        Creates a new permission (also referred to as "role" in the dashboard) that grants access to the specified API operations.
 
         Args:
         body: Request body.
@@ -141,14 +120,34 @@ class PermissionsClient:
             requires_signature=True,
         )
 
+    def revoke_permission(self, permission_id: str, assignment_id: str, query: Optional[T.RevokePermissionQuery] = None) -> None:
+        """
+        Revoke Permission.
+
+        Revokes a permission (role) assignment, removing the identity's access to the operations granted by the permission.
+
+        Args:
+        permission_id: ID of the permission (also referred to as "role" in the dashboard).
+        assignment_id: ID of the permission assignment.
+        query: Query parameters.
+        """
+        return self._http.request(
+            method="DELETE",
+            path="/permissions/{permissionId}/assignments/{assignmentId}",
+            path_params={"permissionId": permission_id, "assignmentId": assignment_id},
+            query_params=query,
+            body=None,
+            requires_signature=True,
+        )
+
     def get_permission(self, permission_id: str) -> T.GetPermissionResponse:
         """
         Get Permission.
 
-        Retrieves a specific permission (success) or gives a reason why it's not possible (failure).
+        Retrieves a permission (role) by ID, including any pending change request.
 
         Args:
-        permission_id: Path parameter.
+        permission_id: ID of the permission (also referred to as "role" in the dashboard).
 
         Returns:
             T.GetPermissionResponse: The API response.
@@ -166,10 +165,10 @@ class PermissionsClient:
         """
         Update Permission.
 
-        Updates an existing permission. Response either returns the updated permission (success) or the reason why it was not possible to update (failure).
+        Updates the name or operations of an existing permission (role).
 
         Args:
-        permission_id: Path parameter.
+        permission_id: ID of the permission (also referred to as "role" in the dashboard).
         body: Request body.
 
         Returns:

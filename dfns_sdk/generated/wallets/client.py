@@ -1,8 +1,6 @@
 """Client for the wallets domain."""
 
 from typing import Any, Literal, Optional, TypedDict, Union
-from warnings import deprecated
-
 
 from ..._internal import HttpClient
 from . import types as T
@@ -14,17 +12,70 @@ class WalletsClient:
     def __init__(self, http_client: HttpClient):
         self._http = http_client
 
+    def abort_transaction(self, wallet_id: str, transaction_id: str) -> T.AbortTransactionResponse:
+        """
+        Abort Transaction.
+
+        Aborts a transaction that is currently in 'Executing' status and has not yet been signed. Sets the transaction status to 'Failed' and removes it from the retry queue.
+
+  This is useful when a transaction is stuck in the execution pipeline (e.g., during construct or sign phase) and you want to abort it without waiting for it to fail on its own.
+
+  Unlike cancel, which creates a replacement on-chain transaction, abort simply marks the transaction as failed without any blockchain interaction.
+
+        Args:
+        wallet_id: Wallet id.
+        transaction_id: Transaction id.
+
+        Returns:
+            T.AbortTransactionResponse: The API response.
+        """
+        return self._http.request(
+            method="PUT",
+            path="/wallets/{walletId}/transactions/{transactionId}/abort",
+            path_params={"walletId": wallet_id, "transactionId": transaction_id},
+            query_params=None,
+            body=None,
+            requires_signature=True,
+        )
+
+    def abort_transfer(self, wallet_id: str, transfer_id: str) -> T.AbortTransferResponse:
+        """
+        Abort Transfer.
+
+        Aborts a transfer that is currently in 'Executing' status and has not yet been signed. Sets the transfer status to 'Failed' and removes it from the retry queue.
+
+  This is useful when a transfer is stuck in the execution pipeline (e.g., during construct or sign phase) and you want to abort it without waiting for it to fail on its own.
+
+  Unlike cancel, which creates a replacement on-chain transaction, abort simply marks the transfer as failed without any blockchain interaction.
+
+        Args:
+        wallet_id: Wallet id.
+        transfer_id: Transfer id.
+
+        Returns:
+            T.AbortTransferResponse: The API response.
+        """
+        return self._http.request(
+            method="PUT",
+            path="/wallets/{walletId}/transfers/{transferId}/abort",
+            path_params={"walletId": wallet_id, "transferId": transfer_id},
+            query_params=None,
+            body=None,
+            requires_signature=True,
+        )
+
     def activate_wallet(self, wallet_id: str, body: dict[str, Any]) -> T.ActivateWalletResponse:
         """
         Activate Wallet.
 
         Activates a wallet by deploying the account contract on-chain, making it ready for transactions.
-    
-    This operation is required for wallets on networks where you need to explicitly activate your account on-chain 
+
+    This operation is required for wallets on networks where you need to explicitly activate your account on-chain
     before it can be used for transactions.
-    
+
     - **Starknet**: Deploys the account contract using the wallet's public key to initialize the account on the blockchain. No additional parameters required.
     - **Concordium**: Deploys the account using credential deployment information and cryptographic randomness returned by the IDApp.
+    - **Canton**: Registers the wallet on a validator. You must specify the `validatorId` to activate the wallet. Before activation, the wallet cannot be used and its address will not have a prefix.
 
         Args:
         wallet_id: Wallet id.
@@ -49,7 +100,7 @@ class WalletsClient:
         Retrieves a list of transactions requests for the specified wallet.
 
         Args:
-        wallet_id: Path parameter.
+        wallet_id: Wallet id.
         query: Query parameters.
 
         Returns:
@@ -69,7 +120,7 @@ class WalletsClient:
         Sign and Broadcast Transaction.
 
         Sign & Broadcast transaction enables communication with any arbitrary smart contract of the target blockchain. You can construct a transaction that performs a complex task and this endpoint will sign the transaction, add the signature and broadcast it to chain. It can be used to call smart contract functions like mint tokens and even deploy new smart contracts.
-  
+
 | Status      | Definition                                                                                                                                      |
 |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
 | Pending     | The request is pending approval due to a policy applied to the wallet.                                                                          |
@@ -85,7 +136,7 @@ class WalletsClient:
   </Info>
 
         Args:
-        wallet_id: Path parameter.
+        wallet_id: Wallet id.
         body: Request body.
 
         Returns:
@@ -104,19 +155,21 @@ class WalletsClient:
         """
         Cancel Transaction.
 
-        Cancels an EVM transaction by creating a replacement transaction with the same nonce but with a self-transfer of 0 native tokens.
+        Cancels an EVM transaction by creating a replacement transaction with the same nonce. The new transaction sends 0 value to the same address, effectively nullifying the original transaction.
   
-  This endpoint only works for:
+  This endpoint works for:
   - EVM-compatible networks (Ethereum, Polygon, BSC, etc.)
-  - Transactions that are in 'Broadcasted' status (already submitted to blockchain, but not confirmed yet)
-  - Transactions that haven't been included in a block yet
+  - Transactions that are in 'Broadcasted' status (pending inclusion in a block)
+  - Transactions that are in 'Failed' status, but failed off-chain (before being broadcasted to the network)
   
   The cancellation works by:
-  1. Extracting the nonce from the original broadcasted transaction
-  2. Creating a new native transfer to the same wallet address with 0 amount
-  3. Using the same nonce to replace the original transaction in the mempool
+  1. Extracting the nonce from the original transaction's signed data
+  2. Creating a new transaction to the same wallet address with 0 amount
+  3. Using the same nonce to either:
+     - Replace the original transaction in the mempool (if it was broadcasted)
+     - Consume the nonce that was reserved but not used (if the transaction failed off-chain)
   
-  Note: Success is not guaranteed as it depends on network conditions and whether the original transaction has already been mined.
+  Note: For transactions that were broadcasted on-chain, success is not guaranteed as it depends on network conditions and whether the original transaction has already been mined.
 
         Args:
         wallet_id: Wallet id.
@@ -138,19 +191,21 @@ class WalletsClient:
         """
         Cancel Transfer.
 
-        Cancels an EVM transfer by creating a replacement transaction with the same nonce but with a self-transfer of 0 native tokens.
+        Cancels an EVM transfer by creating a replacement transaction with the same nonce. The new transaction sends 0 value to the same address, effectively nullifying the original transfer.
   
-  This endpoint only works for:
+  This endpoint works for:
   - EVM-compatible networks (Ethereum, Polygon, BSC, etc.)
-  - Transfers that are in 'Broadcasted' status (already submitted to blockchain)
-  - Transfers that haven't been confirmed yet
+  - Transfers that are in 'Broadcasted' status (pending inclusion in a block)
+  - Transfers that are in 'Failed' status, but failed off-chain (before being broadcasted to the network)
   
   The cancellation works by:
-  1. Extracting the nonce from the original broadcasted transaction
-  2. Creating a new native transfer to the same wallet address with 0 amount
-  3. Using the same nonce to replace the original transaction in the mempool
+  1. Extracting the nonce from the original transfer's signed data
+  2. Creating a new transaction to the same wallet address with 0 amount
+  3. Using the same nonce to either:
+     - Replace the original transaction in the mempool (if it was broadcasted)
+     - Consume the nonce that was reserved but not used (if the transfer failed off-chain)
   
-  Note: Success is not guaranteed as it depends on network conditions and whether the original transaction has already been mined.
+  Note: For transfers that were broadcasted on-chain, success is not guaranteed as it depends on network conditions and whether the original transaction has already been mined.
 
         Args:
         wallet_id: Wallet id.
@@ -177,7 +232,6 @@ class WalletsClient:
   This endpoint only works for:
   - EVM-compatible networks (Ethereum, Polygon, BSC, etc.)
   - Transactions that are in 'Broadcasted' status (already submitted to blockchain, but not confirmed yet)
-  - Transactions that haven't been included in a block yet
   
   The speed-up works by:
   1. Extracting the parameters from the original broadcasted transaction
@@ -212,7 +266,6 @@ class WalletsClient:
   This endpoint only works for:
   - EVM-compatible networks (Ethereum, Polygon, BSC, etc.)
   - Transfers that are in 'Broadcasted' status (already submitted to blockchain, but not confirmed yet)
-  - Transfers that haven't been included in a block yet
   
   The speed-up works by:
   1. Extracting the parameters from the original broadcasted transfer
@@ -280,137 +333,6 @@ class WalletsClient:
             requires_signature=True,
         )
 
-    @deprecated("This endpoint is deprecated.")
-    def delegate_wallet(self, wallet_id: str, body: T.DelegateWalletRequest) -> T.DelegateWalletResponse:
-        """
-        Delegate Wallet.
-
-        <Danger>
-  Delegate Wallet is deprecated. Please use [Delegate Key](https://docs.dfns.co/api-reference/keys/delegate-key) instead.
-  </Danger>
-
-In most cases, when you want to implement Delegated Signing, simply have the end-user create the wallet, in which case it will the non-custodial from the start.  There are some rare cases, however, where the wallet must be created before the user has accessed the system.  To accommodate this, we've added the ability to create a wallet from a service account, and then later delegate it (ie. transfer ownership of it) to an end user via this endpoint.
-
-        Args:
-        wallet_id: Path parameter.
-        body: Request body.
-
-        Returns:
-            T.DelegateWalletResponse: The API response.
-        """
-        return self._http.request(
-            method="POST",
-            path="/wallets/{walletId}/delegate",
-            path_params={"walletId": wallet_id},
-            query_params=None,
-            body=body,
-            requires_signature=True,
-        )
-
-    @deprecated("This endpoint is deprecated.")
-    def export_wallet(self, wallet_id: str, body: T.ExportWalletRequest) -> T.ExportWalletResponse:
-        """
-        Export Wallet.
-
-        <Danger>
-Export Wallet is deprecated. Please use [Export Key](https://docs.dfns.co/api-reference/keys/export-key) instead.
-</Danger>
-
-        Args:
-        wallet_id: Path parameter.
-        body: Request body.
-
-        Returns:
-            T.ExportWalletResponse: The API response.
-        """
-        return self._http.request(
-            method="POST",
-            path="/wallets/{walletId}/export",
-            path_params={"walletId": wallet_id},
-            query_params=None,
-            body=body,
-            requires_signature=True,
-        )
-
-    @deprecated("This endpoint is deprecated.")
-    def list_signatures(self, wallet_id: str, query: Optional[T.ListSignaturesQuery] = None) -> T.ListSignaturesResponse:
-        """
-        List Signatures.
-
-        List all signature requests for a specific wallet.
-  
-<Danger>
-Generating Signatures from a Wallet is deprecated. Please use the [Keys](https://docs.dfns.co/api-reference/keys) endpoints instead.
-</Danger>
-
-        Args:
-        wallet_id: Path parameter.
-        query: Query parameters.
-
-        Returns:
-            T.ListSignaturesResponse: The API response.
-        """
-        return self._http.request(
-            method="GET",
-            path="/wallets/{walletId}/signatures",
-            path_params={"walletId": wallet_id},
-            query_params=query,
-            body=None,
-            requires_signature=False,
-        )
-
-    @deprecated("This endpoint is deprecated.")
-    def generate_signature(self, wallet_id: str, body: dict[str, Any]) -> T.GenerateSignatureResponse:
-        """
-        Generate Signature.
-
-        <Danger>
-Generating Signatures from a Wallet is deprecated. Please use the Key's [Generate Signature](https://docs.dfns.co/api-reference/keys/generate-signature) endpoint instead.
-</Danger>
-
-        Args:
-        wallet_id: Path parameter.
-        body: Request body.
-
-        Returns:
-            T.GenerateSignatureResponse: The API response.
-        """
-        return self._http.request(
-            method="POST",
-            path="/wallets/{walletId}/signatures",
-            path_params={"walletId": wallet_id},
-            query_params=None,
-            body=body,
-            requires_signature=True,
-        )
-
-    @deprecated("This endpoint is deprecated.")
-    def get_signature(self, wallet_id: str, signature_id: str) -> T.GetSignatureResponse:
-        """
-        Get Signature.
-
-        Retrieves a Transaction Request information by its ID.
-
-<Danger>
-Generating Signatures from a Wallet is deprecated. Please use the [Keys](https://docs.dfns.co/api-reference/keys) endpoints instead.
-</Danger>
-
-        Args:
-        wallet_id: Path parameter.
-        signature_id: Path parameter.
-
-        Returns:
-            T.GetSignatureResponse: The API response.
-        """
-        return self._http.request(
-            method="GET",
-            path="/wallets/{walletId}/signatures/{signatureId}",
-            path_params={"walletId": wallet_id, "signatureId": signature_id},
-            query_params=None,
-            body=None,
-            requires_signature=False,
-        )
-
     def get_transaction(self, wallet_id: str, transaction_id: str) -> T.GetTransactionResponse:
         """
         Get Transaction.
@@ -418,8 +340,8 @@ Generating Signatures from a Wallet is deprecated. Please use the [Keys](https:/
         Retrieve information about a specific transaction.
 
         Args:
-        wallet_id: Path parameter.
-        transaction_id: Path parameter.
+        wallet_id: Wallet id.
+        transaction_id: Transaction id.
 
         Returns:
             T.GetTransactionResponse: The API response.
@@ -440,8 +362,8 @@ Generating Signatures from a Wallet is deprecated. Please use the [Keys](https:/
         Retrieves a Wallet Transfer Request by its ID.
 
         Args:
-        wallet_id: Path parameter.
-        transfer_id: Path parameter.
+        wallet_id: Wallet id.
+        transfer_id: Transfer id.
 
         Returns:
             T.GetTransferResponse: The API response.
@@ -462,7 +384,7 @@ Generating Signatures from a Wallet is deprecated. Please use the [Keys](https:/
         Retrieves a Wallet information by its ID.
 
         Args:
-        wallet_id: Path parameter.
+        wallet_id: The wallet to retrieve.
 
         Returns:
             T.GetWalletResponse: The API response.
@@ -525,11 +447,11 @@ Generating Signatures from a Wallet is deprecated. Please use the [Keys](https:/
         Get Wallet History.
 
         Retrieves a list of historical on chain activities for the specified wallet.
-  
-The list reflects the indexed on-chain activity: it includes confirmed transactions only. 
+
+The list reflects the indexed on-chain activity: it includes confirmed transactions only.
 
 If you need to list your on-going or failed transactions please use the related endpoints (
-[List Transfers](https://docs.dfns.co/api-reference/wallets/list-transfers) or 
+[List Transfers](https://docs.dfns.co/api-reference/wallets/list-transfers) or
 [List Transactions](https://docs.dfns.co/api-reference/wallets/list-transactions)
 depending on the API you are using).
 
@@ -610,7 +532,7 @@ Dfns can not guarantee the security of imported wallets, as we have no way to co
         Retrieves a list of transfer requests for the specified wallet.
 
         Args:
-        wallet_id: Path parameter.
+        wallet_id: Wallet id.
         query: Query parameters.
 
         Returns:
@@ -629,11 +551,19 @@ Dfns can not guarantee the security of imported wallets, as we have no way to co
         """
         Transfer Asset.
 
-        Transfer an asset out of the specified wallet to a destination address. 
-    For all fungible token transfers, the transfer amount must be specified in the minimum denomination of that token. 
-    For example, use the amount in Satoshi for a Bitcoin transfer, or the amount in Wei for an Ethereum transfer etc.
-    
-    See the different options in the Body description below. You can also select your kind of transfers in the payload examples in the different languages.
+        Transfer an asset out of the specified wallet to a destination address.
+For all fungible token transfers, the transfer amount must be specified in the minimum denomination of that token.
+For example, use the amount in Satoshi for a Bitcoin transfer, or the amount in Wei for an Ethereum transfer etc.
+
+See the different options in the Body description below. You can also select your kind of transfers in the payload examples in the different languages.
+
+<Tip>
+Binance chains users can use ERC transfers for BEP tokens and Native transfers for BNB.
+</Tip>
+
+<Note>
+Some blockchains may require additional steps before the transfer can be completed, such as creating a destination account (e.g., Stellar). Please refer to the specific blockchain documentation for any prerequisites or additional requirements.
+</Note>
 
         Args:
         wallet_id: The source wallet id (`wa-...`).
