@@ -11,14 +11,14 @@ class ListKeysResponse(TypedDict, total=False):
 class ListKeysQuery(TypedDict, total=False):
     """listKeys query parameters."""
 
-    limit: NotRequired[str]
+    limit: NotRequired[int]
     pagination_token: NotRequired[str]
     owner: NotRequired[str]
 
 class CreateKeyRequest(TypedDict, total=False):
     """createKey request body."""
 
-    scheme: Literal["DH", "ECDSA", "EdDSA", "Schnorr"]
+    scheme: Literal["ECDSA", "EdDSA", "Schnorr"]
     curve: Literal["ed25519", "secp256k1", "stark"]
     name: NotRequired[str]
     master_key: NotRequired[bool]
@@ -31,7 +31,7 @@ class CreateKeyResponse(TypedDict, total=False):
     """createKey response."""
 
     id: str
-    scheme: Literal["DH", "ECDSA", "EdDSA", "Schnorr"]
+    scheme: Literal["ECDSA", "EdDSA", "Schnorr"]
     curve: Literal["ed25519", "secp256k1", "stark"]
     public_key: str
     master_key: NotRequired[bool]
@@ -60,7 +60,7 @@ class GetKeyResponse(TypedDict, total=False):
     """getKey response."""
 
     id: str
-    scheme: Literal["DH", "ECDSA", "EdDSA", "Schnorr"]
+    scheme: Literal["ECDSA", "EdDSA", "Schnorr"]
     curve: Literal["ed25519", "secp256k1", "stark"]
     public_key: str
     master_key: NotRequired[bool]
@@ -85,7 +85,7 @@ class UpdateKeyResponse(TypedDict, total=False):
     """updateKey response."""
 
     id: str
-    scheme: Literal["DH", "ECDSA", "EdDSA", "Schnorr"]
+    scheme: Literal["ECDSA", "EdDSA", "Schnorr"]
     curve: Literal["ed25519", "secp256k1", "stark"]
     public_key: str
     master_key: NotRequired[bool]
@@ -103,7 +103,7 @@ class DeleteKeyResponse(TypedDict, total=False):
     """deleteKey response."""
 
     id: str
-    scheme: Literal["DH", "ECDSA", "EdDSA", "Schnorr"]
+    scheme: Literal["ECDSA", "EdDSA", "Schnorr"]
     curve: Literal["ed25519", "secp256k1", "stark"]
     public_key: str
     master_key: NotRequired[bool]
@@ -146,14 +146,14 @@ class ExportKeyResponse(TypedDict, total=False):
 class ListSignaturesResponse(TypedDict, total=False):
     """listSignatures response."""
 
-    key_id: str
     items: list[TypedDict]
     next_page_token: NotRequired[str]
+    key_id: str
 
 class ListSignaturesQuery(TypedDict, total=False):
     """listSignatures query parameters."""
 
-    limit: NotRequired[str]
+    limit: NotRequired[int]
     pagination_token: NotRequired[str]
 
 class GenerateSignatureResponse(TypedDict, total=False):
@@ -168,7 +168,7 @@ class GenerateSignatureResponse(TypedDict, total=False):
     signature: NotRequired[TypedDict]
     signatures: NotRequired[list[TypedDict]]
     signed_data: NotRequired[str]
-    network: NotRequired[Literal["Algorand", "AlgorandTestnet", "Aptos", "AptosTestnet", "ArbitrumOne", "ArbitrumSepolia", "ArcTestnet", "AvalancheC", "AvalancheCFuji", "BabylonGenesis", "BabylonTestnet5", "Base", "BaseSepolia", "Berachain", "BerachainBepolia", "Bitcoin", "BitcoinSignet", "BitcoinTestnet3", "BitcoinCash", "Bob", "BobSepolia", "Bsc", "BscTestnet", "Canton", "CantonTestnet", "Cardano", "CardanoPreprod", "Concordium", "ConcordiumTestnet", "Celo", "CeloAlfajores", "Codex", "CodexSepolia", "CosmosHub4", "CosmosIcsTestnet", "Dogecoin", "Ethereum", "EthereumClassic", "EthereumClassicMordor", "EthereumGoerli", "EthereumSepolia", "EthereumHolesky", "EthereumHoodi", "FantomOpera", "FantomTestnet", "FlareC", "FlareCCoston2", "FlowEvm", "FlowEvmTestnet", "Hedera", "HederaTestnet", "Ink", "InkSepolia", "InternetComputer", "Ion", "IonTestnet", "Iota", "IotaTestnet", "Kaspa", "Kusama", "KusamaAssetHub", "Litecoin", "Near", "NearTestnet", "Optimism", "OptimismSepolia", "Origyn", "Plasma", "PlasmaTestnet", "Plume", "PlumeSepolia", "Paseo", "PaseoAssetHub", "Polkadot", "PolkadotAssetHub", "Polygon", "PolygonAmoy", "Polymesh", "PolymeshTestnet", "Race", "RaceSepolia", "SeiAtlantic2", "SeiPacific1", "Solana", "SolanaDevnet", "Starknet", "StarknetSepolia", "Stellar", "StellarTestnet", "Sui", "SuiTestnet", "Tezos", "TezosGhostnet", "TempoAndantino", "Tsc", "TscTestnet1", "Ton", "TonTestnet", "Tron", "TronNile", "Westend", "WestendAssetHub", "XrpLedger", "XrpLedgerTestnet"]]
+    network: NotRequired[Literal["Algorand", "AlgorandTestnet", "Aptos", "AptosTestnet", "ArbitrumOne", "ArbitrumSepolia", "ArcTestnet", "AvalancheC", "AvalancheCFuji", "BabylonGenesis", "BabylonTestnet5", "Base", "BaseSepolia", "Berachain", "BerachainBepolia", "Bitcoin", "BitcoinSignet", "BitcoinTestnet3", "BitcoinCash", "Bob", "BobSepolia", "Bsc", "BscTestnet", "Canton", "CantonTestnet", "Cardano", "CardanoPreprod", "Concordium", "ConcordiumTestnet", "Celo", "CeloAlfajores", "Codex", "CodexSepolia", "CosmosHub4", "CosmosIcsTestnet", "Dogecoin", "DogecoinTestnet", "Ethereum", "EthereumClassic", "EthereumClassicMordor", "EthereumSepolia", "EthereumHolesky", "EthereumHoodi", "FantomOpera", "FantomTestnet", "FlareC", "FlareCCoston2", "FlowEvm", "FlowEvmTestnet", "Hedera", "HederaTestnet", "Ink", "InkSepolia", "InternetComputer", "Ion", "IonTestnet", "Iota", "IotaTestnet", "Kaspa", "Kusama", "KusamaAssetHub", "Litecoin", "LitecoinTestnet", "Near", "NearTestnet", "Optimism", "OptimismSepolia", "Origyn", "Plasma", "PlasmaTestnet", "Plume", "PlumeSepolia", "Paseo", "PaseoAssetHub", "Polkadot", "PolkadotAssetHub", "Polygon", "PolygonAmoy", "Polymesh", "PolymeshTestnet", "Race", "RaceSepolia", "SeiAtlantic2", "SeiPacific1", "Solana", "SolanaDevnet", "Starknet", "StarknetSepolia", "Stellar", "StellarTestnet", "Sui", "SuiTestnet", "Tezos", "TezosGhostnet", "Tempo", "TempoModerato", "Tsc", "TscTestnet1", "Ton", "TonTestnet", "Tron", "TronNile", "Westend", "WestendAssetHub", "Xdc", "XdcApothem", "XrpLedger", "XrpLedgerTestnet"]]
     tx_hash: NotRequired[str]
     fee: NotRequired[str]
     approval_id: NotRequired[str]
@@ -190,7 +190,7 @@ class GetSignatureResponse(TypedDict, total=False):
     signature: NotRequired[TypedDict]
     signatures: NotRequired[list[TypedDict]]
     signed_data: NotRequired[str]
-    network: NotRequired[Literal["Algorand", "AlgorandTestnet", "Aptos", "AptosTestnet", "ArbitrumOne", "ArbitrumSepolia", "ArcTestnet", "AvalancheC", "AvalancheCFuji", "BabylonGenesis", "BabylonTestnet5", "Base", "BaseSepolia", "Berachain", "BerachainBepolia", "Bitcoin", "BitcoinSignet", "BitcoinTestnet3", "BitcoinCash", "Bob", "BobSepolia", "Bsc", "BscTestnet", "Canton", "CantonTestnet", "Cardano", "CardanoPreprod", "Concordium", "ConcordiumTestnet", "Celo", "CeloAlfajores", "Codex", "CodexSepolia", "CosmosHub4", "CosmosIcsTestnet", "Dogecoin", "Ethereum", "EthereumClassic", "EthereumClassicMordor", "EthereumGoerli", "EthereumSepolia", "EthereumHolesky", "EthereumHoodi", "FantomOpera", "FantomTestnet", "FlareC", "FlareCCoston2", "FlowEvm", "FlowEvmTestnet", "Hedera", "HederaTestnet", "Ink", "InkSepolia", "InternetComputer", "Ion", "IonTestnet", "Iota", "IotaTestnet", "Kaspa", "Kusama", "KusamaAssetHub", "Litecoin", "Near", "NearTestnet", "Optimism", "OptimismSepolia", "Origyn", "Plasma", "PlasmaTestnet", "Plume", "PlumeSepolia", "Paseo", "PaseoAssetHub", "Polkadot", "PolkadotAssetHub", "Polygon", "PolygonAmoy", "Polymesh", "PolymeshTestnet", "Race", "RaceSepolia", "SeiAtlantic2", "SeiPacific1", "Solana", "SolanaDevnet", "Starknet", "StarknetSepolia", "Stellar", "StellarTestnet", "Sui", "SuiTestnet", "Tezos", "TezosGhostnet", "TempoAndantino", "Tsc", "TscTestnet1", "Ton", "TonTestnet", "Tron", "TronNile", "Westend", "WestendAssetHub", "XrpLedger", "XrpLedgerTestnet"]]
+    network: NotRequired[Literal["Algorand", "AlgorandTestnet", "Aptos", "AptosTestnet", "ArbitrumOne", "ArbitrumSepolia", "ArcTestnet", "AvalancheC", "AvalancheCFuji", "BabylonGenesis", "BabylonTestnet5", "Base", "BaseSepolia", "Berachain", "BerachainBepolia", "Bitcoin", "BitcoinSignet", "BitcoinTestnet3", "BitcoinCash", "Bob", "BobSepolia", "Bsc", "BscTestnet", "Canton", "CantonTestnet", "Cardano", "CardanoPreprod", "Concordium", "ConcordiumTestnet", "Celo", "CeloAlfajores", "Codex", "CodexSepolia", "CosmosHub4", "CosmosIcsTestnet", "Dogecoin", "DogecoinTestnet", "Ethereum", "EthereumClassic", "EthereumClassicMordor", "EthereumSepolia", "EthereumHolesky", "EthereumHoodi", "FantomOpera", "FantomTestnet", "FlareC", "FlareCCoston2", "FlowEvm", "FlowEvmTestnet", "Hedera", "HederaTestnet", "Ink", "InkSepolia", "InternetComputer", "Ion", "IonTestnet", "Iota", "IotaTestnet", "Kaspa", "Kusama", "KusamaAssetHub", "Litecoin", "LitecoinTestnet", "Near", "NearTestnet", "Optimism", "OptimismSepolia", "Origyn", "Plasma", "PlasmaTestnet", "Plume", "PlumeSepolia", "Paseo", "PaseoAssetHub", "Polkadot", "PolkadotAssetHub", "Polygon", "PolygonAmoy", "Polymesh", "PolymeshTestnet", "Race", "RaceSepolia", "SeiAtlantic2", "SeiPacific1", "Solana", "SolanaDevnet", "Starknet", "StarknetSepolia", "Stellar", "StellarTestnet", "Sui", "SuiTestnet", "Tezos", "TezosGhostnet", "Tempo", "TempoModerato", "Tsc", "TscTestnet1", "Ton", "TonTestnet", "Tron", "TronNile", "Westend", "WestendAssetHub", "Xdc", "XdcApothem", "XrpLedger", "XrpLedgerTestnet"]]
     tx_hash: NotRequired[str]
     fee: NotRequired[str]
     approval_id: NotRequired[str]
@@ -214,7 +214,7 @@ class ImportKeyResponse(TypedDict, total=False):
     """importKey response."""
 
     id: str
-    scheme: Literal["DH", "ECDSA", "EdDSA", "Schnorr"]
+    scheme: Literal["ECDSA", "EdDSA", "Schnorr"]
     curve: Literal["ed25519", "secp256k1", "stark"]
     public_key: str
     master_key: NotRequired[bool]
