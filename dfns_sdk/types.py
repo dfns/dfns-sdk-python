@@ -67,6 +67,3 @@ class DfnsError(Exception):
     def __repr__(self) -> str:
         return f"DfnsError({self.message!r}, status_code={self.status_code}, error_code={self.error_code!r})"
 
-
-# Type alias for signer callback
-Signer = Callable[[str], Awaitable[str]]
