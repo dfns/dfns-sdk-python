@@ -33,26 +33,27 @@ class NetworksClient:
             requires_signature=False,
         )
 
-    def read_contract(self, body: dict[str, Any]) -> T.ReadContractResponse:
+    def call_function(self, network: str, body: T.CallFunctionRequest) -> dict[str, Any]:
         """
-        Read Contract.
+        Call Function.
 
-        Call a read-only function on a smart contract. In Solidity, this use the `view` keyword.
+        Call a read-only function on a smart contract. In Solidity, these are functions with the state mutability set to `view`.
 
   <Note>
   Currently only works on EVM compatible chains.
   </Note>
 
         Args:
+        network: Network name formatted in kebab case
         body: Request body.
 
         Returns:
-            T.ReadContractResponse: The API response.
+            dict[str, Any]: The API response.
         """
         return self._http.request(
             method="POST",
-            path="/networks/read-contract",
-            path_params={},
+            path="/networks/{network}/call-function",
+            path_params={"network": network},
             query_params=None,
             body=body,
             requires_signature=False,
@@ -155,7 +156,7 @@ class NetworksClient:
 
         Link a Canton Validator to your organization. This is required in order to create wallets or interact with the Canton network.
 
-  The `Shared` option allows you to use a shared validator hosted by DFNS and get started in seconds, while the `Custom` option allows you to connect your own validator and ledger nodes using OAuth2 authentication.
+  The `Shared` option allows you to use a shared validator hosted by Dfns and get started in seconds, while the `Custom` option allows you to connect your own validator and ledger nodes using OAuth2 authentication.
 
   Read details about the process [here](https://docs.dfns.co/networks/canton-validators).
 
