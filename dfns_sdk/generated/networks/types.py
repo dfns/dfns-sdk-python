@@ -5,13 +5,14 @@ from typing import Any, Literal, NotRequired, Optional, TypedDict, Union
 class EstimateFeesQuery(TypedDict, total=False):
     """estimateFees query parameters."""
 
-    network: Literal["Bitcoin", "BitcoinSignet", "BitcoinTestnet3", "Adi", "AdiTestnet", "AdiTestnetAb", "ArbitrumOne", "ArbitrumGoerli", "ArbitrumSepolia", "ArcTestnet", "AvalancheC", "AvalancheCFuji", "Base", "BaseGoerli", "BaseSepolia", "Bob", "BobSepolia", "Bsc", "BscTestnet", "Berachain", "BerachainBArtio", "BerachainBepolia", "Celo", "CeloAlfajores", "Codex", "CodexSepolia", "Ethereum", "EthereumClassic", "EthereumClassicMordor", "EthereumGoerli", "EthereumSepolia", "EthereumHolesky", "EthereumHoodi", "FantomOpera", "FantomTestnet", "FlareC", "FlareCCoston2", "FlowEvm", "FlowEvmTestnet", "Ink", "InkSepolia", "Optimism", "OptimismGoerli", "OptimismSepolia", "Plasma", "PlasmaTestnet", "Plume", "PlumeSepolia", "Polygon", "PolygonAmoy", "PolygonMumbai", "Race", "RaceSepolia", "Sonic", "SonicTestnet", "TempoAndantino", "Tsc", "TscTestnet1"]
+    network: Literal["Bitcoin", "BitcoinSignet", "BitcoinTestnet3", "ArbitrumOne", "ArbitrumSepolia", "ArcTestnet", "AvalancheC", "AvalancheCFuji", "Base", "BaseSepolia", "Bob", "BobSepolia", "Bsc", "BscTestnet", "Berachain", "BerachainBepolia", "Celo", "CeloAlfajores", "Codex", "CodexSepolia", "Ethereum", "EthereumClassic", "EthereumClassicMordor", "EthereumSepolia", "EthereumHolesky", "EthereumHoodi", "FantomOpera", "FantomTestnet", "FlareC", "FlareCCoston2", "FlowEvm", "FlowEvmTestnet", "Ink", "InkSepolia", "Optimism", "OptimismSepolia", "Plasma", "PlasmaTestnet", "Plume", "PlumeSepolia", "Polygon", "PolygonAmoy", "Race", "RaceSepolia", "Tempo", "TempoModerato", "Tsc", "TscTestnet1", "Xdc", "XdcApothem", "Solana", "SolanaDevnet"]
 
-class ReadContractResponse(TypedDict, total=False):
-    """readContract response."""
+class CallFunctionRequest(TypedDict, total=False):
+    """callFunction request body."""
 
-    kind: Literal["Evm"]
-    data: str
+    contract: str
+    abi: TypedDict
+    calldata: NotRequired[TypedDict]
 
 class GetCantonValidatorResponse(TypedDict, total=False):
     """getCantonValidator response."""
