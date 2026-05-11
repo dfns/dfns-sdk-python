@@ -17,6 +17,7 @@ class CreateGenesisInputRequest(TypedDict, total=False):
     num_secp256k1: NotRequired[int]
     num_ed25519: NotRequired[int]
     hsm_genesis_serial: str
+    hsm_genesis_firmware_version: NotRequired[Literal["2.2", "2.4"]]
 
 class CreateProofOfControlInputRequest(TypedDict, total=False):
     """createProofOfControlInput request body."""
