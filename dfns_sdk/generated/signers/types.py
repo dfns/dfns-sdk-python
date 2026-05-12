@@ -14,9 +14,10 @@ class CreateGenesisInputRequest(TypedDict, total=False):
 
     kind: Literal["Genesis"]
     num_provisioners: int
-    num_secp256k1: NotRequired[int]
-    num_ed25519: NotRequired[int]
+    num_secp256k1: int
+    num_ed25519: int
     hsm_genesis_serial: str
+    hsm_genesis_firmware_version: NotRequired[Literal["2.2", "2.4"]]
 
 class CreateProofOfControlInputRequest(TypedDict, total=False):
     """createProofOfControlInput request body."""
@@ -42,7 +43,7 @@ class SubmitCloneOutputRequest(TypedDict, total=False):
 class SubmitCloneOutputResponse(TypedDict, total=False):
     """submitCloneOutput response."""
 
-    pass
+    message: str
 
 class SubmitGenesisOutputRequest(TypedDict, total=False):
     """submitGenesisOutput request body."""
@@ -53,7 +54,7 @@ class SubmitGenesisOutputRequest(TypedDict, total=False):
 class SubmitGenesisOutputResponse(TypedDict, total=False):
     """submitGenesisOutput response."""
 
-    pass
+    message: str
 
 class SubmitProofOfControlOutputRequest(TypedDict, total=False):
     """submitProofOfControlOutput request body."""
