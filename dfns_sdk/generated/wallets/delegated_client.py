@@ -361,6 +361,28 @@ class DelegatedWalletsClient:
             user_action=user_action_token,
         )
 
+    def proxy_a_request_to_the_canton_ledger_api(self, wallet_id: str, body: T.ProxyARequestToTheCantonLedgerApiRequest) -> dict[str, Any]:
+        """
+        Proxy a request to the Canton Ledger API.
+
+        Proxies a request to the Canton Ledger API associated with this wallet, using the validator's OAuth2 credentials. Restricted to a curated allow-list of read-style resources. Used to satisfy the Canton WalletConnect `canton_ledgerApi` method.
+
+        Args:
+        wallet_id: Wallet id.
+        body: Request body.
+
+        Returns:
+            dict[str, Any]: The API response.
+        """
+        return self._http.request(
+            method="POST",
+            path="/wallets/{walletId}/canton/ledger-api",
+            path_params={"walletId": wallet_id},
+            query_params=None,
+            body=body,
+            requires_signature=False,
+        )
+
     def speed_up_transaction_init(self, wallet_id: str, transaction_id: str) -> UserActionChallengeResponse:
         """
         Initialize Speed Up Transaction.
