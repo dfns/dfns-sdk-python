@@ -131,6 +131,13 @@ class CancelTransferResponse(TypedDict, total=False):
     date_confirmed: NotRequired[str]
     external_id: NotRequired[str]
 
+class ProxyARequestToTheCantonLedgerApiRequest(TypedDict, total=False):
+    """proxyARequestToTheCantonLedgerApi request body."""
+
+    request_method: Literal["GET", "POST"]
+    resource: str
+    body: NotRequired[dict[str, Any]]
+
 class SpeedUpTransactionResponse(TypedDict, total=False):
     """speedUpTransaction response."""
 

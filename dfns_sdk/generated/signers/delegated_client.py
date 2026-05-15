@@ -121,6 +121,55 @@ class DelegatedSignersClient:
             user_action=user_action_token,
         )
 
+    def create_onchain_sign_input_init(self, store_id: str, body: T.CreateOnchainSignInputRequest) -> UserActionChallengeResponse:
+        """
+        Initialize Create Onchain Sign Input.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+        store_id: Path parameter.
+        body: Request body.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """
+        path = "/key-stores/{storeId}/onchain-sign/input"
+        path = path.replace("{storeId}", str(store_id))
+        payload = json.dumps(body, separators=(",", ":")) if body else ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="POST",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def create_onchain_sign_input_complete(self, store_id: str, body: T.CreateOnchainSignInputRequest, signed_challenge: SignUserActionChallengeRequest) -> None:
+        """
+        Complete Create Onchain Sign Input.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+        store_id: Path parameter.
+        body: Request body.
+        signed_challenge: The signed challenge from external signing.
+        """
+        user_action_result = BaseAuthApi.sign_user_action_challenge(
+            self._http, signed_challenge
+        )
+        user_action_token = user_action_result["userAction"]
+
+        return self._http.request_with_user_action(
+            method="POST",
+            path="/key-stores/{storeId}/onchain-sign/input",
+            path_params={"storeId": store_id},
+            query_params=None,
+            body=body,
+            user_action=user_action_token,
+        )
+
     def create_proof_of_control_input_init(self, store_id: str, body: T.CreateProofOfControlInputRequest) -> UserActionChallengeResponse:
         """
         Initialize Create Proof Of Control Input.
@@ -300,6 +349,58 @@ class DelegatedSignersClient:
         return self._http.request_with_user_action(
             method="POST",
             path="/key-stores/{storeId}/genesis/output",
+            path_params={"storeId": store_id},
+            query_params=None,
+            body=body,
+            user_action=user_action_token,
+        )
+
+    def submit_onchain_sign_output_init(self, store_id: str, body: T.SubmitOnchainSignOutputRequest) -> UserActionChallengeResponse:
+        """
+        Initialize Submit Onchain Sign Output.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+        store_id: Path parameter.
+        body: Request body.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """
+        path = "/key-stores/{storeId}/onchain-sign/output"
+        path = path.replace("{storeId}", str(store_id))
+        payload = json.dumps(body, separators=(",", ":")) if body else ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="POST",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def submit_onchain_sign_output_complete(self, store_id: str, body: T.SubmitOnchainSignOutputRequest, signed_challenge: SignUserActionChallengeRequest) -> T.SubmitOnchainSignOutputResponse:
+        """
+        Complete Submit Onchain Sign Output.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+        store_id: Path parameter.
+        body: Request body.
+        signed_challenge: The signed challenge from external signing.
+
+        Returns:
+            T.SubmitOnchainSignOutputResponse: The API response.
+        """
+        user_action_result = BaseAuthApi.sign_user_action_challenge(
+            self._http, signed_challenge
+        )
+        user_action_token = user_action_result["userAction"]
+
+        return self._http.request_with_user_action(
+            method="POST",
+            path="/key-stores/{storeId}/onchain-sign/output",
             path_params={"storeId": store_id},
             query_params=None,
             body=body,
