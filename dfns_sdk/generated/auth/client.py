@@ -245,6 +245,27 @@ Adds a new credential to a user's account. See [Credential Kinds](https://docs.d
             requires_signature=True,
         )
 
+    def delete_credential(self, credential_uuid: str) -> T.DeleteCredentialResponse:
+        """
+        Delete Credential.
+
+        Delete a specific credential.
+
+        Args:
+        credential_uuid: Path parameter.
+
+        Returns:
+            T.DeleteCredentialResponse: The API response.
+        """
+        return self._http.request(
+            method="DELETE",
+            path="/auth/credentials/{credentialUuid}",
+            path_params={"credentialUuid": credential_uuid},
+            query_params=None,
+            body=None,
+            requires_signature=True,
+        )
+
     def deactivate_credential(self, body: T.DeactivateCredentialRequest) -> T.DeactivateCredentialResponse:
         """
         Deactivate Credential.

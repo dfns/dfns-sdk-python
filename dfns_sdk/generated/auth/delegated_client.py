@@ -310,6 +310,56 @@ Dfns maintains a script which can be used for audit log signature validation: [W
             user_action=user_action_token,
         )
 
+    def delete_credential_init(self, credential_uuid: str) -> UserActionChallengeResponse:
+        """
+        Initialize Delete Credential.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+        credential_uuid: Path parameter.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """
+        path = "/auth/credentials/{credentialUuid}"
+        path = path.replace("{credentialUuid}", str(credential_uuid))
+        payload = ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="DELETE",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def delete_credential_complete(self, credential_uuid: str, signed_challenge: SignUserActionChallengeRequest) -> T.DeleteCredentialResponse:
+        """
+        Complete Delete Credential.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+        credential_uuid: Path parameter.
+        signed_challenge: The signed challenge from external signing.
+
+        Returns:
+            T.DeleteCredentialResponse: The API response.
+        """
+        user_action_result = BaseAuthApi.sign_user_action_challenge(
+            self._http, signed_challenge
+        )
+        user_action_token = user_action_result["userAction"]
+
+        return self._http.request_with_user_action(
+            method="DELETE",
+            path="/auth/credentials/{credentialUuid}",
+            path_params={"credentialUuid": credential_uuid},
+            query_params=None,
+            body=None,
+            user_action=user_action_token,
+        )
+
     def deactivate_credential_init(self, body: T.DeactivateCredentialRequest) -> UserActionChallengeResponse:
         """
         Initialize Deactivate Credential.
