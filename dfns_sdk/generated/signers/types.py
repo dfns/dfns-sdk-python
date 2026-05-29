@@ -14,9 +14,15 @@ class CreateGenesisInputRequest(TypedDict, total=False):
 
     kind: Literal["Genesis"]
     num_provisioners: int
-    num_secp256k1: NotRequired[int]
-    num_ed25519: NotRequired[int]
+    num_secp256k1: int
+    num_ed25519: int
     hsm_genesis_serial: str
+    hsm_genesis_firmware_version: NotRequired[Literal["2.2", "2.4"]]
+
+class CreateOnchainSignInputRequest(TypedDict, total=False):
+    """createOnchainSignInput request body."""
+
+    pass
 
 class CreateProofOfControlInputRequest(TypedDict, total=False):
     """createProofOfControlInput request body."""
@@ -42,7 +48,7 @@ class SubmitCloneOutputRequest(TypedDict, total=False):
 class SubmitCloneOutputResponse(TypedDict, total=False):
     """submitCloneOutput response."""
 
-    pass
+    message: str
 
 class SubmitGenesisOutputRequest(TypedDict, total=False):
     """submitGenesisOutput request body."""
@@ -53,7 +59,18 @@ class SubmitGenesisOutputRequest(TypedDict, total=False):
 class SubmitGenesisOutputResponse(TypedDict, total=False):
     """submitGenesisOutput response."""
 
-    pass
+    message: str
+
+class SubmitOnchainSignOutputRequest(TypedDict, total=False):
+    """submitOnchainSignOutput request body."""
+
+    file_checksum: str
+    output_json: TypedDict
+
+class SubmitOnchainSignOutputResponse(TypedDict, total=False):
+    """submitOnchainSignOutput response."""
+
+    status: Literal["success", "partial"]
 
 class SubmitProofOfControlOutputRequest(TypedDict, total=False):
     """submitProofOfControlOutput request body."""
@@ -64,4 +81,4 @@ class SubmitProofOfControlOutputRequest(TypedDict, total=False):
 class SubmitProofOfControlOutputResponse(TypedDict, total=False):
     """submitProofOfControlOutput response."""
 
-    pass
+    status: Literal["success", "partial"]

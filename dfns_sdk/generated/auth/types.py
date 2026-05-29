@@ -103,6 +103,11 @@ class ActivateCredentialResponse(TypedDict, total=False):
 
     message: str
 
+class DeleteCredentialResponse(TypedDict, total=False):
+    """deleteCredential response."""
+
+    pass
+
 class DeactivateCredentialRequest(TypedDict, total=False):
     """deactivateCredential request body."""
 
