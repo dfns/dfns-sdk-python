@@ -146,7 +146,7 @@ Dfns maintains a script which can be used for audit log signature validation: [W
   </Warning>
 
         Args:
-        app_id: Path parameter.
+        app_id: ID of the application (deprecated).
 
         Returns:
             T.GetApplicationResponse: The API response.
@@ -242,6 +242,27 @@ Adds a new credential to a user's account. See [Credential Kinds](https://docs.d
             path_params={},
             query_params=None,
             body=body,
+            requires_signature=True,
+        )
+
+    def delete_credential(self, credential_uuid: str) -> T.DeleteCredentialResponse:
+        """
+        Delete Credential.
+
+        Delete a specific credential.
+
+        Args:
+        credential_uuid: Path parameter.
+
+        Returns:
+            T.DeleteCredentialResponse: The API response.
+        """
+        return self._http.request(
+            method="DELETE",
+            path="/auth/credentials/{credentialUuid}",
+            path_params={"credentialUuid": credential_uuid},
+            query_params=None,
+            body=None,
             requires_signature=True,
         )
 
@@ -571,7 +592,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Retrieve a specific Personal Access Token.
 
         Args:
-        token_id: Path parameter.
+        token_id: Token id.
 
         Returns:
             T.GetPersonalAccessTokenResponse: The API response.
@@ -592,7 +613,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Update a specific Personal Access Token.
 
         Args:
-        token_id: Path parameter.
+        token_id: Token id.
         body: Request body.
 
         Returns:
@@ -614,7 +635,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Delete a specific Personal Access Token.
 
         Args:
-        token_id: Path parameter.
+        token_id: Token id.
 
         Returns:
             T.DeletePersonalAccessTokenResponse: The API response.
@@ -635,7 +656,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Activate a specific Personal Access Token.
 
         Args:
-        token_id: Path parameter.
+        token_id: Token id.
 
         Returns:
             T.ActivatePersonalAccessTokenResponse: The API response.
@@ -656,7 +677,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Deactivates a credential that was previously active. If the credential is already deactivated no action is taken.
 
         Args:
-        token_id: Path parameter.
+        token_id: Token id.
 
         Returns:
             T.DeactivatePersonalAccessTokenResponse: The API response.
@@ -678,9 +699,9 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
 Only a [Service Account](https://docs.dfns.co/api-reference/auth/service-accounts) can use this endpoint.
 </Warning>
 
-This endpoint enables setting up a recovery workflow for Delegated Signing. Via this configuration, the end user will not receive an email from Dfns but instead can establish recovery credentials that leverage the customer's brand for the recovery workflow.
+Starts a recovery session for an end user under your brand, without sending a Dfns recovery email. Call this after you have verified the user's identity with your own auth system.
 
-Once the user has been verified by your auth system and this API has been called, you can call [Recover User](https://docs.dfns.co/api-reference/auth/recover-user) to complete the recovery process.
+The response returns a recovery challenge. Pass it to your frontend so the user can decrypt their recovery credential and sign, then call [Recover User](https://docs.dfns.co/api-reference/auth/recover-user) to complete the recovery and register fresh credentials.
 
         Args:
         body: Request body.
@@ -776,13 +797,15 @@ The process is as follows:
 Only a [Service Account](https://docs.dfns.co/api-reference/auth/service-accounts) can use this endpoint.
 </Warning>
 
-If you want to use your own authentication system, while still using `Delegated Signing`, you can use this endpoint to register a new End User in your organization, without your user needing to receive an email from Dfns.
+Registers a new End User in your organization and returns a registration challenge, without sending a Dfns registration email. Use this when your application owns the authentication system and you want delegated signing under your brand.
 
-This endpoint will:
-1. Create a new User attached to your organization
-2. Initiates a User Registration Challenge and returns the registration challenge.
+The response includes:
+1. A new `EndUser` attached to your organization.
+2. A registration challenge plus a `temporaryAuthenticationToken` to authenticate the next call.
 
-On successful creation, the user's registration challenge will be returned. You will then need to call [Complete User Registration](https://docs.dfns.co/api-reference/auth/complete-user-registration) or [Complete End User Registration with Wallets](https://docs.dfns.co/api-reference/auth/complete-end-user-registration-with-wallets) to complete the user's registration.
+Pass the challenge to your frontend so the user can create a passkey, then call [Complete User Registration](https://docs.dfns.co/api-reference/auth/complete-user-registration) or [Complete End User Registration with Wallets](https://docs.dfns.co/api-reference/auth/complete-end-user-registration-with-wallets) with that challenge signed.
+
+Bundle a `recoveryCredential` in the completion call alongside the first passkey. All credentials in that call sign the same challenge returned here. See [Implement end-user recovery](https://docs.dfns.co/guides/developers/end-user-recovery).
 
         Args:
         body: Request body.
@@ -847,7 +870,11 @@ On successful creation, the user's registration challenge will be returned. You 
 
         Completes the user registration process and creates the user's initial credentials.
 
-The type of credentials being registered is determined by the `credentialKind` field in the nested objects (`firstFactorCredential` , `secondFactorCredential` and `RecoveryCredential`). Supported credential kinds are:
+All credentials submitted in this call (`firstFactorCredential`, `secondFactorCredential`, `recoveryCredential`) sign the same challenge returned by the registration init endpoint ([Create Registration Challenge](https://docs.dfns.co/api-reference/auth/create-registration-challenge), [Create Delegated Registration Challenge](https://docs.dfns.co/api-reference/auth/create-delegated-registration-challenge), or [Create Social Registration Challenge](https://docs.dfns.co/api-reference/auth/create-social-registration-challenge)).
+
+Always include a `recoveryCredential` for end users. Without one, a user who loses their device cannot recover access and you must initiate a delegated recovery manually. See [Implement end-user recovery](https://docs.dfns.co/guides/developers/end-user-recovery).
+
+The type of credentials being registered is determined by the `credentialKind` field in the nested objects (`firstFactorCredential` , `secondFactorCredential` and `recoveryCredential`). Supported credential kinds are:
 * `Fido2`: User action is signed by a user's signing device using `WebAuthn`.
 * `Key`: User action is signed by a user's, or token's, private key.
 * `PasswordProtectedKey`: User action is signed by a user's, or token's, private key. The encrypted version of the private key is stored by Dfns and returns during the signing flow for the user to decrypt it.
@@ -874,10 +901,15 @@ The type of credentials being registered is determined by the `credentialKind` f
 
         Completes the end user registration process and creates the user's initial credentials along with delegated wallets for the new end user.
 
-The type of credentials being registered is determined by the `credentialKind` field in the nested objects (`firstFactorCredential` , `secondFactorCredential` and `RecoveryCredential`). Supported credential kinds are:
+All credentials submitted in this call (`firstFactorCredential`, `secondFactorCredential`, `recoveryCredential`) sign the same challenge returned by the registration init endpoint ([Create Delegated Registration Challenge](https://docs.dfns.co/api-reference/auth/create-delegated-registration-challenge) or [Create Social Registration Challenge](https://docs.dfns.co/api-reference/auth/create-social-registration-challenge)).
+
+Always include a `recoveryCredential` for end users. Without one, a user who loses their device cannot recover access and you must initiate a delegated recovery manually. See [Implement end-user recovery](https://docs.dfns.co/guides/developers/end-user-recovery).
+
+The type of credentials being registered is determined by the `credentialKind` field in the nested objects (`firstFactorCredential` , `secondFactorCredential` and `recoveryCredential`). Supported credential kinds are:
 * `Fido2`: User action is signed by a user's signing device using `WebAuthn`.
 * `Key`: User action is signed by a user's, or token's, private key.
 * `PasswordProtectedKey`: User action is signed by a user's, or token's, private key. The encrypted version of the private key is stored by Dfns and returns during the signing flow for the user to decrypt it.
+* `RecoveryKey`: Similar to `PasswordProtectedKey`, but this credential can only be used to recover an account, not to sign an action or login. Once this credential is used, all the other user's credentials are invalidated.
 
 The number of delegated wallets created and the wallet types are determined by the `wallets` specifications. The end user is automatically assigned `ManagedDefaultEndUserAccess` managed permission that grants the end user full access to the wallets.
 
@@ -963,7 +995,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Get information about a specific Service Account.
 
         Args:
-        service_account_id: Path parameter.
+        service_account_id: ID of the service account.
 
         Returns:
             T.GetServiceAccountResponse: The API response.
@@ -984,7 +1016,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Update a specific Service Account.
 
         Args:
-        service_account_id: Path parameter.
+        service_account_id: ID of the service account.
         body: Request body.
 
         Returns:
@@ -1006,7 +1038,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Delete a specific Service Account.
 
         Args:
-        service_account_id: Path parameter.
+        service_account_id: ID of the service account.
         query: Query parameters.
 
         Returns:
@@ -1028,7 +1060,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Activate a specific Service Account.
 
         Args:
-        service_account_id: Path parameter.
+        service_account_id: ID of the service account.
 
         Returns:
             T.ActivateServiceAccountResponse: The API response.
@@ -1049,7 +1081,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Deactivate a specific Service Account.
 
         Args:
-        service_account_id: Path parameter.
+        service_account_id: ID of the service account.
         body: Request body.
 
         Returns:
@@ -1071,7 +1103,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Activate a specific User.
 
         Args:
-        user_id: Path parameter.
+        user_id: User id.
 
         Returns:
             T.ActivateUserResponse: The API response.
@@ -1092,7 +1124,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Deactivate a specific User.
 
         Args:
-        user_id: Path parameter.
+        user_id: User id.
 
         Returns:
             T.DeactivateUserResponse: The API response.
@@ -1113,7 +1145,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Retrieve information about a specific User.
 
         Args:
-        user_id: Path parameter.
+        user_id: User id.
 
         Returns:
             T.GetUserResponse: The API response.
@@ -1134,7 +1166,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Update a specific User.
 
         Args:
-        user_id: Path parameter.
+        user_id: User id.
         body: Request body.
 
         Returns:
@@ -1156,7 +1188,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Delete a specific User.
 
         Args:
-        user_id: Path parameter.
+        user_id: User id.
 
         Returns:
             T.DeleteUserResponse: The API response.
