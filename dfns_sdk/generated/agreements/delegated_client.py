@@ -51,7 +51,7 @@ class DelegatedAgreementsClient:
         Creates a user action challenge for external signing.
 
         Args:
-        agreement_id: Path parameter.
+        agreement_id: ID of the agreement to accept.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
@@ -74,7 +74,7 @@ class DelegatedAgreementsClient:
         Submits the signed challenge and makes the API request.
 
         Args:
-        agreement_id: Path parameter.
+        agreement_id: ID of the agreement to accept.
         signed_challenge: The signed challenge from external signing.
 
         Returns:
