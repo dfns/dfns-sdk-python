@@ -40,7 +40,7 @@ class AgreementsClient:
         Record the acceptance of a specific agreement by its ID
 
         Args:
-        agreement_id: Path parameter.
+        agreement_id: ID of the agreement to accept.
 
         Returns:
             T.RecordAgreementAcceptanceResponse: The API response.
