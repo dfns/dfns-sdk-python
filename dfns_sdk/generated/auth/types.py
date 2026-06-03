@@ -103,6 +103,11 @@ class ActivateCredentialResponse(TypedDict, total=False):
 
     message: str
 
+class DeleteCredentialResponse(TypedDict, total=False):
+    """deleteCredential response."""
+
+    pass
+
 class DeactivateCredentialRequest(TypedDict, total=False):
     """deactivateCredential request body."""
 
@@ -147,7 +152,8 @@ class CreateLoginChallengeRequest(TypedDict, total=False):
     """createLoginChallenge request body."""
 
     username: NotRequired[str]
-    org_id: str
+    org_id: NotRequired[str]
+    account_id: NotRequired[str]
     login_code: NotRequired[str]
 
 class CreateLoginChallengeResponse(TypedDict, total=False):
@@ -193,7 +199,8 @@ class SendLoginCodeRequest(TypedDict, total=False):
     """sendLoginCode request body."""
 
     username: str
-    org_id: str
+    org_id: NotRequired[str]
+    account_id: NotRequired[str]
 
 class SendLoginCodeResponse(TypedDict, total=False):
     """sendLoginCode response."""
@@ -390,7 +397,8 @@ class CreateRecoveryChallengeRequest(TypedDict, total=False):
 
     username: str
     verification_code: str
-    org_id: str
+    org_id: NotRequired[str]
+    account_id: NotRequired[str]
     credential_id: str
 
 class CreateRecoveryChallengeResponse(TypedDict, total=False):
@@ -412,7 +420,8 @@ class SendRecoveryCodeEmailRequest(TypedDict, total=False):
     """sendRecoveryCodeEmail request body."""
 
     username: str
-    org_id: str
+    org_id: NotRequired[str]
+    account_id: NotRequired[str]
 
 class SendRecoveryCodeEmailResponse(TypedDict, total=False):
     """sendRecoveryCodeEmail response."""
@@ -443,7 +452,8 @@ class CreateDelegatedRegistrationChallengeResponse(TypedDict, total=False):
 class CreateRegistrationChallengeRequest(TypedDict, total=False):
     """createRegistrationChallenge request body."""
 
-    org_id: str
+    org_id: NotRequired[str]
+    account_id: NotRequired[str]
     username: str
     registration_code: str
 
@@ -515,7 +525,8 @@ class ResendRegistrationCodeRequest(TypedDict, total=False):
     """resendRegistrationCode request body."""
 
     username: str
-    org_id: str
+    org_id: NotRequired[str]
+    account_id: NotRequired[str]
 
 class ResendRegistrationCodeResponse(TypedDict, total=False):
     """resendRegistrationCode response."""
@@ -596,7 +607,8 @@ class ActivateUserResponse(TypedDict, total=False):
     user_id: str
     kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
-    org_id: str
+    org_id: NotRequired[str]
+    account_id: NotRequired[str]
     permissions: NotRequired[list[str]]
     is_active: bool
     is_service_account: bool
@@ -612,7 +624,8 @@ class DeactivateUserResponse(TypedDict, total=False):
     user_id: str
     kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
-    org_id: str
+    org_id: NotRequired[str]
+    account_id: NotRequired[str]
     permissions: NotRequired[list[str]]
     is_active: bool
     is_service_account: bool
@@ -628,7 +641,8 @@ class GetUserResponse(TypedDict, total=False):
     user_id: str
     kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
-    org_id: str
+    org_id: NotRequired[str]
+    account_id: NotRequired[str]
     permissions: NotRequired[list[str]]
     is_active: bool
     is_service_account: bool
@@ -649,7 +663,8 @@ class UpdateUserResponse(TypedDict, total=False):
     user_id: str
     kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
-    org_id: str
+    org_id: NotRequired[str]
+    account_id: NotRequired[str]
     permissions: NotRequired[list[str]]
     is_active: bool
     is_service_account: bool
@@ -665,7 +680,8 @@ class DeleteUserResponse(TypedDict, total=False):
     user_id: str
     kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
-    org_id: str
+    org_id: NotRequired[str]
+    account_id: NotRequired[str]
     permissions: NotRequired[list[str]]
     is_active: bool
     is_service_account: bool
@@ -703,7 +719,8 @@ class CreateUserResponse(TypedDict, total=False):
     user_id: str
     kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
-    org_id: str
+    org_id: NotRequired[str]
+    account_id: NotRequired[str]
     permissions: NotRequired[list[str]]
     is_active: bool
     is_service_account: bool
