@@ -157,7 +157,7 @@ Dfns maintains a script which can be used for audit log signature validation: [W
   </Warning>
 
         Args:
-        app_id: Path parameter.
+        app_id: ID of the application (deprecated).
 
         Returns:
             T.GetApplicationResponse: The API response.
@@ -307,6 +307,56 @@ Dfns maintains a script which can be used for audit log signature validation: [W
             path_params={},
             query_params=None,
             body=body,
+            user_action=user_action_token,
+        )
+
+    def delete_credential_init(self, credential_uuid: str) -> UserActionChallengeResponse:
+        """
+        Initialize Delete Credential.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+        credential_uuid: Path parameter.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """
+        path = "/auth/credentials/{credentialUuid}"
+        path = path.replace("{credentialUuid}", str(credential_uuid))
+        payload = ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="DELETE",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def delete_credential_complete(self, credential_uuid: str, signed_challenge: SignUserActionChallengeRequest) -> T.DeleteCredentialResponse:
+        """
+        Complete Delete Credential.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+        credential_uuid: Path parameter.
+        signed_challenge: The signed challenge from external signing.
+
+        Returns:
+            T.DeleteCredentialResponse: The API response.
+        """
+        user_action_result = BaseAuthApi.sign_user_action_challenge(
+            self._http, signed_challenge
+        )
+        user_action_token = user_action_result["userAction"]
+
+        return self._http.request_with_user_action(
+            method="DELETE",
+            path="/auth/credentials/{credentialUuid}",
+            path_params={"credentialUuid": credential_uuid},
+            query_params=None,
+            body=None,
             user_action=user_action_token,
         )
 
@@ -738,7 +788,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Retrieve a specific Personal Access Token.
 
         Args:
-        token_id: Path parameter.
+        token_id: Token id.
 
         Returns:
             T.GetPersonalAccessTokenResponse: The API response.
@@ -759,7 +809,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Creates a user action challenge for external signing.
 
         Args:
-        token_id: Path parameter.
+        token_id: Token id.
         body: Request body.
 
         Returns:
@@ -783,7 +833,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Submits the signed challenge and makes the API request.
 
         Args:
-        token_id: Path parameter.
+        token_id: Token id.
         body: Request body.
         signed_challenge: The signed challenge from external signing.
 
@@ -811,7 +861,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Creates a user action challenge for external signing.
 
         Args:
-        token_id: Path parameter.
+        token_id: Token id.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
@@ -834,7 +884,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Submits the signed challenge and makes the API request.
 
         Args:
-        token_id: Path parameter.
+        token_id: Token id.
         signed_challenge: The signed challenge from external signing.
 
         Returns:
@@ -861,7 +911,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Creates a user action challenge for external signing.
 
         Args:
-        token_id: Path parameter.
+        token_id: Token id.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
@@ -884,7 +934,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Submits the signed challenge and makes the API request.
 
         Args:
-        token_id: Path parameter.
+        token_id: Token id.
         signed_challenge: The signed challenge from external signing.
 
         Returns:
@@ -911,7 +961,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Creates a user action challenge for external signing.
 
         Args:
-        token_id: Path parameter.
+        token_id: Token id.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
@@ -934,7 +984,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Submits the signed challenge and makes the API request.
 
         Args:
-        token_id: Path parameter.
+        token_id: Token id.
         signed_challenge: The signed challenge from external signing.
 
         Returns:
@@ -1171,7 +1221,11 @@ The process is as follows:
 
         Completes the user registration process and creates the user's initial credentials.
 
-The type of credentials being registered is determined by the `credentialKind` field in the nested objects (`firstFactorCredential` , `secondFactorCredential` and `RecoveryCredential`). Supported credential kinds are:
+All credentials submitted in this call (`firstFactorCredential`, `secondFactorCredential`, `recoveryCredential`) sign the same challenge returned by the registration init endpoint ([Create Registration Challenge](https://docs.dfns.co/api-reference/auth/create-registration-challenge), [Create Delegated Registration Challenge](https://docs.dfns.co/api-reference/auth/create-delegated-registration-challenge), or [Create Social Registration Challenge](https://docs.dfns.co/api-reference/auth/create-social-registration-challenge)).
+
+Always include a `recoveryCredential` for end users. Without one, a user who loses their device cannot recover access and you must initiate a delegated recovery manually. See [Implement end-user recovery](https://docs.dfns.co/guides/developers/end-user-recovery).
+
+The type of credentials being registered is determined by the `credentialKind` field in the nested objects (`firstFactorCredential` , `secondFactorCredential` and `recoveryCredential`). Supported credential kinds are:
 * `Fido2`: User action is signed by a user's signing device using `WebAuthn`.
 * `Key`: User action is signed by a user's, or token's, private key.
 * `PasswordProtectedKey`: User action is signed by a user's, or token's, private key. The encrypted version of the private key is stored by Dfns and returns during the signing flow for the user to decrypt it.
@@ -1198,10 +1252,15 @@ The type of credentials being registered is determined by the `credentialKind` f
 
         Completes the end user registration process and creates the user's initial credentials along with delegated wallets for the new end user.
 
-The type of credentials being registered is determined by the `credentialKind` field in the nested objects (`firstFactorCredential` , `secondFactorCredential` and `RecoveryCredential`). Supported credential kinds are:
+All credentials submitted in this call (`firstFactorCredential`, `secondFactorCredential`, `recoveryCredential`) sign the same challenge returned by the registration init endpoint ([Create Delegated Registration Challenge](https://docs.dfns.co/api-reference/auth/create-delegated-registration-challenge) or [Create Social Registration Challenge](https://docs.dfns.co/api-reference/auth/create-social-registration-challenge)).
+
+Always include a `recoveryCredential` for end users. Without one, a user who loses their device cannot recover access and you must initiate a delegated recovery manually. See [Implement end-user recovery](https://docs.dfns.co/guides/developers/end-user-recovery).
+
+The type of credentials being registered is determined by the `credentialKind` field in the nested objects (`firstFactorCredential` , `secondFactorCredential` and `recoveryCredential`). Supported credential kinds are:
 * `Fido2`: User action is signed by a user's signing device using `WebAuthn`.
 * `Key`: User action is signed by a user's, or token's, private key.
 * `PasswordProtectedKey`: User action is signed by a user's, or token's, private key. The encrypted version of the private key is stored by Dfns and returns during the signing flow for the user to decrypt it.
+* `RecoveryKey`: Similar to `PasswordProtectedKey`, but this credential can only be used to recover an account, not to sign an action or login. Once this credential is used, all the other user's credentials are invalidated.
 
 The number of delegated wallets created and the wallet types are determined by the `wallets` specifications. The end user is automatically assigned `ManagedDefaultEndUserAccess` managed permission that grants the end user full access to the wallets.
 
@@ -1315,7 +1374,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Get information about a specific Service Account.
 
         Args:
-        service_account_id: Path parameter.
+        service_account_id: ID of the service account.
 
         Returns:
             T.GetServiceAccountResponse: The API response.
@@ -1336,7 +1395,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Creates a user action challenge for external signing.
 
         Args:
-        service_account_id: Path parameter.
+        service_account_id: ID of the service account.
         body: Request body.
 
         Returns:
@@ -1360,7 +1419,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Submits the signed challenge and makes the API request.
 
         Args:
-        service_account_id: Path parameter.
+        service_account_id: ID of the service account.
         body: Request body.
         signed_challenge: The signed challenge from external signing.
 
@@ -1388,7 +1447,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Creates a user action challenge for external signing.
 
         Args:
-        service_account_id: Path parameter.
+        service_account_id: ID of the service account.
         query: Query parameters.
 
         Returns:
@@ -1412,7 +1471,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Submits the signed challenge and makes the API request.
 
         Args:
-        service_account_id: Path parameter.
+        service_account_id: ID of the service account.
         signed_challenge: The signed challenge from external signing.
         query: Query parameters.
 
@@ -1440,7 +1499,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Creates a user action challenge for external signing.
 
         Args:
-        service_account_id: Path parameter.
+        service_account_id: ID of the service account.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
@@ -1463,7 +1522,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Submits the signed challenge and makes the API request.
 
         Args:
-        service_account_id: Path parameter.
+        service_account_id: ID of the service account.
         signed_challenge: The signed challenge from external signing.
 
         Returns:
@@ -1490,7 +1549,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Creates a user action challenge for external signing.
 
         Args:
-        service_account_id: Path parameter.
+        service_account_id: ID of the service account.
         body: Request body.
 
         Returns:
@@ -1514,7 +1573,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Submits the signed challenge and makes the API request.
 
         Args:
-        service_account_id: Path parameter.
+        service_account_id: ID of the service account.
         body: Request body.
         signed_challenge: The signed challenge from external signing.
 
@@ -1542,7 +1601,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Creates a user action challenge for external signing.
 
         Args:
-        user_id: Path parameter.
+        user_id: User id.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
@@ -1565,7 +1624,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Submits the signed challenge and makes the API request.
 
         Args:
-        user_id: Path parameter.
+        user_id: User id.
         signed_challenge: The signed challenge from external signing.
 
         Returns:
@@ -1592,7 +1651,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Creates a user action challenge for external signing.
 
         Args:
-        user_id: Path parameter.
+        user_id: User id.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
@@ -1615,7 +1674,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Submits the signed challenge and makes the API request.
 
         Args:
-        user_id: Path parameter.
+        user_id: User id.
         signed_challenge: The signed challenge from external signing.
 
         Returns:
@@ -1642,7 +1701,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Retrieve information about a specific User.
 
         Args:
-        user_id: Path parameter.
+        user_id: User id.
 
         Returns:
             T.GetUserResponse: The API response.
@@ -1663,7 +1722,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Creates a user action challenge for external signing.
 
         Args:
-        user_id: Path parameter.
+        user_id: User id.
         body: Request body.
 
         Returns:
@@ -1687,7 +1746,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Submits the signed challenge and makes the API request.
 
         Args:
-        user_id: Path parameter.
+        user_id: User id.
         body: Request body.
         signed_challenge: The signed challenge from external signing.
 
@@ -1715,7 +1774,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Creates a user action challenge for external signing.
 
         Args:
-        user_id: Path parameter.
+        user_id: User id.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
@@ -1738,7 +1797,7 @@ The number of delegated wallets created and the wallet types are determined by t
         Submits the signed challenge and makes the API request.
 
         Args:
-        user_id: Path parameter.
+        user_id: User id.
         signed_challenge: The signed challenge from external signing.
 
         Returns:
