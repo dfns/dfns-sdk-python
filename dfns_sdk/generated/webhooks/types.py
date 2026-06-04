@@ -44,7 +44,6 @@ class GetWebhookResponse(TypedDict, total=False):
     description: NotRequired[str]
     date_created: str
     date_updated: str
-    secret: str
 
 class UpdateWebhookRequest(TypedDict, total=False):
     """updateWebhook request body."""
@@ -64,7 +63,6 @@ class UpdateWebhookResponse(TypedDict, total=False):
     description: NotRequired[str]
     date_created: str
     date_updated: str
-    secret: str
 
 class DeleteWebhookResponse(TypedDict, total=False):
     """deleteWebhook response."""
