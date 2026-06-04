@@ -46,6 +46,23 @@ class SignersClient:
             requires_signature=True,
         )
 
+    def create_onchain_sign_input(self, store_id: str, body: T.CreateOnchainSignInputRequest) -> None:
+        """
+        Create Onchain Sign Input.
+
+        Args:
+        store_id: Path parameter.
+        body: Request body.
+        """
+        return self._http.request(
+            method="POST",
+            path="/key-stores/{storeId}/onchain-sign/input",
+            path_params={"storeId": store_id},
+            query_params=None,
+            body=body,
+            requires_signature=True,
+        )
+
     def create_proof_of_control_input(self, store_id: str, body: T.CreateProofOfControlInputRequest) -> None:
         """
         Create Proof Of Control Input.
@@ -129,6 +146,26 @@ class SignersClient:
         return self._http.request(
             method="POST",
             path="/key-stores/{storeId}/genesis/output",
+            path_params={"storeId": store_id},
+            query_params=None,
+            body=body,
+            requires_signature=True,
+        )
+
+    def submit_onchain_sign_output(self, store_id: str, body: T.SubmitOnchainSignOutputRequest) -> T.SubmitOnchainSignOutputResponse:
+        """
+        Submit Onchain Sign Output.
+
+        Args:
+        store_id: Path parameter.
+        body: Request body.
+
+        Returns:
+            T.SubmitOnchainSignOutputResponse: The API response.
+        """
+        return self._http.request(
+            method="POST",
+            path="/key-stores/{storeId}/onchain-sign/output",
             path_params={"storeId": store_id},
             query_params=None,
             body=body,
