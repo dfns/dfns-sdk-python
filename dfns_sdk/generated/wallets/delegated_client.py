@@ -1129,7 +1129,7 @@ depending on the API you are using).
         """
         List Org Wallet History.
 
-        Retrieve the transaction history across all wallets within a specified timeframe.
+        Retrieve the transaction history across all wallets within a specified timeframe. The time range is unbounded, but the CSV export is capped at 100,000 rows.
 
         Args:
         query: Query parameters.
