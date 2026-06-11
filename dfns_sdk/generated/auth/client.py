@@ -69,9 +69,9 @@ The type of credentials used to sign the action is determined by the `kind` fiel
         """
         List Audit Logs.
 
-        Gets all signature events which have occurred in the over the timeframe.  The max range the API supports is 7 days.
+        Gets all signature events which have occurred in the over the timeframe. The time range is unbounded, but the export is capped at 100,000 rows. When the result is truncated, the `X-Dfns-Result-Truncated: true` response header is set and a trailing `# TRUNCATED ...` line is appended to the CSV; narrow the time range to retrieve all data.
 
-StartTime and EndTime are URL-encoded UTC ISO timestamps:    
+StartTime and EndTime are URL-encoded UTC ISO timestamps:
 `startTime=2025-08-29T02%3A46%3A40Z`   
 `endTime=2025-09-01T02%3A46%3A40Z`   
 
@@ -1242,6 +1242,27 @@ The number of delegated wallets created and the wallet types are determined by t
         return self._http.request(
             method="POST",
             path="/auth/users",
+            path_params={},
+            query_params=None,
+            body=body,
+            requires_signature=True,
+        )
+
+    def invite_account_user(self, body: T.InviteAccountUserRequest) -> T.InviteAccountUserResponse:
+        """
+        Invite Account User.
+
+        Invite an existing Account User in the caller's org. The invited Account User starts without any permissions within the org.
+
+        Args:
+        body: Request body.
+
+        Returns:
+            T.InviteAccountUserResponse: The API response.
+        """
+        return self._http.request(
+            method="POST",
+            path="/auth/users/invite",
             path_params={},
             query_params=None,
             body=body,
