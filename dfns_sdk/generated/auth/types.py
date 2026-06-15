@@ -727,3 +727,14 @@ class CreateUserResponse(TypedDict, total=False):
     is_registered: bool
     is_s_s_o_required: bool
     permission_assignments: list[TypedDict]
+
+class InviteAccountUserRequest(TypedDict, total=False):
+    """inviteAccountUser request body."""
+
+    email: str
+    kind: Literal["AccountUser"]
+
+class InviteAccountUserResponse(TypedDict, total=False):
+    """inviteAccountUser response."""
+
+    pass
