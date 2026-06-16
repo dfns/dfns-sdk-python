@@ -1247,3 +1247,24 @@ The number of delegated wallets created and the wallet types are determined by t
             body=body,
             requires_signature=True,
         )
+
+    def invite_account_user(self, body: T.InviteAccountUserRequest) -> T.InviteAccountUserResponse:
+        """
+        Invite Account User.
+
+        Invite an existing Account User in the caller's org. The invited Account User starts without any permissions within the org.
+
+        Args:
+        body: Request body.
+
+        Returns:
+            T.InviteAccountUserResponse: The API response.
+        """
+        return self._http.request(
+            method="POST",
+            path="/auth/users/invite",
+            path_params={},
+            query_params=None,
+            body=body,
+            requires_signature=True,
+        )
