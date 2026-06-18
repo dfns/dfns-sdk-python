@@ -33,7 +33,7 @@ class SwapsClient:
             requires_signature=False,
         )
 
-    def create_swap(self, body: T.CreateSwapRequest) -> T.CreateSwapResponse:
+    def create_swap(self, body: dict[str, Any]) -> T.CreateSwapResponse:
         """
         Create Swap.
 
@@ -54,7 +54,7 @@ class SwapsClient:
             requires_signature=True,
         )
 
-    def request_swap_quote(self, body: T.RequestSwapQuoteRequest) -> T.RequestSwapQuoteResponse:
+    def request_swap_quote(self, body: dict[str, Any]) -> T.RequestSwapQuoteResponse:
         """
         Request Swap Quote.
 
