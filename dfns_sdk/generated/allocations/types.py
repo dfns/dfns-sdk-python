@@ -44,7 +44,7 @@ class CreateAllocationActionRequest(TypedDict, total=False):
     external_id: NotRequired[str]
     source_asset: TypedDict
     target_asset: TypedDict
-    slippage_bps: float
+    slippage_bps: int
 
 class CreateAllocationActionResponse(TypedDict, total=False):
     """createAllocationAction response."""
