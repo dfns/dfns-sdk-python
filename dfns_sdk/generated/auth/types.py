@@ -153,7 +153,7 @@ class CreateLoginChallengeRequest(TypedDict, total=False):
 
     username: NotRequired[str]
     org_id: NotRequired[str]
-    account_id: NotRequired[str]
+    tenant_id: NotRequired[str]
     login_code: NotRequired[str]
 
 class CreateLoginChallengeResponse(TypedDict, total=False):
@@ -200,7 +200,7 @@ class SendLoginCodeRequest(TypedDict, total=False):
 
     username: str
     org_id: NotRequired[str]
-    account_id: NotRequired[str]
+    tenant_id: NotRequired[str]
 
 class SendLoginCodeResponse(TypedDict, total=False):
     """sendLoginCode response."""
@@ -241,6 +241,16 @@ class InitiateSsoLoginResponse(TypedDict, total=False):
     """initiateSsoLogin response."""
 
     sso_redirect_url: str
+
+class ExchangeAccessTokenRequest(TypedDict, total=False):
+    """exchangeAccessToken request body."""
+
+    target: str
+
+class ExchangeAccessTokenResponse(TypedDict, total=False):
+    """exchangeAccessToken response."""
+
+    token: str
 
 class ListPersonalAccessTokensResponse(TypedDict, total=False):
     """listPersonalAccessTokens response."""
@@ -398,7 +408,7 @@ class CreateRecoveryChallengeRequest(TypedDict, total=False):
     username: str
     verification_code: str
     org_id: NotRequired[str]
-    account_id: NotRequired[str]
+    tenant_id: NotRequired[str]
     credential_id: str
 
 class CreateRecoveryChallengeResponse(TypedDict, total=False):
@@ -421,7 +431,7 @@ class SendRecoveryCodeEmailRequest(TypedDict, total=False):
 
     username: str
     org_id: NotRequired[str]
-    account_id: NotRequired[str]
+    tenant_id: NotRequired[str]
 
 class SendRecoveryCodeEmailResponse(TypedDict, total=False):
     """sendRecoveryCodeEmail response."""
@@ -453,7 +463,7 @@ class CreateRegistrationChallengeRequest(TypedDict, total=False):
     """createRegistrationChallenge request body."""
 
     org_id: NotRequired[str]
-    account_id: NotRequired[str]
+    tenant_id: NotRequired[str]
     username: str
     registration_code: str
 
@@ -526,7 +536,7 @@ class ResendRegistrationCodeRequest(TypedDict, total=False):
 
     username: str
     org_id: NotRequired[str]
-    account_id: NotRequired[str]
+    tenant_id: NotRequired[str]
 
 class ResendRegistrationCodeResponse(TypedDict, total=False):
     """resendRegistrationCode response."""
@@ -608,7 +618,7 @@ class ActivateUserResponse(TypedDict, total=False):
     kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
     org_id: NotRequired[str]
-    account_id: NotRequired[str]
+    tenant_id: NotRequired[str]
     permissions: NotRequired[list[str]]
     is_active: bool
     is_service_account: bool
@@ -625,7 +635,7 @@ class DeactivateUserResponse(TypedDict, total=False):
     kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
     org_id: NotRequired[str]
-    account_id: NotRequired[str]
+    tenant_id: NotRequired[str]
     permissions: NotRequired[list[str]]
     is_active: bool
     is_service_account: bool
@@ -642,7 +652,7 @@ class GetUserResponse(TypedDict, total=False):
     kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
     org_id: NotRequired[str]
-    account_id: NotRequired[str]
+    tenant_id: NotRequired[str]
     permissions: NotRequired[list[str]]
     is_active: bool
     is_service_account: bool
@@ -664,7 +674,7 @@ class UpdateUserResponse(TypedDict, total=False):
     kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
     org_id: NotRequired[str]
-    account_id: NotRequired[str]
+    tenant_id: NotRequired[str]
     permissions: NotRequired[list[str]]
     is_active: bool
     is_service_account: bool
@@ -681,7 +691,7 @@ class DeleteUserResponse(TypedDict, total=False):
     kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
     org_id: NotRequired[str]
-    account_id: NotRequired[str]
+    tenant_id: NotRequired[str]
     permissions: NotRequired[list[str]]
     is_active: bool
     is_service_account: bool
@@ -720,10 +730,21 @@ class CreateUserResponse(TypedDict, total=False):
     kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
     org_id: NotRequired[str]
-    account_id: NotRequired[str]
+    tenant_id: NotRequired[str]
     permissions: NotRequired[list[str]]
     is_active: bool
     is_service_account: bool
     is_registered: bool
     is_s_s_o_required: bool
     permission_assignments: list[TypedDict]
+
+class InviteTenantUserRequest(TypedDict, total=False):
+    """inviteTenantUser request body."""
+
+    email: str
+    kind: Literal["TenantUser"]
+
+class InviteTenantUserResponse(TypedDict, total=False):
+    """inviteTenantUser response."""
+
+    pass
