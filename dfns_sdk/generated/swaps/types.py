@@ -14,18 +14,6 @@ class ListSwapsQuery(TypedDict, total=False):
     limit: NotRequired[int]
     pagination_token: NotRequired[str]
 
-class CreateSwapRequest(TypedDict, total=False):
-    """createSwap request body."""
-
-    quote_id: str
-    reference: NotRequired[str]
-    provider: Literal["UniswapX", "UniswapClassic"]
-    wallet_id: str
-    target_wallet_id: NotRequired[str]
-    slippage_bps: float
-    source_asset: TypedDict
-    target_asset: TypedDict
-
 class CreateSwapResponse(TypedDict, total=False):
     """createSwap response."""
 
@@ -35,7 +23,7 @@ class CreateSwapResponse(TypedDict, total=False):
     wallet_id: str
     target_wallet_id: str
     status: Literal["PendingPolicyApproval", "InProgress", "Completed", "Failed", "Rejected"]
-    provider: Literal["UniswapX", "UniswapClassic"]
+    provider: Literal["UniswapX", "UniswapClassic", "CircleCctp"]
     quoted_source_asset: TypedDict
     quoted_target_asset: TypedDict
     slippage_bps: float
@@ -43,16 +31,7 @@ class CreateSwapResponse(TypedDict, total=False):
     request_body: TypedDict
     requester: TypedDict
     failure_reason: NotRequired[str]
-
-class RequestSwapQuoteRequest(TypedDict, total=False):
-    """requestSwapQuote request body."""
-
-    provider: Literal["UniswapX", "UniswapClassic"]
-    wallet_id: str
-    target_wallet_id: NotRequired[str]
-    source_asset: TypedDict
-    target_asset: TypedDict
-    slippage_bps: float
+    protocol_status: NotRequired[str]
 
 class RequestSwapQuoteResponse(TypedDict, total=False):
     """requestSwapQuote response."""
@@ -60,10 +39,11 @@ class RequestSwapQuoteResponse(TypedDict, total=False):
     id: str
     wallet_id: str
     target_wallet_id: NotRequired[str]
-    provider: Literal["UniswapX", "UniswapClassic"]
+    provider: Literal["UniswapX", "UniswapClassic", "CircleCctp"]
     source_asset: TypedDict
     target_asset: TypedDict
-    slippage_bps: float
+    slippage_bps: int
+    fee: NotRequired[str]
     date_created: str
     request_body: TypedDict
     requester: TypedDict
@@ -77,7 +57,7 @@ class GetSwapResponse(TypedDict, total=False):
     wallet_id: str
     target_wallet_id: str
     status: Literal["PendingPolicyApproval", "InProgress", "Completed", "Failed", "Rejected"]
-    provider: Literal["UniswapX", "UniswapClassic"]
+    provider: Literal["UniswapX", "UniswapClassic", "CircleCctp"]
     quoted_source_asset: TypedDict
     quoted_target_asset: TypedDict
     slippage_bps: float
@@ -85,6 +65,7 @@ class GetSwapResponse(TypedDict, total=False):
     request_body: TypedDict
     requester: TypedDict
     failure_reason: NotRequired[str]
+    protocol_status: NotRequired[str]
 
 class GetSwapQuoteResponse(TypedDict, total=False):
     """getSwapQuote response."""
@@ -92,10 +73,11 @@ class GetSwapQuoteResponse(TypedDict, total=False):
     id: str
     wallet_id: str
     target_wallet_id: NotRequired[str]
-    provider: Literal["UniswapX", "UniswapClassic"]
+    provider: Literal["UniswapX", "UniswapClassic", "CircleCctp"]
     source_asset: TypedDict
     target_asset: TypedDict
-    slippage_bps: float
+    slippage_bps: int
+    fee: NotRequired[str]
     date_created: str
     request_body: TypedDict
     requester: TypedDict
