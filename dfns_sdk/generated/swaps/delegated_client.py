@@ -44,7 +44,7 @@ class DelegatedSwapsClient:
             requires_signature=False,
         )
 
-    def create_swap_init(self, body: T.CreateSwapRequest) -> UserActionChallengeResponse:
+    def create_swap_init(self, body: dict[str, Any]) -> UserActionChallengeResponse:
         """
         Initialize Create Swap.
 
@@ -66,7 +66,7 @@ class DelegatedSwapsClient:
             user_action_payload=payload,
         )
 
-    def create_swap_complete(self, body: T.CreateSwapRequest, signed_challenge: SignUserActionChallengeRequest) -> T.CreateSwapResponse:
+    def create_swap_complete(self, body: dict[str, Any], signed_challenge: SignUserActionChallengeRequest) -> T.CreateSwapResponse:
         """
         Complete Create Swap.
 
@@ -93,7 +93,7 @@ class DelegatedSwapsClient:
             user_action=user_action_token,
         )
 
-    def request_swap_quote(self, body: T.RequestSwapQuoteRequest) -> T.RequestSwapQuoteResponse:
+    def request_swap_quote(self, body: dict[str, Any]) -> T.RequestSwapQuoteResponse:
         """
         Request Swap Quote.
 

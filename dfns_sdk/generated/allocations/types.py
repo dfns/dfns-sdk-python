@@ -19,7 +19,8 @@ class CreateAllocationResponse(TypedDict, total=False):
 
     id: str
     wallet_id: str
-    protocol: Literal["0fns"]
+    protocol: Literal["0fns", "SkySusds", "GauntletUsdcPrime", "SteakhouseUsdt", "GauntletUsdcPrimeBase", "SteakhouseUsdcBase", "SentoraPyusdMain"]
+    provider: NotRequired[Literal["M0", "Yield.xyz"]]
     amount: TypedDict
     rewards: TypedDict
     date_created: str
@@ -37,21 +38,13 @@ class ListAllocationActionsQuery(TypedDict, total=False):
     limit: NotRequired[int]
     pagination_token: NotRequired[str]
 
-class CreateAllocationActionRequest(TypedDict, total=False):
-    """createAllocationAction request body."""
-
-    kind: Literal["Deposit", "Withdraw"]
-    external_id: NotRequired[str]
-    source_asset: TypedDict
-    target_asset: TypedDict
-    slippage_bps: float
-
 class CreateAllocationActionResponse(TypedDict, total=False):
     """createAllocationAction response."""
 
     id: str
     wallet_id: str
-    protocol: Literal["0fns"]
+    protocol: Literal["0fns", "SkySusds", "GauntletUsdcPrime", "SteakhouseUsdt", "GauntletUsdcPrimeBase", "SteakhouseUsdcBase", "SentoraPyusdMain"]
+    provider: NotRequired[Literal["M0", "Yield.xyz"]]
     amount: TypedDict
     rewards: TypedDict
     date_created: str
@@ -62,7 +55,8 @@ class GetAllocationResponse(TypedDict, total=False):
 
     id: str
     wallet_id: str
-    protocol: Literal["0fns"]
+    protocol: Literal["0fns", "SkySusds", "GauntletUsdcPrime", "SteakhouseUsdt", "GauntletUsdcPrimeBase", "SteakhouseUsdcBase", "SentoraPyusdMain"]
+    provider: NotRequired[Literal["M0", "Yield.xyz"]]
     amount: TypedDict
     rewards: TypedDict
     date_created: str
