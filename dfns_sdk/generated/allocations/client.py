@@ -74,7 +74,7 @@ class AllocationsClient:
             requires_signature=False,
         )
 
-    def create_allocation_action(self, allocation_id: str, body: T.CreateAllocationActionRequest) -> T.CreateAllocationActionResponse:
+    def create_allocation_action(self, allocation_id: str, body: dict[str, Any]) -> T.CreateAllocationActionResponse:
         """
         Create Allocation Action.
 
