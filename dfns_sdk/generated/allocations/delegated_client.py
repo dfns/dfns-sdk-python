@@ -113,7 +113,7 @@ class DelegatedAllocationsClient:
             requires_signature=False,
         )
 
-    def create_allocation_action_init(self, allocation_id: str, body: T.CreateAllocationActionRequest) -> UserActionChallengeResponse:
+    def create_allocation_action_init(self, allocation_id: str, body: dict[str, Any]) -> UserActionChallengeResponse:
         """
         Initialize Create Allocation Action.
 
@@ -137,7 +137,7 @@ class DelegatedAllocationsClient:
             user_action_payload=payload,
         )
 
-    def create_allocation_action_complete(self, allocation_id: str, body: T.CreateAllocationActionRequest, signed_challenge: SignUserActionChallengeRequest) -> T.CreateAllocationActionResponse:
+    def create_allocation_action_complete(self, allocation_id: str, body: dict[str, Any], signed_challenge: SignUserActionChallengeRequest) -> T.CreateAllocationActionResponse:
         """
         Complete Create Allocation Action.
 
