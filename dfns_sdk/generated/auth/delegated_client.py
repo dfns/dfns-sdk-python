@@ -714,6 +714,27 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             requires_signature=False,
         )
 
+    def exchange_access_token(self, body: T.ExchangeAccessTokenRequest) -> T.ExchangeAccessTokenResponse:
+        """
+        Exchange Access Token.
+
+        Only for TenantUsers - Exchanges the current user access token, for an org-bound or tenant-bound token. The user must have access to the target org / tenant. The new access token expiration won't exceed the current token's one.
+
+        Args:
+        body: Request body.
+
+        Returns:
+            T.ExchangeAccessTokenResponse: The API response.
+        """
+        return self._http.request(
+            method="POST",
+            path="/auth/tokens",
+            path_params={},
+            query_params=None,
+            body=body,
+            requires_signature=False,
+        )
+
     def list_personal_access_tokens(self) -> T.ListPersonalAccessTokensResponse:
         """
         List Personal Access Tokens.
@@ -1881,6 +1902,55 @@ The number of delegated wallets created and the wallet types are determined by t
         return self._http.request_with_user_action(
             method="POST",
             path="/auth/users",
+            path_params={},
+            query_params=None,
+            body=body,
+            user_action=user_action_token,
+        )
+
+    def invite_tenant_user_init(self, body: T.InviteTenantUserRequest) -> UserActionChallengeResponse:
+        """
+        Initialize Invite Tenant User.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+        body: Request body.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """
+        path = "/auth/users/invite"
+        payload = json.dumps(body, separators=(",", ":")) if body else ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="POST",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def invite_tenant_user_complete(self, body: T.InviteTenantUserRequest, signed_challenge: SignUserActionChallengeRequest) -> T.InviteTenantUserResponse:
+        """
+        Complete Invite Tenant User.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+        body: Request body.
+        signed_challenge: The signed challenge from external signing.
+
+        Returns:
+            T.InviteTenantUserResponse: The API response.
+        """
+        user_action_result = BaseAuthApi.sign_user_action_challenge(
+            self._http, signed_challenge
+        )
+        user_action_token = user_action_result["userAction"]
+
+        return self._http.request_with_user_action(
+            method="POST",
+            path="/auth/users/invite",
             path_params={},
             query_params=None,
             body=body,
