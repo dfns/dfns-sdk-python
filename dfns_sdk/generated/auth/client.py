@@ -546,6 +546,27 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             requires_signature=False,
         )
 
+    def exchange_access_token(self, body: T.ExchangeAccessTokenRequest) -> T.ExchangeAccessTokenResponse:
+        """
+        Exchange Access Token.
+
+        Only for TenantUsers - Exchanges the current user access token, for an org-bound or tenant-bound token. The user must have access to the target org / tenant. The new access token expiration won't exceed the current token's one.
+
+        Args:
+        body: Request body.
+
+        Returns:
+            T.ExchangeAccessTokenResponse: The API response.
+        """
+        return self._http.request(
+            method="POST",
+            path="/auth/tokens",
+            path_params={},
+            query_params=None,
+            body=body,
+            requires_signature=False,
+        )
+
     def list_personal_access_tokens(self) -> T.ListPersonalAccessTokensResponse:
         """
         List Personal Access Tokens.
@@ -1242,6 +1263,27 @@ The number of delegated wallets created and the wallet types are determined by t
         return self._http.request(
             method="POST",
             path="/auth/users",
+            path_params={},
+            query_params=None,
+            body=body,
+            requires_signature=True,
+        )
+
+    def invite_tenant_user(self, body: T.InviteTenantUserRequest) -> T.InviteTenantUserResponse:
+        """
+        Invite Tenant User.
+
+        Invite an existing Tenant User in the caller's org. The invited Tenant User starts without any permissions within the org.
+
+        Args:
+        body: Request body.
+
+        Returns:
+            T.InviteTenantUserResponse: The API response.
+        """
+        return self._http.request(
+            method="POST",
+            path="/auth/users/invite",
             path_params={},
             query_params=None,
             body=body,
