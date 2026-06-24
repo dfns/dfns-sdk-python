@@ -23,6 +23,55 @@ class DelegatedSignersClient:
     def __init__(self, http_client: HttpClient):
         self._http = http_client
 
+    def create_add_mac_user_input_init(self, store_id: str, body: T.CreateAddMacUserInputRequest) -> UserActionChallengeResponse:
+        """
+        Initialize Create Add Mac User Input.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+        store_id: Path parameter.
+        body: Request body.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """
+        path = "/key-stores/{storeId}/add-mac-user/input"
+        path = path.replace("{storeId}", str(store_id))
+        payload = json.dumps(body, separators=(",", ":")) if body else ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="POST",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def create_add_mac_user_input_complete(self, store_id: str, body: T.CreateAddMacUserInputRequest, signed_challenge: SignUserActionChallengeRequest) -> None:
+        """
+        Complete Create Add Mac User Input.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+        store_id: Path parameter.
+        body: Request body.
+        signed_challenge: The signed challenge from external signing.
+        """
+        user_action_result = BaseAuthApi.sign_user_action_challenge(
+            self._http, signed_challenge
+        )
+        user_action_token = user_action_result["userAction"]
+
+        return self._http.request_with_user_action(
+            method="POST",
+            path="/key-stores/{storeId}/add-mac-user/input",
+            path_params={"storeId": store_id},
+            query_params=None,
+            body=body,
+            user_action=user_action_token,
+        )
+
     def create_clone_input_init(self, store_id: str, body: T.CreateCloneInputRequest) -> UserActionChallengeResponse:
         """
         Initialize Create Clone Input.

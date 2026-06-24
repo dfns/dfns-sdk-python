@@ -12,6 +12,23 @@ class SignersClient:
     def __init__(self, http_client: HttpClient):
         self._http = http_client
 
+    def create_add_mac_user_input(self, store_id: str, body: T.CreateAddMacUserInputRequest) -> None:
+        """
+        Create Add Mac User Input.
+
+        Args:
+        store_id: Path parameter.
+        body: Request body.
+        """
+        return self._http.request(
+            method="POST",
+            path="/key-stores/{storeId}/add-mac-user/input",
+            path_params={"storeId": store_id},
+            query_params=None,
+            body=body,
+            requires_signature=True,
+        )
+
     def create_clone_input(self, store_id: str, body: T.CreateCloneInputRequest) -> None:
         """
         Create Clone Input.

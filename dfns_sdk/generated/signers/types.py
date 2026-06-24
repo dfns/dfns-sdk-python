@@ -2,12 +2,20 @@
 
 from typing import Any, Literal, NotRequired, Optional, TypedDict, Union
 
+class CreateAddMacUserInputRequest(TypedDict, total=False):
+    """createAddMacUserInput request body."""
+
+    kind: Literal["AddMacUser"]
+    mac_target_serial: str
+    hsm_target_serial: str
+
 class CreateCloneInputRequest(TypedDict, total=False):
     """createCloneInput request body."""
 
     kind: Literal["Clone"]
     hsm_source_serial: str
     hsm_target_serial: str
+    mac_target_serial: NotRequired[str]
 
 class CreateGenesisInputRequest(TypedDict, total=False):
     """createGenesisInput request body."""
@@ -17,6 +25,7 @@ class CreateGenesisInputRequest(TypedDict, total=False):
     num_secp256k1: int
     num_ed25519: int
     hsm_genesis_serial: str
+    mac_genesis_serial: NotRequired[str]
     hsm_genesis_firmware_version: NotRequired[Literal["2.2", "2.4"]]
 
 class CreateOnchainSignInputRequest(TypedDict, total=False):
