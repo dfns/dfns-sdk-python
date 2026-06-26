@@ -1,5 +1,6 @@
 """HTTP client for making API requests."""
 
+import hashlib
 import json
 from typing import Any, Optional, TypeVar, TYPE_CHECKING
 from urllib.parse import urlencode
@@ -150,18 +151,42 @@ class HttpClient:
         query_params: Optional[dict[str, Any]] = None,
         body: Optional[Any] = None,
         requires_signature: bool = False,
+        file: Optional[bytes] = None,
     ) -> Any:
         """Make an HTTP request to the API."""
         url = self._build_url(path, path_params, query_params)
 
+        # Use the path with params substituted for signing
+        signing_path = path
+        if path_params:
+            for key, value in path_params.items():
+                signing_path = signing_path.replace(f"{{{key}}}", str(value))
+
+        # Multipart upload: send the JSON body (plus the file checksum the API
+        # expects) as the "data" part and the bytes as the "file" part. The signed
+        # payload is the "data" object so it matches what is transmitted.
+        if file is not None:
+            data = dict(body) if body else {}
+            data["fileChecksum"] = hashlib.sha256(file).hexdigest()
+            user_action_token = None
+            if requires_signature:
+                user_action_token = self._get_user_action_token(method, signing_path, data)
+            # Let httpx set the multipart Content-Type (with boundary); the default
+            # JSON content type from _build_headers would otherwise mislabel the body.
+            headers = self._build_headers(user_action_token)
+            headers.pop("Content-Type", None)
+            response = self._client.request(
+                method=method,
+                url=url,
+                headers=headers,
+                data={"data": json.dumps(data, separators=(",", ":"))},
+                files={"file": ("upload.bin", file)},
+            )
+            return self._handle_response(response)
+
         # Get user action token if required
         user_action_token = None
         if requires_signature:
-            # Use the path with params substituted for signing
-            signing_path = path
-            if path_params:
-                for key, value in path_params.items():
-                    signing_path = signing_path.replace(f"{{{key}}}", str(value))
             user_action_token = self._get_user_action_token(method, signing_path, body)
 
         headers = self._build_headers(user_action_token)
@@ -359,18 +384,42 @@ class AsyncHttpClient:
         query_params: Optional[dict[str, Any]] = None,
         body: Optional[Any] = None,
         requires_signature: bool = False,
+        file: Optional[bytes] = None,
     ) -> Any:
         """Make an async HTTP request to the API."""
         url = self._build_url(path, path_params, query_params)
 
+        # Use the path with params substituted for signing
+        signing_path = path
+        if path_params:
+            for key, value in path_params.items():
+                signing_path = signing_path.replace(f"{{{key}}}", str(value))
+
+        # Multipart upload: send the JSON body (plus the file checksum the API
+        # expects) as the "data" part and the bytes as the "file" part. The signed
+        # payload is the "data" object so it matches what is transmitted.
+        if file is not None:
+            data = dict(body) if body else {}
+            data["fileChecksum"] = hashlib.sha256(file).hexdigest()
+            user_action_token = None
+            if requires_signature:
+                user_action_token = await self._get_user_action_token(method, signing_path, data)
+            # Let httpx set the multipart Content-Type (with boundary); the default
+            # JSON content type from _build_headers would otherwise mislabel the body.
+            headers = self._build_headers(user_action_token)
+            headers.pop("Content-Type", None)
+            response = await self._client.request(
+                method=method,
+                url=url,
+                headers=headers,
+                data={"data": json.dumps(data, separators=(",", ":"))},
+                files={"file": ("upload.bin", file)},
+            )
+            return self._handle_response(response)
+
         # Get user action token if required
         user_action_token = None
         if requires_signature:
-            # Use the path with params substituted for signing
-            signing_path = path
-            if path_params:
-                for key, value in path_params.items():
-                    signing_path = signing_path.replace(f"{{{key}}}", str(value))
             user_action_token = await self._get_user_action_token(method, signing_path, body)
 
         headers = self._build_headers(user_action_token)

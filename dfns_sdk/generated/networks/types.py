@@ -5,7 +5,7 @@ from typing import Any, Literal, NotRequired, Optional, TypedDict, Union
 class EstimateFeesQuery(TypedDict, total=False):
     """estimateFees query parameters."""
 
-    network: Literal["Bitcoin", "BitcoinSignet", "BitcoinTestnet3", "BitcoinTestnet4", "ArbitrumOne", "ArbitrumSepolia", "ArcTestnet", "AvalancheC", "AvalancheCFuji", "Base", "BaseSepolia", "Bob", "BobSepolia", "Bsc", "BscTestnet", "Berachain", "BerachainBepolia", "Celo", "CeloAlfajores", "Codex", "CodexSepolia", "Ethereum", "EthereumClassic", "EthereumClassicMordor", "EthereumSepolia", "EthereumHolesky", "EthereumHoodi", "FantomOpera", "FantomTestnet", "FlareC", "FlareCCoston2", "FlowEvm", "FlowEvmTestnet", "Ink", "InkSepolia", "Optimism", "OptimismSepolia", "Plasma", "PlasmaTestnet", "Plume", "PlumeSepolia", "Polygon", "PolygonAmoy", "Race", "RaceSepolia", "Tempo", "TempoModerato", "Tsc", "TscTestnet1", "Xdc", "XdcApothem", "XLayer", "XLayerSepolia", "Solana", "SolanaDevnet"]
+    network: Literal["Bitcoin", "BitcoinSignet", "BitcoinTestnet4", "ArbitrumOne", "ArbitrumSepolia", "ArcTestnet", "AvalancheC", "AvalancheCFuji", "Base", "BaseSepolia", "Bob", "BobSepolia", "Bsc", "BscTestnet", "Berachain", "BerachainBepolia", "Celo", "CeloAlfajores", "Codex", "CodexSepolia", "Ethereum", "EthereumClassic", "EthereumClassicMordor", "EthereumSepolia", "EthereumHoodi", "FlareC", "FlareCCoston2", "FlowEvm", "FlowEvmTestnet", "Ink", "InkSepolia", "Optimism", "OptimismSepolia", "Plasma", "PlasmaTestnet", "Plume", "PlumeSepolia", "Polygon", "PolygonAmoy", "Race", "RaceSepolia", "Tempo", "TempoModerato", "Tsc", "TscTestnet1", "Xdc", "XdcApothem", "XLayer", "XLayerSepolia", "Solana", "SolanaDevnet"]
 
 class CallFunctionRequest(TypedDict, total=False):
     """callFunction request body."""
