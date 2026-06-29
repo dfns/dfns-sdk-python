@@ -2,7 +2,7 @@
 
 import json
 from typing import Any, Literal, Optional, TypedDict, Union
-from warnings import deprecated
+from typing_extensions import deprecated
 
 
 from ..._internal import HttpClient
