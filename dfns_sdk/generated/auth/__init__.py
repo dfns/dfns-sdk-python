@@ -1,7 +1,7 @@
 """Auth domain module."""
 
+from . import types
 from .client import AuthClient
 from .delegated_client import DelegatedAuthClient
-from . import types
 
 __all__ = ["AuthClient", "DelegatedAuthClient", "types"]

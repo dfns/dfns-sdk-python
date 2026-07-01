@@ -1,7 +1,7 @@
 """Client for the networks domain."""
 
-from typing import Any, Literal, Optional, TypedDict, Union
-
+from typing import Any, Literal, TypedDict, cast
+from typing_extensions import NotRequired, deprecated
 from ..._internal import HttpClient
 from . import types as T
 
@@ -12,19 +12,19 @@ class NetworksClient:
     def __init__(self, http_client: HttpClient):
         self._http = http_client
 
-    def estimate_fees(self, query: T.EstimateFeesQuery) -> TypedDict:
+    def estimate_fees(self, query: T.EstimateFeesQuery) -> dict[str, Any]:
         """
         Estimate Fees.
 
         Gets real-time fee details for a given network, allowing users to make decisions based on their preferences for transaction speed/priority. Three levels of priority will be displayed: `slow`, `standard`, `fast`.
 
         Args:
-        query: Query parameters.
+            query: Query parameters.
 
         Returns:
-            TypedDict: The API response.
-        """
-        return self._http.request(
+            dict[str, Any]: The API response.
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/networks/fees",
             path_params={},
@@ -32,6 +32,7 @@ class NetworksClient:
             body=None,
             requires_signature=False,
         )
+        return cast(dict[str, Any], response)
 
     def call_function(self, network: str, body: T.CallFunctionRequest) -> dict[str, Any]:
         """
@@ -44,13 +45,13 @@ class NetworksClient:
   </Note>
 
         Args:
-        network: Network name formatted in kebab case
-        body: Request body.
+            network: Network name formatted in kebab case
+            body: Request body.
 
         Returns:
             dict[str, Any]: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/networks/{network}/call-function",
             path_params={"network": network},
@@ -58,6 +59,7 @@ class NetworksClient:
             body=body,
             requires_signature=False,
         )
+        return cast(dict[str, Any], response)
 
     def get_canton_validator(self, network: Literal["canton", "canton-devnet", "canton-testnet"], validator_id: str) -> T.GetCantonValidatorResponse:
         """
@@ -66,13 +68,13 @@ class NetworksClient:
         Return a configured Canton Validator in your organization.
 
         Args:
-        network: Path parameter.
-        validator_id: Path parameter.
+            network: Path parameter.
+            validator_id: Path parameter.
 
         Returns:
             T.GetCantonValidatorResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/networks/{network}/validators/{validatorId}",
             path_params={"network": network, "validatorId": validator_id},
@@ -80,6 +82,7 @@ class NetworksClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetCantonValidatorResponse, response)
 
     def update_canton_validator(self, network: Literal["canton", "canton-devnet", "canton-testnet"], validator_id: str, body: T.UpdateCantonValidatorRequest) -> T.UpdateCantonValidatorResponse:
         """
@@ -90,14 +93,14 @@ class NetworksClient:
   Read details about the process [here](https://docs.dfns.co/networks/canton-validators).
 
         Args:
-        network: Path parameter.
-        validator_id: Path parameter.
-        body: Request body.
+            network: Path parameter.
+            validator_id: Path parameter.
+            body: Request body.
 
         Returns:
             T.UpdateCantonValidatorResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/networks/{network}/validators/{validatorId}",
             path_params={"network": network, "validatorId": validator_id},
@@ -105,6 +108,7 @@ class NetworksClient:
             body=body,
             requires_signature=True,
         )
+        return cast(T.UpdateCantonValidatorResponse, response)
 
     def delete_canton_validator(self, network: Literal["canton", "canton-devnet", "canton-testnet"], validator_id: str) -> T.DeleteCantonValidatorResponse:
         """
@@ -113,13 +117,13 @@ class NetworksClient:
         Delete a specific Canton Validator configuration.
 
         Args:
-        network: Path parameter.
-        validator_id: Path parameter.
+            network: Path parameter.
+            validator_id: Path parameter.
 
         Returns:
             T.DeleteCantonValidatorResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="DELETE",
             path="/networks/{network}/validators/{validatorId}",
             path_params={"network": network, "validatorId": validator_id},
@@ -127,21 +131,22 @@ class NetworksClient:
             body=None,
             requires_signature=True,
         )
+        return cast(T.DeleteCantonValidatorResponse, response)
 
-    def list_canton_validators(self, network: Literal["canton", "canton-devnet", "canton-testnet"], query: Optional[T.ListCantonValidatorsQuery] = None) -> T.ListCantonValidatorsResponse:
+    def list_canton_validators(self, network: Literal["canton", "canton-devnet", "canton-testnet"], query: T.ListCantonValidatorsQuery | None = None) -> T.ListCantonValidatorsResponse:
         """
         List Canton Validators.
 
         Retrieve the list of configured Canton Validators in your organization.
 
         Args:
-        network: Path parameter.
-        query: Query parameters.
+            network: Path parameter.
+            query: Query parameters.
 
         Returns:
             T.ListCantonValidatorsResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/networks/{network}/validators",
             path_params={"network": network},
@@ -149,6 +154,7 @@ class NetworksClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListCantonValidatorsResponse, response)
 
     def create_canton_validator(self, network: Literal["canton", "canton-devnet", "canton-testnet"], body: dict[str, Any]) -> T.CreateCantonValidatorResponse:
         """
@@ -161,13 +167,13 @@ class NetworksClient:
   Read details about the process [here](https://docs.dfns.co/networks/canton-validators).
 
         Args:
-        network: Path parameter.
-        body: Request body.
+            network: Path parameter.
+            body: Request body.
 
         Returns:
             T.CreateCantonValidatorResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/networks/{network}/validators",
             path_params={"network": network},
@@ -175,3 +181,4 @@ class NetworksClient:
             body=body,
             requires_signature=True,
         )
+        return cast(T.CreateCantonValidatorResponse, response)

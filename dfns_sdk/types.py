@@ -1,7 +1,10 @@
 """Base types for the Dfns SDK."""
 
 from dataclasses import dataclass, field
-from typing import Any, Callable, Awaitable, Optional
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from .auth import Signer
 
 
 @dataclass
@@ -14,7 +17,7 @@ class DfnsClientConfig:
     base_url: str = "https://api.dfns.io"
     """Base URL for the Dfns API."""
 
-    signer: Optional["Signer"] = None
+    signer: "Signer | None" = None
     """Signer for user action requests."""
 
     headers: dict[str, str] = field(default_factory=dict)
@@ -46,9 +49,9 @@ class DfnsError(Exception):
     def __init__(
         self,
         message: str,
-        status_code: Optional[int] = None,
-        error_code: Optional[str] = None,
-        details: Optional[dict[str, Any]] = None,
+        status_code: int | None = None,
+        error_code: str | None = None,
+        details: dict[str, Any] | None = None,
     ):
         super().__init__(message)
         self.message = message
@@ -66,4 +69,3 @@ class DfnsError(Exception):
 
     def __repr__(self) -> str:
         return f"DfnsError({self.message!r}, status_code={self.status_code}, error_code={self.error_code!r})"
-

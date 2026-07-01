@@ -1,6 +1,8 @@
 """Types for the exchanges domain."""
 
-from typing import Any, Literal, NotRequired, Optional, TypedDict, Union
+from typing import Any, Literal, TypedDict, cast
+from typing_extensions import NotRequired, deprecated
+
 
 class GetExchangeResponse(TypedDict, total=False):
     """getExchange response."""
@@ -18,7 +20,7 @@ class DeleteExchangeResponse(TypedDict, total=False):
 class ListExchangesResponse(TypedDict, total=False):
     """listExchanges response."""
 
-    items: list[TypedDict]
+    items: list[dict[str, Any]]
     next_page_token: NotRequired[str]
 
 class ListExchangesQuery(TypedDict, total=False):
@@ -32,8 +34,8 @@ class CreateExchangeRequest(TypedDict, total=False):
 
     name: NotRequired[str]
     kind: Literal["Binance", "Kraken", "CoinbaseApp", "CoinbasePrime"]
-    read_configuration: TypedDict
-    write_configuration: TypedDict
+    read_configuration: dict[str, Any]
+    write_configuration: dict[str, Any]
 
 class CreateExchangeResponse(TypedDict, total=False):
     """createExchange response."""
@@ -46,7 +48,7 @@ class CreateExchangeResponse(TypedDict, total=False):
 class ListAccountsResponse(TypedDict, total=False):
     """listAccounts response."""
 
-    items: list[TypedDict]
+    items: list[dict[str, Any]]
     next_page_token: NotRequired[str]
 
 class ListAccountsQuery(TypedDict, total=False):
@@ -58,7 +60,7 @@ class ListAccountsQuery(TypedDict, total=False):
 class ListAccountAssetsResponse(TypedDict, total=False):
     """listAccountAssets response."""
 
-    items: list[TypedDict]
+    items: list[dict[str, Any]]
     next_page_token: NotRequired[str]
 
 class ListAccountAssetsQuery(TypedDict, total=False):
@@ -77,8 +79,8 @@ class CreateExchangeDepositResponse(TypedDict, total=False):
     exchange_reference: NotRequired[str]
     kind: Literal["Withdrawal", "Deposit"]
     wallet_id: str
-    requester: TypedDict
-    request_body: TypedDict
+    requester: dict[str, Any]
+    request_body: dict[str, Any]
     date_created: str
 
 class CreateExchangeWithdrawalResponse(TypedDict, total=False):
@@ -91,6 +93,6 @@ class CreateExchangeWithdrawalResponse(TypedDict, total=False):
     exchange_reference: NotRequired[str]
     kind: Literal["Withdrawal", "Deposit"]
     wallet_id: str
-    requester: TypedDict
-    request_body: TypedDict
+    requester: dict[str, Any]
+    request_body: dict[str, Any]
     date_created: str

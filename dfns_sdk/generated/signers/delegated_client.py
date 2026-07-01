@@ -1,14 +1,10 @@
 """Delegated client for the signers domain."""
 
 import json
-from typing import Any, Literal, Optional, TypedDict, Union
-
+from typing import Any, Literal, TypedDict, cast
+from typing_extensions import NotRequired, deprecated
 from ..._internal import HttpClient
-from ...base_auth_api import (
-    BaseAuthApi,
-    SignUserActionChallengeRequest,
-    UserActionChallengeResponse,
-)
+from ...base_auth_api import BaseAuthApi, SignUserActionChallengeRequest, UserActionChallengeResponse
 from . import types as T
 
 
@@ -23,6 +19,55 @@ class DelegatedSignersClient:
     def __init__(self, http_client: HttpClient):
         self._http = http_client
 
+    def create_add_mac_user_input_init(self, store_id: str, body: T.CreateAddMacUserInputRequest) -> UserActionChallengeResponse:
+        """
+        Initialize Create Add Mac User Input.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+            store_id: Path parameter.
+            body: Request body.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """  # noqa: E501
+        path = "/key-stores/{storeId}/add-mac-user/input"
+        path = path.replace("{storeId}", str(store_id))
+        payload = json.dumps(body, separators=(",", ":")) if body else ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="POST",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def create_add_mac_user_input_complete(self, store_id: str, body: T.CreateAddMacUserInputRequest, signed_challenge: SignUserActionChallengeRequest) -> None:
+        """
+        Complete Create Add Mac User Input.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+            store_id: Path parameter.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(
+            self._http, signed_challenge
+        )
+        user_action_token = user_action_result["userAction"]
+
+        self._http.request_with_user_action(
+            method="POST",
+            path="/key-stores/{storeId}/add-mac-user/input",
+            path_params={"storeId": store_id},
+            query_params=None,
+            body=body,
+            user_action=user_action_token,
+        )
+
     def create_clone_input_init(self, store_id: str, body: T.CreateCloneInputRequest) -> UserActionChallengeResponse:
         """
         Initialize Create Clone Input.
@@ -30,12 +75,12 @@ class DelegatedSignersClient:
         Creates a user action challenge for external signing.
 
         Args:
-        store_id: Path parameter.
-        body: Request body.
+            store_id: Path parameter.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/key-stores/{storeId}/clone/input"
         path = path.replace("{storeId}", str(store_id))
         payload = json.dumps(body, separators=(",", ":")) if body else ""
@@ -54,16 +99,16 @@ class DelegatedSignersClient:
         Submits the signed challenge and makes the API request.
 
         Args:
-        store_id: Path parameter.
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
-        """
+            store_id: Path parameter.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
+        """  # noqa: E501
         user_action_result = BaseAuthApi.sign_user_action_challenge(
             self._http, signed_challenge
         )
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        self._http.request_with_user_action(
             method="POST",
             path="/key-stores/{storeId}/clone/input",
             path_params={"storeId": store_id},
@@ -79,12 +124,12 @@ class DelegatedSignersClient:
         Creates a user action challenge for external signing.
 
         Args:
-        store_id: Path parameter.
-        body: Request body.
+            store_id: Path parameter.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/key-stores/{storeId}/genesis/input"
         path = path.replace("{storeId}", str(store_id))
         payload = json.dumps(body, separators=(",", ":")) if body else ""
@@ -103,16 +148,16 @@ class DelegatedSignersClient:
         Submits the signed challenge and makes the API request.
 
         Args:
-        store_id: Path parameter.
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
-        """
+            store_id: Path parameter.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
+        """  # noqa: E501
         user_action_result = BaseAuthApi.sign_user_action_challenge(
             self._http, signed_challenge
         )
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        self._http.request_with_user_action(
             method="POST",
             path="/key-stores/{storeId}/genesis/input",
             path_params={"storeId": store_id},
@@ -128,12 +173,12 @@ class DelegatedSignersClient:
         Creates a user action challenge for external signing.
 
         Args:
-        store_id: Path parameter.
-        body: Request body.
+            store_id: Path parameter.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/key-stores/{storeId}/onchain-sign/input"
         path = path.replace("{storeId}", str(store_id))
         payload = json.dumps(body, separators=(",", ":")) if body else ""
@@ -152,16 +197,16 @@ class DelegatedSignersClient:
         Submits the signed challenge and makes the API request.
 
         Args:
-        store_id: Path parameter.
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
-        """
+            store_id: Path parameter.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
+        """  # noqa: E501
         user_action_result = BaseAuthApi.sign_user_action_challenge(
             self._http, signed_challenge
         )
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        self._http.request_with_user_action(
             method="POST",
             path="/key-stores/{storeId}/onchain-sign/input",
             path_params={"storeId": store_id},
@@ -177,12 +222,12 @@ class DelegatedSignersClient:
         Creates a user action challenge for external signing.
 
         Args:
-        store_id: Path parameter.
-        body: Request body.
+            store_id: Path parameter.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/key-stores/{storeId}/proof-of-control/input"
         path = path.replace("{storeId}", str(store_id))
         payload = json.dumps(body, separators=(",", ":")) if body else ""
@@ -201,16 +246,16 @@ class DelegatedSignersClient:
         Submits the signed challenge and makes the API request.
 
         Args:
-        store_id: Path parameter.
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
-        """
+            store_id: Path parameter.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
+        """  # noqa: E501
         user_action_result = BaseAuthApi.sign_user_action_challenge(
             self._http, signed_challenge
         )
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        self._http.request_with_user_action(
             method="POST",
             path="/key-stores/{storeId}/proof-of-control/input",
             path_params={"storeId": store_id},
@@ -225,8 +270,8 @@ class DelegatedSignersClient:
 
         Returns:
             T.ListKeyStoresResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/key-stores",
             path_params={},
@@ -234,6 +279,7 @@ class DelegatedSignersClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListKeyStoresResponse, response)
 
     def list_signers(self) -> T.ListSignersResponse:
         """
@@ -241,8 +287,8 @@ class DelegatedSignersClient:
 
         Returns:
             T.ListSignersResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/signers",
             path_params={},
@@ -250,211 +296,119 @@ class DelegatedSignersClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListSignersResponse, response)
 
-    def submit_clone_output_init(self, store_id: str, body: T.SubmitCloneOutputRequest) -> UserActionChallengeResponse:
+    def submit_add_mac_user_output(self, store_id: str, body: T.SubmitAddMacUserOutputRequest, file: bytes) -> T.SubmitAddMacUserOutputResponse:
         """
-        Initialize Submit Clone Output.
-
-        Creates a user action challenge for external signing.
+        Submit Add Mac User Output.
 
         Args:
-        store_id: Path parameter.
-        body: Request body.
+            store_id: Path parameter.
+            body: Request body.
+            file: The file bytes to upload.
 
         Returns:
-            UserActionChallengeResponse: The challenge to sign externally.
-        """
-        path = "/key-stores/{storeId}/clone/output"
-        path = path.replace("{storeId}", str(store_id))
-        payload = json.dumps(body, separators=(",", ":")) if body else ""
-
-        return BaseAuthApi.create_user_action_challenge(
-            self._http,
-            user_action_http_method="POST",
-            user_action_http_path=path,
-            user_action_payload=payload,
+            T.SubmitAddMacUserOutputResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="POST",
+            path="/key-stores/{storeId}/add-mac-user/output",
+            path_params={"storeId": store_id},
+            query_params=None,
+            body=body,
+            file=file,
+            requires_signature=True,
         )
+        return cast(T.SubmitAddMacUserOutputResponse, response)
 
-    def submit_clone_output_complete(self, store_id: str, body: T.SubmitCloneOutputRequest, signed_challenge: SignUserActionChallengeRequest) -> T.SubmitCloneOutputResponse:
+    def submit_clone_output(self, store_id: str, body: T.SubmitCloneOutputRequest, file: bytes) -> T.SubmitCloneOutputResponse:
         """
-        Complete Submit Clone Output.
-
-        Submits the signed challenge and makes the API request.
+        Submit Clone Output.
 
         Args:
-        store_id: Path parameter.
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            store_id: Path parameter.
+            body: Request body.
+            file: The file bytes to upload.
 
         Returns:
             T.SubmitCloneOutputResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
-        user_action_token = user_action_result["userAction"]
-
-        return self._http.request_with_user_action(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/key-stores/{storeId}/clone/output",
             path_params={"storeId": store_id},
             query_params=None,
             body=body,
-            user_action=user_action_token,
+            file=file,
+            requires_signature=True,
         )
+        return cast(T.SubmitCloneOutputResponse, response)
 
-    def submit_genesis_output_init(self, store_id: str, body: T.SubmitGenesisOutputRequest) -> UserActionChallengeResponse:
+    def submit_genesis_output(self, store_id: str, body: T.SubmitGenesisOutputRequest, file: bytes) -> T.SubmitGenesisOutputResponse:
         """
-        Initialize Submit Genesis Output.
-
-        Creates a user action challenge for external signing.
+        Submit Genesis Output.
 
         Args:
-        store_id: Path parameter.
-        body: Request body.
-
-        Returns:
-            UserActionChallengeResponse: The challenge to sign externally.
-        """
-        path = "/key-stores/{storeId}/genesis/output"
-        path = path.replace("{storeId}", str(store_id))
-        payload = json.dumps(body, separators=(",", ":")) if body else ""
-
-        return BaseAuthApi.create_user_action_challenge(
-            self._http,
-            user_action_http_method="POST",
-            user_action_http_path=path,
-            user_action_payload=payload,
-        )
-
-    def submit_genesis_output_complete(self, store_id: str, body: T.SubmitGenesisOutputRequest, signed_challenge: SignUserActionChallengeRequest) -> T.SubmitGenesisOutputResponse:
-        """
-        Complete Submit Genesis Output.
-
-        Submits the signed challenge and makes the API request.
-
-        Args:
-        store_id: Path parameter.
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            store_id: Path parameter.
+            body: Request body.
+            file: The file bytes to upload.
 
         Returns:
             T.SubmitGenesisOutputResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
-        user_action_token = user_action_result["userAction"]
-
-        return self._http.request_with_user_action(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/key-stores/{storeId}/genesis/output",
             path_params={"storeId": store_id},
             query_params=None,
             body=body,
-            user_action=user_action_token,
+            file=file,
+            requires_signature=True,
         )
+        return cast(T.SubmitGenesisOutputResponse, response)
 
-    def submit_onchain_sign_output_init(self, store_id: str, body: T.SubmitOnchainSignOutputRequest) -> UserActionChallengeResponse:
+    def submit_onchain_sign_output(self, store_id: str, body: T.SubmitOnchainSignOutputRequest, file: bytes) -> T.SubmitOnchainSignOutputResponse:
         """
-        Initialize Submit Onchain Sign Output.
-
-        Creates a user action challenge for external signing.
+        Submit Onchain Sign Output.
 
         Args:
-        store_id: Path parameter.
-        body: Request body.
-
-        Returns:
-            UserActionChallengeResponse: The challenge to sign externally.
-        """
-        path = "/key-stores/{storeId}/onchain-sign/output"
-        path = path.replace("{storeId}", str(store_id))
-        payload = json.dumps(body, separators=(",", ":")) if body else ""
-
-        return BaseAuthApi.create_user_action_challenge(
-            self._http,
-            user_action_http_method="POST",
-            user_action_http_path=path,
-            user_action_payload=payload,
-        )
-
-    def submit_onchain_sign_output_complete(self, store_id: str, body: T.SubmitOnchainSignOutputRequest, signed_challenge: SignUserActionChallengeRequest) -> T.SubmitOnchainSignOutputResponse:
-        """
-        Complete Submit Onchain Sign Output.
-
-        Submits the signed challenge and makes the API request.
-
-        Args:
-        store_id: Path parameter.
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            store_id: Path parameter.
+            body: Request body.
+            file: The file bytes to upload.
 
         Returns:
             T.SubmitOnchainSignOutputResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
-        user_action_token = user_action_result["userAction"]
-
-        return self._http.request_with_user_action(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/key-stores/{storeId}/onchain-sign/output",
             path_params={"storeId": store_id},
             query_params=None,
             body=body,
-            user_action=user_action_token,
+            file=file,
+            requires_signature=True,
         )
+        return cast(T.SubmitOnchainSignOutputResponse, response)
 
-    def submit_proof_of_control_output_init(self, store_id: str, body: T.SubmitProofOfControlOutputRequest) -> UserActionChallengeResponse:
+    def submit_proof_of_control_output(self, store_id: str, body: T.SubmitProofOfControlOutputRequest, file: bytes) -> T.SubmitProofOfControlOutputResponse:
         """
-        Initialize Submit Proof Of Control Output.
-
-        Creates a user action challenge for external signing.
+        Submit Proof Of Control Output.
 
         Args:
-        store_id: Path parameter.
-        body: Request body.
-
-        Returns:
-            UserActionChallengeResponse: The challenge to sign externally.
-        """
-        path = "/key-stores/{storeId}/proof-of-control/output"
-        path = path.replace("{storeId}", str(store_id))
-        payload = json.dumps(body, separators=(",", ":")) if body else ""
-
-        return BaseAuthApi.create_user_action_challenge(
-            self._http,
-            user_action_http_method="POST",
-            user_action_http_path=path,
-            user_action_payload=payload,
-        )
-
-    def submit_proof_of_control_output_complete(self, store_id: str, body: T.SubmitProofOfControlOutputRequest, signed_challenge: SignUserActionChallengeRequest) -> T.SubmitProofOfControlOutputResponse:
-        """
-        Complete Submit Proof Of Control Output.
-
-        Submits the signed challenge and makes the API request.
-
-        Args:
-        store_id: Path parameter.
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            store_id: Path parameter.
+            body: Request body.
+            file: The file bytes to upload.
 
         Returns:
             T.SubmitProofOfControlOutputResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
-        user_action_token = user_action_result["userAction"]
-
-        return self._http.request_with_user_action(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/key-stores/{storeId}/proof-of-control/output",
             path_params={"storeId": store_id},
             query_params=None,
             body=body,
-            user_action=user_action_token,
+            file=file,
+            requires_signature=True,
         )
+        return cast(T.SubmitProofOfControlOutputResponse, response)

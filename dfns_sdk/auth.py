@@ -1,12 +1,11 @@
 """Authentication utilities for the Dfns SDK."""
 
 import base64
-import hashlib
 import json
-from typing import Any, Optional, Protocol, TypedDict
+from typing import Any, Protocol, TypedDict
 
 from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import ec, ed25519, padding
+from cryptography.hazmat.primitives.asymmetric import ec, ed25519, padding, rsa
 
 
 class UserActionChallenge(TypedDict):
@@ -128,10 +127,11 @@ class KeySigner:
             return self._private_key.sign(data)
         elif isinstance(self._private_key, ec.EllipticCurvePrivateKey):
             return self._private_key.sign(data, ec.ECDSA(hashes.SHA256()))
-        else:
-            # RSA
+        elif isinstance(self._private_key, rsa.RSAPrivateKey):
             return self._private_key.sign(
                 data,
                 padding.PKCS1v15(),
                 hashes.SHA256(),
             )
+        else:
+            raise ValueError(f"Unsupported private key type: {type(self._private_key).__name__}")

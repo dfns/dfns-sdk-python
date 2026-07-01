@@ -1,14 +1,10 @@
 """Delegated client for the allocations domain."""
 
 import json
-from typing import Any, Literal, Optional, TypedDict, Union
-
+from typing import Any, Literal, TypedDict, cast
+from typing_extensions import NotRequired, deprecated
 from ..._internal import HttpClient
-from ...base_auth_api import (
-    BaseAuthApi,
-    SignUserActionChallengeRequest,
-    UserActionChallengeResponse,
-)
+from ...base_auth_api import BaseAuthApi, SignUserActionChallengeRequest, UserActionChallengeResponse
 from . import types as T
 
 
@@ -23,17 +19,17 @@ class DelegatedAllocationsClient:
     def __init__(self, http_client: HttpClient):
         self._http = http_client
 
-    def list_allocations(self, query: Optional[T.ListAllocationsQuery] = None) -> T.ListAllocationsResponse:
+    def list_allocations(self, query: T.ListAllocationsQuery | None = None) -> T.ListAllocationsResponse:
         """
         List Allocations.
 
         Args:
-        query: Query parameters.
+            query: Query parameters.
 
         Returns:
             T.ListAllocationsResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/allocations",
             path_params={},
@@ -41,6 +37,7 @@ class DelegatedAllocationsClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListAllocationsResponse, response)
 
     def create_allocation_init(self, body: dict[str, Any]) -> UserActionChallengeResponse:
         """
@@ -49,11 +46,11 @@ class DelegatedAllocationsClient:
         Creates a user action challenge for external signing.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/allocations"
         payload = json.dumps(body, separators=(",", ":")) if body else ""
 
@@ -71,18 +68,18 @@ class DelegatedAllocationsClient:
         Submits the signed challenge and makes the API request.
 
         Args:
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.CreateAllocationResponse: The API response.
-        """
+        """  # noqa: E501
         user_action_result = BaseAuthApi.sign_user_action_challenge(
             self._http, signed_challenge
         )
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="POST",
             path="/allocations",
             path_params={},
@@ -90,21 +87,22 @@ class DelegatedAllocationsClient:
             body=body,
             user_action=user_action_token,
         )
+        return cast(T.CreateAllocationResponse, response)
 
-    def list_allocation_actions(self, allocation_id: str, query: Optional[T.ListAllocationActionsQuery] = None) -> T.ListAllocationActionsResponse:
+    def list_allocation_actions(self, allocation_id: str, query: T.ListAllocationActionsQuery | None = None) -> T.ListAllocationActionsResponse:
         """
         List Allocation Actions.
 
         Retrieve the list of actions for a specific allocation.
 
         Args:
-        allocation_id: Unique identifier for the allocation investment.
-        query: Query parameters.
+            allocation_id: Unique identifier for the allocation investment.
+            query: Query parameters.
 
         Returns:
             T.ListAllocationActionsResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/allocations/{allocationId}/actions",
             path_params={"allocationId": allocation_id},
@@ -112,6 +110,7 @@ class DelegatedAllocationsClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListAllocationActionsResponse, response)
 
     def create_allocation_action_init(self, allocation_id: str, body: dict[str, Any]) -> UserActionChallengeResponse:
         """
@@ -120,12 +119,12 @@ class DelegatedAllocationsClient:
         Creates a user action challenge for external signing.
 
         Args:
-        allocation_id: Unique identifier for the allocation investment.
-        body: Request body.
+            allocation_id: Unique identifier for the allocation investment.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/allocations/{allocationId}/actions"
         path = path.replace("{allocationId}", str(allocation_id))
         payload = json.dumps(body, separators=(",", ":")) if body else ""
@@ -144,19 +143,19 @@ class DelegatedAllocationsClient:
         Submits the signed challenge and makes the API request.
 
         Args:
-        allocation_id: Unique identifier for the allocation investment.
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            allocation_id: Unique identifier for the allocation investment.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.CreateAllocationActionResponse: The API response.
-        """
+        """  # noqa: E501
         user_action_result = BaseAuthApi.sign_user_action_challenge(
             self._http, signed_challenge
         )
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="POST",
             path="/allocations/{allocationId}/actions",
             path_params={"allocationId": allocation_id},
@@ -164,6 +163,7 @@ class DelegatedAllocationsClient:
             body=body,
             user_action=user_action_token,
         )
+        return cast(T.CreateAllocationActionResponse, response)
 
     def get_allocation(self, allocation_id: str) -> T.GetAllocationResponse:
         """
@@ -172,12 +172,12 @@ class DelegatedAllocationsClient:
         Retrieve the details of a specific allocation.
 
         Args:
-        allocation_id: Unique identifier for the allocation investment.
+            allocation_id: Unique identifier for the allocation investment.
 
         Returns:
             T.GetAllocationResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/allocations/{allocationId}",
             path_params={"allocationId": allocation_id},
@@ -185,3 +185,4 @@ class DelegatedAllocationsClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetAllocationResponse, response)

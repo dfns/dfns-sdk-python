@@ -1,11 +1,13 @@
 """Types for the allocations domain."""
 
-from typing import Any, Literal, NotRequired, Optional, TypedDict, Union
+from typing import Any, Literal, TypedDict, cast
+from typing_extensions import NotRequired, deprecated
+
 
 class ListAllocationsResponse(TypedDict, total=False):
     """listAllocations response."""
 
-    items: list[TypedDict]
+    items: list[dict[str, Any]]
     next_page_token: NotRequired[str]
 
 class ListAllocationsQuery(TypedDict, total=False):
@@ -21,15 +23,15 @@ class CreateAllocationResponse(TypedDict, total=False):
     wallet_id: str
     protocol: Literal["0fns", "SkySusds", "GauntletUsdcPrime", "SteakhouseUsdt", "GauntletUsdcPrimeBase", "SteakhouseUsdcBase", "SentoraPyusdMain"]
     provider: NotRequired[Literal["M0", "Yield.xyz"]]
-    amount: TypedDict
-    rewards: TypedDict
+    amount: dict[str, Any]
+    rewards: dict[str, Any]
     date_created: str
-    actions: list[TypedDict]
+    actions: list[dict[str, Any]]
 
 class ListAllocationActionsResponse(TypedDict, total=False):
     """listAllocationActions response."""
 
-    items: list[TypedDict]
+    items: list[dict[str, Any]]
     next_page_token: NotRequired[str]
 
 class ListAllocationActionsQuery(TypedDict, total=False):
@@ -45,10 +47,10 @@ class CreateAllocationActionResponse(TypedDict, total=False):
     wallet_id: str
     protocol: Literal["0fns", "SkySusds", "GauntletUsdcPrime", "SteakhouseUsdt", "GauntletUsdcPrimeBase", "SteakhouseUsdcBase", "SentoraPyusdMain"]
     provider: NotRequired[Literal["M0", "Yield.xyz"]]
-    amount: TypedDict
-    rewards: TypedDict
+    amount: dict[str, Any]
+    rewards: dict[str, Any]
     date_created: str
-    actions: list[TypedDict]
+    actions: list[dict[str, Any]]
 
 class GetAllocationResponse(TypedDict, total=False):
     """getAllocation response."""
@@ -57,7 +59,7 @@ class GetAllocationResponse(TypedDict, total=False):
     wallet_id: str
     protocol: Literal["0fns", "SkySusds", "GauntletUsdcPrime", "SteakhouseUsdt", "GauntletUsdcPrimeBase", "SteakhouseUsdcBase", "SentoraPyusdMain"]
     provider: NotRequired[Literal["M0", "Yield.xyz"]]
-    amount: TypedDict
-    rewards: TypedDict
+    amount: dict[str, Any]
+    rewards: dict[str, Any]
     date_created: str
-    actions: list[TypedDict]
+    actions: list[dict[str, Any]]
