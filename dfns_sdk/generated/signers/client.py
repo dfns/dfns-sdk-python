@@ -12,6 +12,23 @@ class SignersClient:
     def __init__(self, http_client: HttpClient):
         self._http = http_client
 
+    def create_add_mac_user_input(self, store_id: str, body: T.CreateAddMacUserInputRequest) -> None:
+        """
+        Create Add Mac User Input.
+
+        Args:
+        store_id: Path parameter.
+        body: Request body.
+        """
+        return self._http.request(
+            method="POST",
+            path="/key-stores/{storeId}/add-mac-user/input",
+            path_params={"storeId": store_id},
+            query_params=None,
+            body=body,
+            requires_signature=True,
+        )
+
     def create_clone_input(self, store_id: str, body: T.CreateCloneInputRequest) -> None:
         """
         Create Clone Input.
@@ -112,13 +129,36 @@ class SignersClient:
             requires_signature=False,
         )
 
-    def submit_clone_output(self, store_id: str, body: T.SubmitCloneOutputRequest) -> T.SubmitCloneOutputResponse:
+    def submit_add_mac_user_output(self, store_id: str, body: T.SubmitAddMacUserOutputRequest, file: bytes) -> T.SubmitAddMacUserOutputResponse:
+        """
+        Submit Add Mac User Output.
+
+        Args:
+        store_id: Path parameter.
+        body: Request body.
+        file: The file bytes to upload.
+
+        Returns:
+            T.SubmitAddMacUserOutputResponse: The API response.
+        """
+        return self._http.request(
+            method="POST",
+            path="/key-stores/{storeId}/add-mac-user/output",
+            path_params={"storeId": store_id},
+            query_params=None,
+            body=body,
+            file=file,
+            requires_signature=True,
+        )
+
+    def submit_clone_output(self, store_id: str, body: T.SubmitCloneOutputRequest, file: bytes) -> T.SubmitCloneOutputResponse:
         """
         Submit Clone Output.
 
         Args:
         store_id: Path parameter.
         body: Request body.
+        file: The file bytes to upload.
 
         Returns:
             T.SubmitCloneOutputResponse: The API response.
@@ -129,16 +169,18 @@ class SignersClient:
             path_params={"storeId": store_id},
             query_params=None,
             body=body,
+            file=file,
             requires_signature=True,
         )
 
-    def submit_genesis_output(self, store_id: str, body: T.SubmitGenesisOutputRequest) -> T.SubmitGenesisOutputResponse:
+    def submit_genesis_output(self, store_id: str, body: T.SubmitGenesisOutputRequest, file: bytes) -> T.SubmitGenesisOutputResponse:
         """
         Submit Genesis Output.
 
         Args:
         store_id: Path parameter.
         body: Request body.
+        file: The file bytes to upload.
 
         Returns:
             T.SubmitGenesisOutputResponse: The API response.
@@ -149,16 +191,18 @@ class SignersClient:
             path_params={"storeId": store_id},
             query_params=None,
             body=body,
+            file=file,
             requires_signature=True,
         )
 
-    def submit_onchain_sign_output(self, store_id: str, body: T.SubmitOnchainSignOutputRequest) -> T.SubmitOnchainSignOutputResponse:
+    def submit_onchain_sign_output(self, store_id: str, body: T.SubmitOnchainSignOutputRequest, file: bytes) -> T.SubmitOnchainSignOutputResponse:
         """
         Submit Onchain Sign Output.
 
         Args:
         store_id: Path parameter.
         body: Request body.
+        file: The file bytes to upload.
 
         Returns:
             T.SubmitOnchainSignOutputResponse: The API response.
@@ -169,16 +213,18 @@ class SignersClient:
             path_params={"storeId": store_id},
             query_params=None,
             body=body,
+            file=file,
             requires_signature=True,
         )
 
-    def submit_proof_of_control_output(self, store_id: str, body: T.SubmitProofOfControlOutputRequest) -> T.SubmitProofOfControlOutputResponse:
+    def submit_proof_of_control_output(self, store_id: str, body: T.SubmitProofOfControlOutputRequest, file: bytes) -> T.SubmitProofOfControlOutputResponse:
         """
         Submit Proof Of Control Output.
 
         Args:
         store_id: Path parameter.
         body: Request body.
+        file: The file bytes to upload.
 
         Returns:
             T.SubmitProofOfControlOutputResponse: The API response.
@@ -189,5 +235,6 @@ class SignersClient:
             path_params={"storeId": store_id},
             query_params=None,
             body=body,
+            file=file,
             requires_signature=True,
         )
