@@ -1,11 +1,13 @@
 """Types for the policies domain."""
 
-from typing import Any, Literal, NotRequired, Optional, TypedDict, Union
+from typing import Any, Literal, TypedDict, cast
+from typing_extensions import NotRequired, deprecated
+
 
 class GetPolicyResponse(TypedDict, total=False):
     """getPolicy response."""
 
-    pending_change_request: NotRequired[TypedDict]
+    pending_change_request: NotRequired[dict[str, Any]]
 
 class CreateApprovalDecisionRequest(TypedDict, total=False):
     """createApprovalDecision request body."""
@@ -18,19 +20,19 @@ class CreateApprovalDecisionResponse(TypedDict, total=False):
 
     id: str
     initiator_id: str
-    activity: TypedDict
+    activity: dict[str, Any]
     status: Literal["Pending", "Approved", "Denied", "Expired"]
     expiration_date: NotRequired[str]
     date_created: NotRequired[str]
     date_updated: str
     date_resolved: NotRequired[str]
-    policy_evaluations: list[TypedDict]
-    decisions: list[TypedDict]
+    policy_evaluations: list[dict[str, Any]]
+    decisions: list[dict[str, Any]]
 
 class ListPoliciesResponse(TypedDict, total=False):
     """listPolicies response."""
 
-    items: list[TypedDict]
+    items: list[dict[str, Any]]
     next_page_token: NotRequired[str]
 
 class ListPoliciesQuery(TypedDict, total=False):
@@ -45,19 +47,19 @@ class GetApprovalResponse(TypedDict, total=False):
 
     id: str
     initiator_id: str
-    activity: TypedDict
+    activity: dict[str, Any]
     status: Literal["Pending", "Approved", "Denied", "Expired"]
     expiration_date: NotRequired[str]
     date_created: NotRequired[str]
     date_updated: str
     date_resolved: NotRequired[str]
-    policy_evaluations: list[TypedDict]
-    decisions: list[TypedDict]
+    policy_evaluations: list[dict[str, Any]]
+    decisions: list[dict[str, Any]]
 
 class ListApprovalsResponse(TypedDict, total=False):
     """listApprovals response."""
 
-    items: list[TypedDict]
+    items: list[dict[str, Any]]
     next_page_token: NotRequired[str]
 
 class ListApprovalsQuery(TypedDict, total=False):

@@ -1,11 +1,13 @@
 """Types for the fee_sponsors domain."""
 
-from typing import Any, Literal, NotRequired, Optional, TypedDict, Union
+from typing import Any, Literal, TypedDict, cast
+from typing_extensions import NotRequired, deprecated
+
 
 class ListFeeSponsorsResponse(TypedDict, total=False):
     """listFeeSponsors response."""
 
-    items: list[TypedDict]
+    items: list[dict[str, Any]]
     next_page_token: NotRequired[str]
 
 class ListFeeSponsorsQuery(TypedDict, total=False):
@@ -27,7 +29,7 @@ class CreateFeeSponsorResponse(TypedDict, total=False):
     id: str
     name: NotRequired[str]
     wallet_id: str
-    network: TypedDict
+    network: dict[str, Any]
     status: Literal["Active", "Deactivated", "Archived"]
     date_created: str
     allow_end_user: NotRequired[bool]
@@ -38,7 +40,7 @@ class GetFeeSponsorResponse(TypedDict, total=False):
     id: str
     name: NotRequired[str]
     wallet_id: str
-    network: TypedDict
+    network: dict[str, Any]
     status: Literal["Active", "Deactivated", "Archived"]
     date_created: str
     allow_end_user: NotRequired[bool]
@@ -49,7 +51,7 @@ class DeleteFeeSponsorResponse(TypedDict, total=False):
     id: str
     name: NotRequired[str]
     wallet_id: str
-    network: TypedDict
+    network: dict[str, Any]
     status: Literal["Active", "Deactivated", "Archived"]
     date_created: str
     allow_end_user: NotRequired[bool]
@@ -60,7 +62,7 @@ class DeactivateFeeSponsorResponse(TypedDict, total=False):
     id: str
     name: NotRequired[str]
     wallet_id: str
-    network: TypedDict
+    network: dict[str, Any]
     status: Literal["Active", "Deactivated", "Archived"]
     date_created: str
     allow_end_user: NotRequired[bool]
@@ -71,7 +73,7 @@ class ActivateFeeSponsorResponse(TypedDict, total=False):
     id: str
     name: NotRequired[str]
     wallet_id: str
-    network: TypedDict
+    network: dict[str, Any]
     status: Literal["Active", "Deactivated", "Archived"]
     date_created: str
     allow_end_user: NotRequired[bool]
@@ -79,7 +81,7 @@ class ActivateFeeSponsorResponse(TypedDict, total=False):
 class ListSponsoredFeesResponse(TypedDict, total=False):
     """listSponsoredFees response."""
 
-    items: list[TypedDict]
+    items: list[dict[str, Any]]
     next_page_token: NotRequired[str]
 
 class ListSponsoredFeesQuery(TypedDict, total=False):

@@ -1,14 +1,10 @@
 """Delegated client for the webhooks domain."""
 
 import json
-from typing import Any, Literal, Optional, TypedDict, Union
-
+from typing import Any, Literal, TypedDict, cast
+from typing_extensions import NotRequired, deprecated
 from ..._internal import HttpClient
-from ...base_auth_api import (
-    BaseAuthApi,
-    SignUserActionChallengeRequest,
-    UserActionChallengeResponse,
-)
+from ...base_auth_api import BaseAuthApi, SignUserActionChallengeRequest, UserActionChallengeResponse
 from . import types as T
 
 
@@ -23,19 +19,19 @@ class DelegatedWebhooksClient:
     def __init__(self, http_client: HttpClient):
         self._http = http_client
 
-    def list_webhooks(self, query: Optional[T.ListWebhooksQuery] = None) -> T.ListWebhooksResponse:
+    def list_webhooks(self, query: T.ListWebhooksQuery | None = None) -> T.ListWebhooksResponse:
         """
         List Webhooks.
 
         List all webhooks for the authenticated user's organization. The results are paginated.
 
         Args:
-        query: Query parameters.
+            query: Query parameters.
 
         Returns:
             T.ListWebhooksResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/webhooks",
             path_params={},
@@ -43,6 +39,7 @@ class DelegatedWebhooksClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListWebhooksResponse, response)
 
     def create_webhook_init(self, body: T.CreateWebhookRequest) -> UserActionChallengeResponse:
         """
@@ -51,11 +48,11 @@ class DelegatedWebhooksClient:
         Creates a user action challenge for external signing.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/webhooks"
         payload = json.dumps(body, separators=(",", ":")) if body else ""
 
@@ -73,18 +70,18 @@ class DelegatedWebhooksClient:
         Submits the signed challenge and makes the API request.
 
         Args:
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.CreateWebhookResponse: The API response.
-        """
+        """  # noqa: E501
         user_action_result = BaseAuthApi.sign_user_action_challenge(
             self._http, signed_challenge
         )
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="POST",
             path="/webhooks",
             path_params={},
@@ -92,6 +89,7 @@ class DelegatedWebhooksClient:
             body=body,
             user_action=user_action_token,
         )
+        return cast(T.CreateWebhookResponse, response)
 
     def get_webhook(self, webhook_id: str) -> T.GetWebhookResponse:
         """
@@ -100,12 +98,12 @@ class DelegatedWebhooksClient:
         Retrieve information about a specific webhook.
 
         Args:
-        webhook_id: Path parameter.
+            webhook_id: Path parameter.
 
         Returns:
             T.GetWebhookResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/webhooks/{webhookId}",
             path_params={"webhookId": webhook_id},
@@ -113,6 +111,7 @@ class DelegatedWebhooksClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetWebhookResponse, response)
 
     def update_webhook_init(self, webhook_id: str, body: T.UpdateWebhookRequest) -> UserActionChallengeResponse:
         """
@@ -121,12 +120,12 @@ class DelegatedWebhooksClient:
         Creates a user action challenge for external signing.
 
         Args:
-        webhook_id: Path parameter.
-        body: Request body.
+            webhook_id: Path parameter.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/webhooks/{webhookId}"
         path = path.replace("{webhookId}", str(webhook_id))
         payload = json.dumps(body, separators=(",", ":")) if body else ""
@@ -145,19 +144,19 @@ class DelegatedWebhooksClient:
         Submits the signed challenge and makes the API request.
 
         Args:
-        webhook_id: Path parameter.
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            webhook_id: Path parameter.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.UpdateWebhookResponse: The API response.
-        """
+        """  # noqa: E501
         user_action_result = BaseAuthApi.sign_user_action_challenge(
             self._http, signed_challenge
         )
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="PUT",
             path="/webhooks/{webhookId}",
             path_params={"webhookId": webhook_id},
@@ -165,6 +164,7 @@ class DelegatedWebhooksClient:
             body=body,
             user_action=user_action_token,
         )
+        return cast(T.UpdateWebhookResponse, response)
 
     def delete_webhook_init(self, webhook_id: str) -> UserActionChallengeResponse:
         """
@@ -173,11 +173,11 @@ class DelegatedWebhooksClient:
         Creates a user action challenge for external signing.
 
         Args:
-        webhook_id: Path parameter.
+            webhook_id: Path parameter.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/webhooks/{webhookId}"
         path = path.replace("{webhookId}", str(webhook_id))
         payload = ""
@@ -196,18 +196,18 @@ class DelegatedWebhooksClient:
         Submits the signed challenge and makes the API request.
 
         Args:
-        webhook_id: Path parameter.
-        signed_challenge: The signed challenge from external signing.
+            webhook_id: Path parameter.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.DeleteWebhookResponse: The API response.
-        """
+        """  # noqa: E501
         user_action_result = BaseAuthApi.sign_user_action_challenge(
             self._http, signed_challenge
         )
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="DELETE",
             path="/webhooks/{webhookId}",
             path_params={"webhookId": webhook_id},
@@ -215,6 +215,7 @@ class DelegatedWebhooksClient:
             body=None,
             user_action=user_action_token,
         )
+        return cast(T.DeleteWebhookResponse, response)
 
     def ping_webhook_init(self, webhook_id: str) -> UserActionChallengeResponse:
         """
@@ -223,11 +224,11 @@ class DelegatedWebhooksClient:
         Creates a user action challenge for external signing.
 
         Args:
-        webhook_id: Path parameter.
+            webhook_id: Path parameter.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/webhooks/{webhookId}/ping"
         path = path.replace("{webhookId}", str(webhook_id))
         payload = ""
@@ -246,18 +247,18 @@ class DelegatedWebhooksClient:
         Submits the signed challenge and makes the API request.
 
         Args:
-        webhook_id: Path parameter.
-        signed_challenge: The signed challenge from external signing.
+            webhook_id: Path parameter.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.PingWebhookResponse: The API response.
-        """
+        """  # noqa: E501
         user_action_result = BaseAuthApi.sign_user_action_challenge(
             self._http, signed_challenge
         )
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="POST",
             path="/webhooks/{webhookId}/ping",
             path_params={"webhookId": webhook_id},
@@ -265,6 +266,7 @@ class DelegatedWebhooksClient:
             body=None,
             user_action=user_action_token,
         )
+        return cast(T.PingWebhookResponse, response)
 
     def get_webhook_event(self, webhook_id: str, webhook_event_id: str) -> T.GetWebhookEventResponse:
         """
@@ -277,13 +279,13 @@ We only keep a trace of those Webhook Events in our system for a **retention per
 </Warning>
 
         Args:
-        webhook_id: Path parameter.
-        webhook_event_id: Path parameter.
+            webhook_id: Path parameter.
+            webhook_event_id: Path parameter.
 
         Returns:
             T.GetWebhookEventResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/webhooks/{webhookId}/events/{webhookEventId}",
             path_params={"webhookId": webhook_id, "webhookEventId": webhook_event_id},
@@ -291,8 +293,9 @@ We only keep a trace of those Webhook Events in our system for a **retention per
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetWebhookEventResponse, response)
 
-    def list_webhook_events(self, webhook_id: str, query: Optional[T.ListWebhookEventsQuery] = None) -> T.ListWebhookEventsResponse:
+    def list_webhook_events(self, webhook_id: str, query: T.ListWebhookEventsQuery | None = None) -> T.ListWebhookEventsResponse:
         """
         List Webhook Events.
 
@@ -304,13 +307,13 @@ We only keep a trace of those Webhook Events in our system for a **retention per
 </Warning>
 
         Args:
-        webhook_id: Path parameter.
-        query: Query parameters.
+            webhook_id: Path parameter.
+            query: Query parameters.
 
         Returns:
             T.ListWebhookEventsResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/webhooks/{webhookId}/events",
             path_params={"webhookId": webhook_id},
@@ -318,3 +321,4 @@ We only keep a trace of those Webhook Events in our system for a **retention per
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListWebhookEventsResponse, response)

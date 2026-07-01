@@ -1,7 +1,7 @@
 """Client for the wallets domain."""
 
-from typing import Any, Literal, Optional, TypedDict, Union
-
+from typing import Any, Literal, TypedDict, cast
+from typing_extensions import NotRequired, deprecated
 from ..._internal import HttpClient
 from . import types as T
 
@@ -23,13 +23,13 @@ class WalletsClient:
   Unlike cancel, which creates a replacement on-chain transaction, abort simply marks the transaction as failed without any blockchain interaction.
 
         Args:
-        wallet_id: Wallet id.
-        transaction_id: Transaction id.
+            wallet_id: Wallet id.
+            transaction_id: Transaction id.
 
         Returns:
             T.AbortTransactionResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/wallets/{walletId}/transactions/{transactionId}/abort",
             path_params={"walletId": wallet_id, "transactionId": transaction_id},
@@ -37,6 +37,7 @@ class WalletsClient:
             body=None,
             requires_signature=True,
         )
+        return cast(T.AbortTransactionResponse, response)
 
     def abort_transfer(self, wallet_id: str, transfer_id: str) -> T.AbortTransferResponse:
         """
@@ -49,13 +50,13 @@ class WalletsClient:
   Unlike cancel, which creates a replacement on-chain transaction, abort simply marks the transfer as failed without any blockchain interaction.
 
         Args:
-        wallet_id: Wallet id.
-        transfer_id: Transfer id.
+            wallet_id: Wallet id.
+            transfer_id: Transfer id.
 
         Returns:
             T.AbortTransferResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/wallets/{walletId}/transfers/{transferId}/abort",
             path_params={"walletId": wallet_id, "transferId": transfer_id},
@@ -63,6 +64,7 @@ class WalletsClient:
             body=None,
             requires_signature=True,
         )
+        return cast(T.AbortTransferResponse, response)
 
     def activate_wallet(self, wallet_id: str, body: dict[str, Any]) -> T.ActivateWalletResponse:
         """
@@ -78,13 +80,13 @@ class WalletsClient:
     - **Canton**: Registers the wallet on a validator. You must specify the `validatorId` to activate the wallet. Before activation, the wallet cannot be used and its address will not have a prefix.
 
         Args:
-        wallet_id: Wallet id.
-        body: Request body.
+            wallet_id: Wallet id.
+            body: Request body.
 
         Returns:
             T.ActivateWalletResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/wallets/{walletId}/activate",
             path_params={"walletId": wallet_id},
@@ -92,21 +94,22 @@ class WalletsClient:
             body=body,
             requires_signature=True,
         )
+        return cast(T.ActivateWalletResponse, response)
 
-    def list_transactions(self, wallet_id: str, query: Optional[T.ListTransactionsQuery] = None) -> T.ListTransactionsResponse:
+    def list_transactions(self, wallet_id: str, query: T.ListTransactionsQuery | None = None) -> T.ListTransactionsResponse:
         """
         List Transactions.
 
         Retrieves a list of transactions requests for the specified wallet.
 
         Args:
-        wallet_id: Wallet id.
-        query: Query parameters.
+            wallet_id: Wallet id.
+            query: Query parameters.
 
         Returns:
             T.ListTransactionsResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/wallets/{walletId}/transactions",
             path_params={"walletId": wallet_id},
@@ -114,6 +117,7 @@ class WalletsClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListTransactionsResponse, response)
 
     def sign_and_broadcast_transaction(self, wallet_id: str, body: dict[str, Any]) -> T.SignAndBroadcastTransactionResponse:
         """
@@ -136,13 +140,13 @@ class WalletsClient:
   </Info>
 
         Args:
-        wallet_id: Wallet id.
-        body: Request body.
+            wallet_id: Wallet id.
+            body: Request body.
 
         Returns:
             T.SignAndBroadcastTransactionResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/wallets/{walletId}/transactions",
             path_params={"walletId": wallet_id},
@@ -150,6 +154,7 @@ class WalletsClient:
             body=body,
             requires_signature=True,
         )
+        return cast(T.SignAndBroadcastTransactionResponse, response)
 
     def cancel_transaction(self, wallet_id: str, transaction_id: str) -> T.CancelTransactionResponse:
         """
@@ -172,13 +177,13 @@ class WalletsClient:
   Note: For transactions that were broadcasted on-chain, success is not guaranteed as it depends on network conditions and whether the original transaction has already been mined.
 
         Args:
-        wallet_id: Wallet id.
-        transaction_id: Transaction id.
+            wallet_id: Wallet id.
+            transaction_id: Transaction id.
 
         Returns:
             T.CancelTransactionResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/wallets/{walletId}/transactions/{transactionId}/cancel",
             path_params={"walletId": wallet_id, "transactionId": transaction_id},
@@ -186,6 +191,7 @@ class WalletsClient:
             body=None,
             requires_signature=True,
         )
+        return cast(T.CancelTransactionResponse, response)
 
     def cancel_transfer(self, wallet_id: str, transfer_id: str) -> T.CancelTransferResponse:
         """
@@ -208,13 +214,13 @@ class WalletsClient:
   Note: For transfers that were broadcasted on-chain, success is not guaranteed as it depends on network conditions and whether the original transaction has already been mined.
 
         Args:
-        wallet_id: Wallet id.
-        transfer_id: Transfer id.
+            wallet_id: Wallet id.
+            transfer_id: Transfer id.
 
         Returns:
             T.CancelTransferResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/wallets/{walletId}/transfers/{transferId}/cancel",
             path_params={"walletId": wallet_id, "transferId": transfer_id},
@@ -222,6 +228,7 @@ class WalletsClient:
             body=None,
             requires_signature=True,
         )
+        return cast(T.CancelTransferResponse, response)
 
     def proxy_a_request_to_the_canton_ledger_api(self, wallet_id: str, body: T.ProxyARequestToTheCantonLedgerApiRequest) -> dict[str, Any]:
         """
@@ -230,13 +237,13 @@ class WalletsClient:
         Proxies a request to the Canton Ledger API associated with this wallet, using the validator's OAuth2 credentials. Restricted to a curated allow-list of read-style resources. Used to satisfy the Canton WalletConnect `canton_ledgerApi` method.
 
         Args:
-        wallet_id: Wallet id.
-        body: Request body.
+            wallet_id: Wallet id.
+            body: Request body.
 
         Returns:
             dict[str, Any]: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/wallets/{walletId}/canton/ledger-api",
             path_params={"walletId": wallet_id},
@@ -244,6 +251,7 @@ class WalletsClient:
             body=body,
             requires_signature=False,
         )
+        return cast(dict[str, Any], response)
 
     def speed_up_transaction(self, wallet_id: str, transaction_id: str) -> T.SpeedUpTransactionResponse:
         """
@@ -264,13 +272,13 @@ class WalletsClient:
   Note: Success is not guaranteed as it depends on network conditions and whether the original transaction has already been mined.
 
         Args:
-        wallet_id: Wallet id.
-        transaction_id: Transaction id.
+            wallet_id: Wallet id.
+            transaction_id: Transaction id.
 
         Returns:
             T.SpeedUpTransactionResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/wallets/{walletId}/transactions/{transactionId}/speed-up",
             path_params={"walletId": wallet_id, "transactionId": transaction_id},
@@ -278,6 +286,7 @@ class WalletsClient:
             body=None,
             requires_signature=True,
         )
+        return cast(T.SpeedUpTransactionResponse, response)
 
     def speed_up_transfer(self, wallet_id: str, transfer_id: str) -> T.SpeedUpTransferResponse:
         """
@@ -298,13 +307,13 @@ class WalletsClient:
   Note: Success is not guaranteed as it depends on network conditions and whether the original transaction has already been mined.
 
         Args:
-        wallet_id: Wallet id.
-        transfer_id: Transfer id.
+            wallet_id: Wallet id.
+            transfer_id: Transfer id.
 
         Returns:
             T.SpeedUpTransferResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/wallets/{walletId}/transfers/{transferId}/speed-up",
             path_params={"walletId": wallet_id, "transferId": transfer_id},
@@ -312,20 +321,21 @@ class WalletsClient:
             body=None,
             requires_signature=True,
         )
+        return cast(T.SpeedUpTransferResponse, response)
 
-    def list_wallets(self, query: Optional[T.ListWalletsQuery] = None) -> T.ListWalletsResponse:
+    def list_wallets(self, query: T.ListWalletsQuery | None = None) -> T.ListWalletsResponse:
         """
         List Wallets.
 
         Retrieves the list of Wallets in your organization. You can filter the results by owner (either by owner id or owner username). Pagination is supported via limit and paginationToken parameters.
 
         Args:
-        query: Query parameters.
+            query: Query parameters.
 
         Returns:
             T.ListWalletsResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/wallets",
             path_params={},
@@ -333,6 +343,7 @@ class WalletsClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListWalletsResponse, response)
 
     def create_wallet(self, body: T.CreateWalletRequest) -> T.CreateWalletResponse:
         """
@@ -341,12 +352,12 @@ class WalletsClient:
         Creates a new Wallet associated with the given chain (such as Bitcoin or Ethereum ). Returns a new wallet entity.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CreateWalletResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/wallets",
             path_params={},
@@ -354,6 +365,7 @@ class WalletsClient:
             body=body,
             requires_signature=True,
         )
+        return cast(T.CreateWalletResponse, response)
 
     def get_transaction(self, wallet_id: str, transaction_id: str) -> T.GetTransactionResponse:
         """
@@ -362,13 +374,13 @@ class WalletsClient:
         Retrieve information about a specific transaction.
 
         Args:
-        wallet_id: Wallet id.
-        transaction_id: Transaction id.
+            wallet_id: Wallet id.
+            transaction_id: Transaction id.
 
         Returns:
             T.GetTransactionResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/wallets/{walletId}/transactions/{transactionId}",
             path_params={"walletId": wallet_id, "transactionId": transaction_id},
@@ -376,6 +388,7 @@ class WalletsClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetTransactionResponse, response)
 
     def get_transfer(self, wallet_id: str, transfer_id: str) -> T.GetTransferResponse:
         """
@@ -384,13 +397,13 @@ class WalletsClient:
         Retrieves a Wallet Transfer Request by its ID.
 
         Args:
-        wallet_id: Wallet id.
-        transfer_id: Transfer id.
+            wallet_id: Wallet id.
+            transfer_id: Transfer id.
 
         Returns:
             T.GetTransferResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/wallets/{walletId}/transfers/{transferId}",
             path_params={"walletId": wallet_id, "transferId": transfer_id},
@@ -398,6 +411,7 @@ class WalletsClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetTransferResponse, response)
 
     def get_wallet(self, wallet_id: str) -> T.GetWalletResponse:
         """
@@ -406,12 +420,12 @@ class WalletsClient:
         Retrieves a Wallet information by its ID.
 
         Args:
-        wallet_id: The wallet to retrieve.
+            wallet_id: The wallet to retrieve.
 
         Returns:
             T.GetWalletResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/wallets/{walletId}",
             path_params={"walletId": wallet_id},
@@ -419,6 +433,7 @@ class WalletsClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetWalletResponse, response)
 
     def update_wallet(self, wallet_id: str, body: T.UpdateWalletRequest) -> T.UpdateWalletResponse:
         """
@@ -427,13 +442,13 @@ class WalletsClient:
         Updates the name of an existing wallet.
 
         Args:
-        wallet_id: Path parameter.
-        body: Request body.
+            wallet_id: Path parameter.
+            body: Request body.
 
         Returns:
             T.UpdateWalletResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/wallets/{walletId}",
             path_params={"walletId": wallet_id},
@@ -441,21 +456,22 @@ class WalletsClient:
             body=body,
             requires_signature=True,
         )
+        return cast(T.UpdateWalletResponse, response)
 
-    def get_wallet_assets(self, wallet_id: str, query: Optional[T.GetWalletAssetsQuery] = None) -> T.GetWalletAssetsResponse:
+    def get_wallet_assets(self, wallet_id: str, query: T.GetWalletAssetsQuery | None = None) -> T.GetWalletAssetsResponse:
         """
         Get Wallet Assets.
 
         Retrieves a list of assets owned by the specified wallet.  Return values vary by chain as shown below.
 
         Args:
-        wallet_id: Path parameter.
-        query: Query parameters.
+            wallet_id: Path parameter.
+            query: Query parameters.
 
         Returns:
             T.GetWalletAssetsResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/wallets/{walletId}/assets",
             path_params={"walletId": wallet_id},
@@ -463,8 +479,9 @@ class WalletsClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetWalletAssetsResponse, response)
 
-    def get_wallet_history(self, wallet_id: str, query: Optional[T.GetWalletHistoryQuery] = None) -> T.GetWalletHistoryResponse:
+    def get_wallet_history(self, wallet_id: str, query: T.GetWalletHistoryQuery | None = None) -> T.GetWalletHistoryResponse:
         """
         Get Wallet History.
 
@@ -478,13 +495,13 @@ If you need to list your on-going or failed transactions please use the related 
 depending on the API you are using).
 
         Args:
-        wallet_id: Wallet you want to get the history from.
-        query: Query parameters.
+            wallet_id: Wallet you want to get the history from.
+            query: Query parameters.
 
         Returns:
             T.GetWalletHistoryResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/wallets/{walletId}/history",
             path_params={"walletId": wallet_id},
@@ -492,6 +509,7 @@ depending on the API you are using).
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetWalletHistoryResponse, response)
 
     def get_wallet_nfts(self, wallet_id: str) -> T.GetWalletNftsResponse:
         """
@@ -500,12 +518,12 @@ depending on the API you are using).
         Retrieves a list of NFTs owned by the specified Wallet.
 
         Args:
-        wallet_id: Path parameter.
+            wallet_id: Path parameter.
 
         Returns:
             T.GetWalletNftsResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/wallets/{walletId}/nfts",
             path_params={"walletId": wallet_id},
@@ -513,6 +531,7 @@ depending on the API you are using).
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetWalletNftsResponse, response)
 
     def import_wallet(self, body: T.ImportWalletRequest) -> T.ImportWalletResponse:
         """
@@ -533,12 +552,12 @@ Dfns can not guarantee the security of imported wallets, as we have no way to co
 </Danger>
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.ImportWalletResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/wallets/import",
             path_params={},
@@ -546,21 +565,22 @@ Dfns can not guarantee the security of imported wallets, as we have no way to co
             body=body,
             requires_signature=True,
         )
+        return cast(T.ImportWalletResponse, response)
 
-    def list_transfers(self, wallet_id: str, query: Optional[T.ListTransfersQuery] = None) -> T.ListTransfersResponse:
+    def list_transfers(self, wallet_id: str, query: T.ListTransfersQuery | None = None) -> T.ListTransfersResponse:
         """
         List Transfers.
 
         Retrieves a list of transfer requests for the specified wallet.
 
         Args:
-        wallet_id: Wallet id.
-        query: Query parameters.
+            wallet_id: Wallet id.
+            query: Query parameters.
 
         Returns:
             T.ListTransfersResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/wallets/{walletId}/transfers",
             path_params={"walletId": wallet_id},
@@ -568,6 +588,7 @@ Dfns can not guarantee the security of imported wallets, as we have no way to co
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListTransfersResponse, response)
 
     def transfer_asset(self, wallet_id: str, body: dict[str, Any]) -> T.TransferAssetResponse:
         """
@@ -588,13 +609,13 @@ Some blockchains may require additional steps before the transfer can be complet
 </Note>
 
         Args:
-        wallet_id: The source wallet id (`wa-...`).
-        body: Request body.
+            wallet_id: The source wallet id (`wa-...`).
+            body: Request body.
 
         Returns:
             T.TransferAssetResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/wallets/{walletId}/transfers",
             path_params={"walletId": wallet_id},
@@ -602,6 +623,7 @@ Some blockchains may require additional steps before the transfer can be complet
             body=body,
             requires_signature=True,
         )
+        return cast(T.TransferAssetResponse, response)
 
     def tag_wallet(self, wallet_id: str, body: T.TagWalletRequest) -> T.TagWalletResponse:
         """
@@ -610,13 +632,13 @@ Some blockchains may require additional steps before the transfer can be complet
         Add a [Tag](https://docs.dfns.co/api-reference/wallets/tags) to a wallet.
 
         Args:
-        wallet_id: Path parameter.
-        body: Request body.
+            wallet_id: Path parameter.
+            body: Request body.
 
         Returns:
             T.TagWalletResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/wallets/{walletId}/tags",
             path_params={"walletId": wallet_id},
@@ -624,6 +646,7 @@ Some blockchains may require additional steps before the transfer can be complet
             body=body,
             requires_signature=True,
         )
+        return cast(T.TagWalletResponse, response)
 
     def untag_wallet(self, wallet_id: str, body: T.UntagWalletRequest) -> T.UntagWalletResponse:
         """
@@ -632,13 +655,13 @@ Some blockchains may require additional steps before the transfer can be complet
         Removes the specified tags from a wallet.
 
         Args:
-        wallet_id: Path parameter.
-        body: Request body.
+            wallet_id: Path parameter.
+            body: Request body.
 
         Returns:
             T.UntagWalletResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="DELETE",
             path="/wallets/{walletId}/tags",
             path_params={"walletId": wallet_id},
@@ -646,6 +669,7 @@ Some blockchains may require additional steps before the transfer can be complet
             body=body,
             requires_signature=True,
         )
+        return cast(T.UntagWalletResponse, response)
 
     def get_offer(self, wallet_id: str, offer_id: str) -> T.GetOfferResponse:
         """
@@ -654,13 +678,13 @@ Some blockchains may require additional steps before the transfer can be complet
         Retrieve information about a specific offer received on your wallet.
 
         Args:
-        wallet_id: Wallet id.
-        offer_id: Offer id.
+            wallet_id: Wallet id.
+            offer_id: Offer id.
 
         Returns:
             T.GetOfferResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/wallets/{walletId}/offers/{offerId}",
             path_params={"walletId": wallet_id, "offerId": offer_id},
@@ -668,21 +692,22 @@ Some blockchains may require additional steps before the transfer can be complet
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetOfferResponse, response)
 
-    def list_offers(self, wallet_id: str, query: Optional[T.ListOffersQuery] = None) -> T.ListOffersResponse:
+    def list_offers(self, wallet_id: str, query: T.ListOffersQuery | None = None) -> T.ListOffersResponse:
         """
         List Offers.
 
         List all offers received on a specific wallet.
 
         Args:
-        wallet_id: Wallet id.
-        query: Query parameters.
+            wallet_id: Wallet id.
+            query: Query parameters.
 
         Returns:
             T.ListOffersResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/wallets/{walletId}/offers",
             path_params={"walletId": wallet_id},
@@ -690,6 +715,7 @@ Some blockchains may require additional steps before the transfer can be complet
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListOffersResponse, response)
 
     def accept_offer(self, wallet_id: str, offer_id: str) -> T.AcceptOfferResponse:
         """
@@ -698,13 +724,13 @@ Some blockchains may require additional steps before the transfer can be complet
         Accept an offer received on your wallet.
 
         Args:
-        wallet_id: Wallet id.
-        offer_id: Offer id.
+            wallet_id: Wallet id.
+            offer_id: Offer id.
 
         Returns:
             T.AcceptOfferResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/wallets/{walletId}/offers/{offerId}/accept",
             path_params={"walletId": wallet_id, "offerId": offer_id},
@@ -712,6 +738,7 @@ Some blockchains may require additional steps before the transfer can be complet
             body=None,
             requires_signature=True,
         )
+        return cast(T.AcceptOfferResponse, response)
 
     def reject_offer(self, wallet_id: str, offer_id: str) -> T.RejectOfferResponse:
         """
@@ -720,13 +747,13 @@ Some blockchains may require additional steps before the transfer can be complet
         Reject an offer received on your wallet.
 
         Args:
-        wallet_id: Wallet id.
-        offer_id: Offer id.
+            wallet_id: Wallet id.
+            offer_id: Offer id.
 
         Returns:
             T.RejectOfferResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/wallets/{walletId}/offers/{offerId}/reject",
             path_params={"walletId": wallet_id, "offerId": offer_id},
@@ -734,20 +761,21 @@ Some blockchains may require additional steps before the transfer can be complet
             body=None,
             requires_signature=True,
         )
+        return cast(T.RejectOfferResponse, response)
 
-    def list_org_wallet_history(self, query: T.ListOrgWalletHistoryQuery) -> Union[TypedDict, str]:
+    def list_org_wallet_history(self, query: T.ListOrgWalletHistoryQuery) -> dict[str, Any] | str:
         """
         List Org Wallet History.
 
         Retrieve the transaction history across all wallets within a specified timeframe. The time range is unbounded, but the CSV export is capped at 100,000 rows.
 
         Args:
-        query: Query parameters.
+            query: Query parameters.
 
         Returns:
-            Union[TypedDict, str]: The API response.
-        """
-        return self._http.request(
+            dict[str, Any] | str: The API response.
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/wallets/all/history",
             path_params={},
@@ -755,3 +783,4 @@ Some blockchains may require additional steps before the transfer can be complet
             body=None,
             requires_signature=False,
         )
+        return cast(dict[str, Any] | str, response)

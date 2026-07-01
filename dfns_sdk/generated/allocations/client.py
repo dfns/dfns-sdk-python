@@ -1,7 +1,7 @@
 """Client for the allocations domain."""
 
-from typing import Any, Literal, Optional, TypedDict, Union
-
+from typing import Any, Literal, TypedDict, cast
+from typing_extensions import NotRequired, deprecated
 from ..._internal import HttpClient
 from . import types as T
 
@@ -12,17 +12,17 @@ class AllocationsClient:
     def __init__(self, http_client: HttpClient):
         self._http = http_client
 
-    def list_allocations(self, query: Optional[T.ListAllocationsQuery] = None) -> T.ListAllocationsResponse:
+    def list_allocations(self, query: T.ListAllocationsQuery | None = None) -> T.ListAllocationsResponse:
         """
         List Allocations.
 
         Args:
-        query: Query parameters.
+            query: Query parameters.
 
         Returns:
             T.ListAllocationsResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/allocations",
             path_params={},
@@ -30,6 +30,7 @@ class AllocationsClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListAllocationsResponse, response)
 
     def create_allocation(self, body: dict[str, Any]) -> T.CreateAllocationResponse:
         """
@@ -38,12 +39,12 @@ class AllocationsClient:
         Create a new allocation.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CreateAllocationResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/allocations",
             path_params={},
@@ -51,21 +52,22 @@ class AllocationsClient:
             body=body,
             requires_signature=True,
         )
+        return cast(T.CreateAllocationResponse, response)
 
-    def list_allocation_actions(self, allocation_id: str, query: Optional[T.ListAllocationActionsQuery] = None) -> T.ListAllocationActionsResponse:
+    def list_allocation_actions(self, allocation_id: str, query: T.ListAllocationActionsQuery | None = None) -> T.ListAllocationActionsResponse:
         """
         List Allocation Actions.
 
         Retrieve the list of actions for a specific allocation.
 
         Args:
-        allocation_id: Unique identifier for the allocation investment.
-        query: Query parameters.
+            allocation_id: Unique identifier for the allocation investment.
+            query: Query parameters.
 
         Returns:
             T.ListAllocationActionsResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/allocations/{allocationId}/actions",
             path_params={"allocationId": allocation_id},
@@ -73,6 +75,7 @@ class AllocationsClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListAllocationActionsResponse, response)
 
     def create_allocation_action(self, allocation_id: str, body: dict[str, Any]) -> T.CreateAllocationActionResponse:
         """
@@ -81,13 +84,13 @@ class AllocationsClient:
         Create a new action for an existing allocation.
 
         Args:
-        allocation_id: Unique identifier for the allocation investment.
-        body: Request body.
+            allocation_id: Unique identifier for the allocation investment.
+            body: Request body.
 
         Returns:
             T.CreateAllocationActionResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/allocations/{allocationId}/actions",
             path_params={"allocationId": allocation_id},
@@ -95,6 +98,7 @@ class AllocationsClient:
             body=body,
             requires_signature=True,
         )
+        return cast(T.CreateAllocationActionResponse, response)
 
     def get_allocation(self, allocation_id: str) -> T.GetAllocationResponse:
         """
@@ -103,12 +107,12 @@ class AllocationsClient:
         Retrieve the details of a specific allocation.
 
         Args:
-        allocation_id: Unique identifier for the allocation investment.
+            allocation_id: Unique identifier for the allocation investment.
 
         Returns:
             T.GetAllocationResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/allocations/{allocationId}",
             path_params={"allocationId": allocation_id},
@@ -116,3 +120,4 @@ class AllocationsClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetAllocationResponse, response)
