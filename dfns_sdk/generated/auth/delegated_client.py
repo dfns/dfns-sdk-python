@@ -1,16 +1,12 @@
 """Delegated client for the auth domain."""
 
 import json
-from typing import Any, Literal, Optional, TypedDict, Union
-from warnings import deprecated
+from typing import Any, cast
 
+from typing_extensions import deprecated
 
 from ..._internal import HttpClient
-from ...base_auth_api import (
-    BaseAuthApi,
-    SignUserActionChallengeRequest,
-    UserActionChallengeResponse,
-)
+from ...base_auth_api import BaseAuthApi, SignUserActionChallengeRequest, UserActionChallengeResponse
 from . import types as T
 
 
@@ -25,26 +21,28 @@ class DelegatedAuthClient:
     def __init__(self, http_client: HttpClient):
         self._http = http_client
 
-    def create_user_action_signature(self, body: T.CreateUserActionSignatureRequest) -> T.CreateUserActionSignatureResponse:
+    def create_user_action_signature(
+        self, body: T.CreateUserActionSignatureRequest
+    ) -> T.CreateUserActionSignatureResponse:
         """
-        Create User Action Signature.
+                Create User Action Signature.
 
-        Completes the user action signing process and provides a signing token that can be used to verify the user intended to perform the action.
+                Completes the user action signing process and provides a signing token that can be used to verify the user intended to perform the action.
 
-This is the first step of the [User Action Signing flow](http://docs.dfns.co/api-reference/auth/signing-flows).
+        This is the first step of the [User Action Signing flow](http://docs.dfns.co/api-reference/auth/signing-flows).
 
-The type of credentials used to sign the action is determined by the `kind` field in the nested objects (`firstFactor` and `secondFactor`). Supported credential kinds are:
-* `Fido2`: User action is signed by a user's signing device using `WebAuthn`.
-* `Key`: User action is signed by a user's, or token's, private key.
-* `PasswordProtectedKey`: Login challenge is signed by the decrypted user's private key that was sent during [Create User Action Signature Challenge](https://docs.dfns.co/api-reference/auth/create-user-action-challenge) step.
+        The type of credentials used to sign the action is determined by the `kind` field in the nested objects (`firstFactor` and `secondFactor`). Supported credential kinds are:
+        * `Fido2`: User action is signed by a user's signing device using `WebAuthn`.
+        * `Key`: User action is signed by a user's, or token's, private key.
+        * `PasswordProtectedKey`: Login challenge is signed by the decrypted user's private key that was sent during [Create User Action Signature Challenge](https://docs.dfns.co/api-reference/auth/create-user-action-challenge) step.
 
-        Args:
-        body: Request body.
+                Args:
+                    body: Request body.
 
-        Returns:
-            T.CreateUserActionSignatureResponse: The API response.
-        """
-        return self._http.request(
+                Returns:
+                    T.CreateUserActionSignatureResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/action",
             path_params={},
@@ -52,22 +50,25 @@ The type of credentials used to sign the action is determined by the `kind` fiel
             body=body,
             requires_signature=False,
         )
+        return cast(T.CreateUserActionSignatureResponse, response)
 
-    def create_user_action_challenge(self, body: T.CreateUserActionChallengeRequest) -> T.CreateUserActionChallengeResponse:
+    def create_user_action_challenge(
+        self, body: T.CreateUserActionChallengeRequest
+    ) -> T.CreateUserActionChallengeResponse:
         """
-        Create User Action Challenge.
+              Create User Action Challenge.
 
-        Starts a user action signing session, returning a challenge that will be used to verify the user's intent to perform an action.
-  
-  This is the first step of the [User Action Signing flow](http://docs.dfns.co/api-reference/auth/signing-flows).
+              Starts a user action signing session, returning a challenge that will be used to verify the user's intent to perform an action.
 
-        Args:
-        body: Request body.
+        This is the first step of the [User Action Signing flow](http://docs.dfns.co/api-reference/auth/signing-flows).
 
-        Returns:
-            T.CreateUserActionChallengeResponse: The API response.
-        """
-        return self._http.request(
+              Args:
+                  body: Request body.
+
+              Returns:
+                  T.CreateUserActionChallengeResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/action/init",
             path_params={},
@@ -75,26 +76,27 @@ The type of credentials used to sign the action is determined by the `kind` fiel
             body=body,
             requires_signature=False,
         )
+        return cast(T.CreateUserActionChallengeResponse, response)
 
     def list_audit_logs(self, query: T.ListAuditLogsQuery) -> None:
         """
-        List Audit Logs.
+                List Audit Logs.
 
-        Gets all signature events which have occurred in the over the timeframe. The time range is unbounded, but the export is capped at 100,000 rows. When the result is truncated, the `X-Dfns-Result-Truncated: true` response header is set and a trailing `# TRUNCATED ...` line is appended to the CSV; narrow the time range to retrieve all data.
+                Gets all signature events which have occurred in the over the timeframe. The time range is unbounded, but the export is capped at 100,000 rows. When the result is truncated, the `X-Dfns-Result-Truncated: true` response header is set and a trailing `# TRUNCATED ...` line is appended to the CSV; narrow the time range to retrieve all data.
 
-StartTime and EndTime are URL-encoded UTC ISO timestamps:
-`startTime=2025-08-29T02%3A46%3A40Z`   
-`endTime=2025-09-01T02%3A46%3A40Z`   
+        StartTime and EndTime are URL-encoded UTC ISO timestamps:
+        `startTime=2025-08-29T02%3A46%3A40Z`
+        `endTime=2025-09-01T02%3A46%3A40Z`
 
-An additional optional query parameter, `userId` can be specified to filter down events to a particular user. The API will return results found in CSV format.
+        An additional optional query parameter, `userId` can be specified to filter down events to a particular user. The API will return results found in CSV format.
 
 
-Dfns maintains a script which can be used for audit log signature validation: [WebAuthn Signature Verifier](https://github.com/dfns/example-scripts/tree/m/python/utils)
+        Dfns maintains a script which can be used for audit log signature validation: [WebAuthn Signature Verifier](https://github.com/dfns/example-scripts/tree/m/python/utils)
 
-        Args:
-        query: Query parameters.
-        """
-        return self._http.request(
+                Args:
+                    query: Query parameters.
+        """  # noqa: E501
+        self._http.request(
             method="GET",
             path="/auth/action/logs",
             path_params={},
@@ -105,19 +107,19 @@ Dfns maintains a script which can be used for audit log signature validation: [W
 
     def get_audit_log(self, id: str) -> T.GetAuditLogResponse:
         """
-        Get Audit Log.
+                Get Audit Log.
 
-        Gets detailed information for a particular audit log. Specifically, the API returns the action performed, as well as the `firstFactorCredential` in which you will find the signature information required to validate it. 
+                Gets detailed information for a particular audit log. Specifically, the API returns the action performed, as well as the `firstFactorCredential` in which you will find the signature information required to validate it.
 
-Dfns maintains a script which can be used for audit log signature validation: [WebAuthn Signature Verifier](https://github.com/dfns/example-scripts/tree/m/python/utils)
+        Dfns maintains a script which can be used for audit log signature validation: [WebAuthn Signature Verifier](https://github.com/dfns/example-scripts/tree/m/python/utils)
 
-        Args:
-        id: Log id you need information about.
+                Args:
+                    id: Log id you need information about.
 
-        Returns:
-            T.GetAuditLogResponse: The API response.
-        """
-        return self._http.request(
+                Returns:
+                    T.GetAuditLogResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/auth/action/logs/{id}",
             path_params={"id": id},
@@ -125,20 +127,21 @@ Dfns maintains a script which can be used for audit log signature validation: [W
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetAuditLogResponse, response)
 
     @deprecated("This endpoint is deprecated.")
     def list_applications(self) -> T.ListApplicationsResponse:
         """
-        List Applications.
+              List Applications.
 
-        <Warning>
-  Applications are deprecated and will be removed in a future release. See details [here](https://docs.dfns.co/developers/guides/applications-deprecation).
-  </Warning>
+              <Warning>
+        Applications are deprecated and will be removed in a future release. See details [here](https://docs.dfns.co/developers/guides/applications-deprecation).
+        </Warning>
 
-        Returns:
-            T.ListApplicationsResponse: The API response.
-        """
-        return self._http.request(
+              Returns:
+                  T.ListApplicationsResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/auth/apps",
             path_params={},
@@ -146,23 +149,24 @@ Dfns maintains a script which can be used for audit log signature validation: [W
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListApplicationsResponse, response)
 
     @deprecated("This endpoint is deprecated.")
     def get_application(self, app_id: str) -> T.GetApplicationResponse:
         """
-        Get Application.
+              Get Application.
 
-        <Warning>
-  Applications are deprecated and will be removed in a future release. See details [here](https://docs.dfns.co/developers/guides/applications-deprecation).
-  </Warning>
+              <Warning>
+        Applications are deprecated and will be removed in a future release. See details [here](https://docs.dfns.co/developers/guides/applications-deprecation).
+        </Warning>
 
-        Args:
-        app_id: ID of the application (deprecated).
+              Args:
+                  app_id: ID of the application (deprecated).
 
-        Returns:
-            T.GetApplicationResponse: The API response.
-        """
-        return self._http.request(
+              Returns:
+                  T.GetApplicationResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/auth/apps/{appId}",
             path_params={"appId": app_id},
@@ -170,6 +174,7 @@ Dfns maintains a script which can be used for audit log signature validation: [W
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetApplicationResponse, response)
 
     def list_credentials(self) -> T.ListCredentialsResponse:
         """
@@ -179,8 +184,8 @@ Dfns maintains a script which can be used for audit log signature validation: [W
 
         Returns:
             T.ListCredentialsResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/auth/credentials",
             path_params={},
@@ -188,6 +193,7 @@ Dfns maintains a script which can be used for audit log signature validation: [W
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListCredentialsResponse, response)
 
     def create_credential_init(self, body: dict[str, Any]) -> UserActionChallengeResponse:
         """
@@ -196,11 +202,11 @@ Dfns maintains a script which can be used for audit log signature validation: [W
         Creates a user action challenge for external signing.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/credentials"
         payload = json.dumps(body, separators=(",", ":")) if body else ""
 
@@ -211,25 +217,25 @@ Dfns maintains a script which can be used for audit log signature validation: [W
             user_action_payload=payload,
         )
 
-    def create_credential_complete(self, body: dict[str, Any], signed_challenge: SignUserActionChallengeRequest) -> T.CreateCredentialResponse:
+    def create_credential_complete(
+        self, body: dict[str, Any], signed_challenge: SignUserActionChallengeRequest
+    ) -> T.CreateCredentialResponse:
         """
         Complete Create Credential.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.CreateCredentialResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="POST",
             path="/auth/credentials",
             path_params={},
@@ -237,22 +243,23 @@ Dfns maintains a script which can be used for audit log signature validation: [W
             body=body,
             user_action=user_action_token,
         )
+        return cast(T.CreateCredentialResponse, response)
 
-    def create_credential_challenge(self, body: T.CreateCredentialChallengeRequest) -> TypedDict:
+    def create_credential_challenge(self, body: T.CreateCredentialChallengeRequest) -> dict[str, Any]:
         """
-        Create Credential Challenge.
+              Create Credential Challenge.
 
-        Part of the flow [Create Credential Regular flow](https://docs.dfns.co/api-reference/auth/credentials#regular-flow).
-  
-  Starts a create user credential session, returning a challenge that will be used to verify the user's identity.
+              Part of the flow [Create Credential Regular flow](https://docs.dfns.co/api-reference/auth/credentials#regular-flow).
 
-        Args:
-        body: Request body.
+        Starts a create user credential session, returning a challenge that will be used to verify the user's identity.
 
-        Returns:
-            TypedDict: The API response.
-        """
-        return self._http.request(
+              Args:
+                  body: Request body.
+
+              Returns:
+                  dict[str, Any]: The API response.
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/credentials/init",
             path_params={},
@@ -260,6 +267,7 @@ Dfns maintains a script which can be used for audit log signature validation: [W
             body=body,
             requires_signature=False,
         )
+        return cast(dict[str, Any], response)
 
     def activate_credential_init(self, body: T.ActivateCredentialRequest) -> UserActionChallengeResponse:
         """
@@ -268,11 +276,11 @@ Dfns maintains a script which can be used for audit log signature validation: [W
         Creates a user action challenge for external signing.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/credentials/activate"
         payload = json.dumps(body, separators=(",", ":")) if body else ""
 
@@ -283,25 +291,25 @@ Dfns maintains a script which can be used for audit log signature validation: [W
             user_action_payload=payload,
         )
 
-    def activate_credential_complete(self, body: T.ActivateCredentialRequest, signed_challenge: SignUserActionChallengeRequest) -> T.ActivateCredentialResponse:
+    def activate_credential_complete(
+        self, body: T.ActivateCredentialRequest, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.ActivateCredentialResponse:
         """
         Complete Activate Credential.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.ActivateCredentialResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="PUT",
             path="/auth/credentials/activate",
             path_params={},
@@ -309,6 +317,7 @@ Dfns maintains a script which can be used for audit log signature validation: [W
             body=body,
             user_action=user_action_token,
         )
+        return cast(T.ActivateCredentialResponse, response)
 
     def delete_credential_init(self, credential_uuid: str) -> UserActionChallengeResponse:
         """
@@ -317,11 +326,11 @@ Dfns maintains a script which can be used for audit log signature validation: [W
         Creates a user action challenge for external signing.
 
         Args:
-        credential_uuid: Path parameter.
+            credential_uuid: Path parameter.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/credentials/{credentialUuid}"
         path = path.replace("{credentialUuid}", str(credential_uuid))
         payload = ""
@@ -333,25 +342,25 @@ Dfns maintains a script which can be used for audit log signature validation: [W
             user_action_payload=payload,
         )
 
-    def delete_credential_complete(self, credential_uuid: str, signed_challenge: SignUserActionChallengeRequest) -> T.DeleteCredentialResponse:
+    def delete_credential_complete(
+        self, credential_uuid: str, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.DeleteCredentialResponse:
         """
         Complete Delete Credential.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        credential_uuid: Path parameter.
-        signed_challenge: The signed challenge from external signing.
+            credential_uuid: Path parameter.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.DeleteCredentialResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="DELETE",
             path="/auth/credentials/{credentialUuid}",
             path_params={"credentialUuid": credential_uuid},
@@ -359,6 +368,7 @@ Dfns maintains a script which can be used for audit log signature validation: [W
             body=None,
             user_action=user_action_token,
         )
+        return cast(T.DeleteCredentialResponse, response)
 
     def deactivate_credential_init(self, body: T.DeactivateCredentialRequest) -> UserActionChallengeResponse:
         """
@@ -367,11 +377,11 @@ Dfns maintains a script which can be used for audit log signature validation: [W
         Creates a user action challenge for external signing.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/credentials/deactivate"
         payload = json.dumps(body, separators=(",", ":")) if body else ""
 
@@ -382,25 +392,25 @@ Dfns maintains a script which can be used for audit log signature validation: [W
             user_action_payload=payload,
         )
 
-    def deactivate_credential_complete(self, body: T.DeactivateCredentialRequest, signed_challenge: SignUserActionChallengeRequest) -> T.DeactivateCredentialResponse:
+    def deactivate_credential_complete(
+        self, body: T.DeactivateCredentialRequest, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.DeactivateCredentialResponse:
         """
         Complete Deactivate Credential.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.DeactivateCredentialResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="PUT",
             path="/auth/credentials/deactivate",
             path_params={},
@@ -408,6 +418,7 @@ Dfns maintains a script which can be used for audit log signature validation: [W
             body=body,
             user_action=user_action_token,
         )
+        return cast(T.DeactivateCredentialResponse, response)
 
     def create_credential_code_init(self, body: T.CreateCredentialCodeRequest) -> UserActionChallengeResponse:
         """
@@ -416,11 +427,11 @@ Dfns maintains a script which can be used for audit log signature validation: [W
         Creates a user action challenge for external signing.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/credentials/code"
         payload = json.dumps(body, separators=(",", ":")) if body else ""
 
@@ -431,25 +442,25 @@ Dfns maintains a script which can be used for audit log signature validation: [W
             user_action_payload=payload,
         )
 
-    def create_credential_code_complete(self, body: T.CreateCredentialCodeRequest, signed_challenge: SignUserActionChallengeRequest) -> T.CreateCredentialCodeResponse:
+    def create_credential_code_complete(
+        self, body: T.CreateCredentialCodeRequest, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.CreateCredentialCodeResponse:
         """
         Complete Create Credential Code.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.CreateCredentialCodeResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="POST",
             path="/auth/credentials/code",
             path_params={},
@@ -457,22 +468,23 @@ Dfns maintains a script which can be used for audit log signature validation: [W
             body=body,
             user_action=user_action_token,
         )
+        return cast(T.CreateCredentialCodeResponse, response)
 
-    def create_credential_challenge_with_code(self, body: T.CreateCredentialChallengeWithCodeRequest) -> TypedDict:
+    def create_credential_challenge_with_code(self, body: T.CreateCredentialChallengeWithCodeRequest) -> dict[str, Any]:
         """
-        Create Credential Challenge With Code.
+                Create Credential Challenge With Code.
 
-        Part of the flow [Create Credential With Code](https://docs.dfns.co/api-reference/auth/credentials#create-credential-with-code-flow).
+                Part of the flow [Create Credential With Code](https://docs.dfns.co/api-reference/auth/credentials#create-credential-with-code-flow).
 
-Creates a credential challenge using a one time code-time-code. This challenge must then be signed by the new credential, before finalizing the flow.
+        Creates a credential challenge using a one time code-time-code. This challenge must then be signed by the new credential, before finalizing the flow.
 
-        Args:
-        body: Request body.
+                Args:
+                    body: Request body.
 
-        Returns:
-            TypedDict: The API response.
-        """
-        return self._http.request(
+                Returns:
+                    dict[str, Any]: The API response.
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/credentials/code/init",
             path_params={},
@@ -480,25 +492,26 @@ Creates a credential challenge using a one time code-time-code. This challenge m
             body=body,
             requires_signature=False,
         )
+        return cast(dict[str, Any], response)
 
     def create_credential_with_code(self, body: dict[str, Any]) -> T.CreateCredentialWithCodeResponse:
         """
-        Create Credential With Code.
+                Create Credential With Code.
 
-        Finalizes the flow [Create Credential With Code](https://docs.dfns.co/api-reference/auth/credentials#create-credential-with-code-flow).
-  
-Adds a new credential to a user's account. This endpoint is similar to the [Create Credential](https://docs.dfns.co/api-reference/auth/create-credential) endpoint, except:
-* it does not need the user to be authenticated
-* it does not need user action signing
-* it will only work with the challenge gotten from the [Create Credential Challenge With Code](https://docs.dfns.co/api-reference/auth/create-credential-challenge-with-code) endpoint
+                Finalizes the flow [Create Credential With Code](https://docs.dfns.co/api-reference/auth/credentials#create-credential-with-code-flow).
 
-        Args:
-        body: Request body.
+        Adds a new credential to a user's account. This endpoint is similar to the [Create Credential](https://docs.dfns.co/api-reference/auth/create-credential) endpoint, except:
+        * it does not need the user to be authenticated
+        * it does not need user action signing
+        * it will only work with the challenge gotten from the [Create Credential Challenge With Code](https://docs.dfns.co/api-reference/auth/create-credential-challenge-with-code) endpoint
 
-        Returns:
-            T.CreateCredentialWithCodeResponse: The API response.
-        """
-        return self._http.request(
+                Args:
+                    body: Request body.
+
+                Returns:
+                    T.CreateCredentialWithCodeResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/credentials/code/verify",
             path_params={},
@@ -506,24 +519,25 @@ Adds a new credential to a user's account. This endpoint is similar to the [Crea
             body=body,
             requires_signature=False,
         )
+        return cast(T.CreateCredentialWithCodeResponse, response)
 
     def create_login_challenge(self, body: T.CreateLoginChallengeRequest) -> T.CreateLoginChallengeResponse:
         """
-        Create Login Challenge.
+                Create Login Challenge.
 
-        Start a user login session, returning a challenge that will be used to verify the user's identity.
+                Start a user login session, returning a challenge that will be used to verify the user's identity.
 
-If the user has a credential of kind `PasswordProtectedKey` a temporary one time code needs to be passed in the `loginCode` field.
+        If the user has a credential of kind `PasswordProtectedKey` a temporary one time code needs to be passed in the `loginCode` field.
 
-If the user has at least one discoverable WebAuthn credential, `username` is optional (username-less flow).
+        If the user has at least one discoverable WebAuthn credential, `username` is optional (username-less flow).
 
-        Args:
-        body: Request body.
+                Args:
+                    body: Request body.
 
-        Returns:
-            T.CreateLoginChallengeResponse: The API response.
-        """
-        return self._http.request(
+                Returns:
+                    T.CreateLoginChallengeResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/login/init",
             path_params={},
@@ -531,6 +545,7 @@ If the user has at least one discoverable WebAuthn credential, `username` is opt
             body=body,
             requires_signature=False,
         )
+        return cast(T.CreateLoginChallengeResponse, response)
 
     def delegated_login_init(self, body: T.DelegatedLoginRequest) -> UserActionChallengeResponse:
         """
@@ -539,11 +554,11 @@ If the user has at least one discoverable WebAuthn credential, `username` is opt
         Creates a user action challenge for external signing.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/login/delegated"
         payload = json.dumps(body, separators=(",", ":")) if body else ""
 
@@ -554,25 +569,25 @@ If the user has at least one discoverable WebAuthn credential, `username` is opt
             user_action_payload=payload,
         )
 
-    def delegated_login_complete(self, body: T.DelegatedLoginRequest, signed_challenge: SignUserActionChallengeRequest) -> T.DelegatedLoginResponse:
+    def delegated_login_complete(
+        self, body: T.DelegatedLoginRequest, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.DelegatedLoginResponse:
         """
         Complete Delegated Login.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.DelegatedLoginResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="POST",
             path="/auth/login/delegated",
             path_params={},
@@ -580,25 +595,26 @@ If the user has at least one discoverable WebAuthn credential, `username` is opt
             body=body,
             user_action=user_action_token,
         )
+        return cast(T.DelegatedLoginResponse, response)
 
-    def complete_user_login(self, body: T.CompleteUserLoginRequest) -> TypedDict:
+    def complete_user_login(self, body: T.CompleteUserLoginRequest) -> dict[str, Any]:
         """
-        Complete User Login.
+                Complete User Login.
 
-        Completes the login process and provides the authenticated user with their authentication token.
+                Completes the login process and provides the authenticated user with their authentication token.
 
-The type of credentials used to login is determined by the `kind` field in the nested objects (`firstFactor` and `secondFactor`). Supported credential kinds are:
-* `Fido2`: Login challenge is signed by a user's signing device using `WebAuthn`.
-* `Key`: Login challenge is signed by a user's private key.
-* `PasswordProtectedKey`: Login challenge is signed by the decrypted user's private key that was sent during [Create User Login Challenge](../registration/inituserregistration) step.
+        The type of credentials used to login is determined by the `kind` field in the nested objects (`firstFactor` and `secondFactor`). Supported credential kinds are:
+        * `Fido2`: Login challenge is signed by a user's signing device using `WebAuthn`.
+        * `Key`: Login challenge is signed by a user's private key.
+        * `PasswordProtectedKey`: Login challenge is signed by the decrypted user's private key that was sent during [Create User Login Challenge](../registration/inituserregistration) step.
 
-        Args:
-        body: Request body.
+                Args:
+                    body: Request body.
 
-        Returns:
-            TypedDict: The API response.
-        """
-        return self._http.request(
+                Returns:
+                    dict[str, Any]: The API response.
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/login",
             path_params={},
@@ -606,6 +622,7 @@ The type of credentials used to login is determined by the `kind` field in the n
             body=body,
             requires_signature=False,
         )
+        return cast(dict[str, Any], response)
 
     def logout(self, body: T.LogoutRequest) -> T.LogoutResponse:
         """
@@ -614,12 +631,12 @@ The type of credentials used to login is determined by the `kind` field in the n
         Completes the user logout process.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.LogoutResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/auth/logout",
             path_params={},
@@ -627,22 +644,23 @@ The type of credentials used to login is determined by the `kind` field in the n
             body=body,
             requires_signature=False,
         )
+        return cast(T.LogoutResponse, response)
 
     def send_login_code(self, body: T.SendLoginCodeRequest) -> T.SendLoginCodeResponse:
         """
-        Send Login Code.
+                Send Login Code.
 
-        Sends a temporary one time code to the user that can be used during login flow.
+                Sends a temporary one time code to the user that can be used during login flow.
 
-If the user has a credential of kind `PasswordProtectedKey` a temporary one time code needs to be passed in the `loginCode` field. That's because the [Create Login Challenge](https://docs.dfns.co/api-reference/auth/create-login-challenge) is unauthenticated and returns the encrypted private key of the user. So we need a first step to verify the identity of the user to prevent anybody from fetching the encrypted private key and trying to brute force it offline.
+        If the user has a credential of kind `PasswordProtectedKey` a temporary one time code needs to be passed in the `loginCode` field. That's because the [Create Login Challenge](https://docs.dfns.co/api-reference/auth/create-login-challenge) is unauthenticated and returns the encrypted private key of the user. So we need a first step to verify the identity of the user to prevent anybody from fetching the encrypted private key and trying to brute force it offline.
 
-        Args:
-        body: Request body.
+                Args:
+                    body: Request body.
 
-        Returns:
-            T.SendLoginCodeResponse: The API response.
-        """
-        return self._http.request(
+                Returns:
+                    T.SendLoginCodeResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/login/code",
             path_params={},
@@ -650,6 +668,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=body,
             requires_signature=False,
         )
+        return cast(T.SendLoginCodeResponse, response)
 
     def social_login(self, body: T.SocialLoginRequest) -> T.SocialLoginResponse:
         """
@@ -658,12 +677,12 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Completes the login process and provides the authenticated user with their authentication token.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.SocialLoginResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/login/social",
             path_params={},
@@ -671,6 +690,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=body,
             requires_signature=False,
         )
+        return cast(T.SocialLoginResponse, response)
 
     def complete_sso_login(self, body: T.CompleteSsoLoginRequest) -> T.CompleteSsoLoginResponse:
         """
@@ -679,12 +699,12 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Completes the login process and provides the authenticated user with their authentication token.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CompleteSsoLoginResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/login/sso",
             path_params={},
@@ -692,6 +712,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=body,
             requires_signature=False,
         )
+        return cast(T.CompleteSsoLoginResponse, response)
 
     def initiate_sso_login(self, body: T.InitiateSsoLoginRequest) -> T.InitiateSsoLoginResponse:
         """
@@ -700,12 +721,12 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Initialize the login process with SSO by returning the IdP URL to call.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.InitiateSsoLoginResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/login/sso/init",
             path_params={},
@@ -713,6 +734,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=body,
             requires_signature=False,
         )
+        return cast(T.InitiateSsoLoginResponse, response)
 
     def exchange_access_token(self, body: T.ExchangeAccessTokenRequest) -> T.ExchangeAccessTokenResponse:
         """
@@ -721,12 +743,12 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Only for TenantUsers - Exchanges the current user access token, for an org-bound or tenant-bound token. The user must have access to the target org / tenant. The new access token expiration won't exceed the current token's one.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.ExchangeAccessTokenResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/tokens",
             path_params={},
@@ -734,6 +756,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=body,
             requires_signature=False,
         )
+        return cast(T.ExchangeAccessTokenResponse, response)
 
     def list_personal_access_tokens(self) -> T.ListPersonalAccessTokensResponse:
         """
@@ -743,8 +766,8 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
 
         Returns:
             T.ListPersonalAccessTokensResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/auth/pats",
             path_params={},
@@ -752,19 +775,22 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListPersonalAccessTokensResponse, response)
 
-    def create_personal_access_token_init(self, body: T.CreatePersonalAccessTokenRequest) -> UserActionChallengeResponse:
+    def create_personal_access_token_init(
+        self, body: T.CreatePersonalAccessTokenRequest
+    ) -> UserActionChallengeResponse:
         """
         Initialize Create Personal Access Token.
 
         Creates a user action challenge for external signing.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/pats"
         payload = json.dumps(body, separators=(",", ":")) if body else ""
 
@@ -775,25 +801,25 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             user_action_payload=payload,
         )
 
-    def create_personal_access_token_complete(self, body: T.CreatePersonalAccessTokenRequest, signed_challenge: SignUserActionChallengeRequest) -> T.CreatePersonalAccessTokenResponse:
+    def create_personal_access_token_complete(
+        self, body: T.CreatePersonalAccessTokenRequest, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.CreatePersonalAccessTokenResponse:
         """
         Complete Create Personal Access Token.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.CreatePersonalAccessTokenResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="POST",
             path="/auth/pats",
             path_params={},
@@ -801,6 +827,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=body,
             user_action=user_action_token,
         )
+        return cast(T.CreatePersonalAccessTokenResponse, response)
 
     def get_personal_access_token(self, token_id: str) -> T.GetPersonalAccessTokenResponse:
         """
@@ -809,12 +836,12 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Retrieve a specific Personal Access Token.
 
         Args:
-        token_id: Token id.
+            token_id: Token id.
 
         Returns:
             T.GetPersonalAccessTokenResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/auth/pats/{tokenId}",
             path_params={"tokenId": token_id},
@@ -822,20 +849,23 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetPersonalAccessTokenResponse, response)
 
-    def update_personal_access_token_init(self, token_id: str, body: T.UpdatePersonalAccessTokenRequest) -> UserActionChallengeResponse:
+    def update_personal_access_token_init(
+        self, token_id: str, body: T.UpdatePersonalAccessTokenRequest
+    ) -> UserActionChallengeResponse:
         """
         Initialize Update Personal Access Token.
 
         Creates a user action challenge for external signing.
 
         Args:
-        token_id: Token id.
-        body: Request body.
+            token_id: Token id.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/pats/{tokenId}"
         path = path.replace("{tokenId}", str(token_id))
         payload = json.dumps(body, separators=(",", ":")) if body else ""
@@ -847,26 +877,26 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             user_action_payload=payload,
         )
 
-    def update_personal_access_token_complete(self, token_id: str, body: T.UpdatePersonalAccessTokenRequest, signed_challenge: SignUserActionChallengeRequest) -> T.UpdatePersonalAccessTokenResponse:
+    def update_personal_access_token_complete(
+        self, token_id: str, body: T.UpdatePersonalAccessTokenRequest, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.UpdatePersonalAccessTokenResponse:
         """
         Complete Update Personal Access Token.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        token_id: Token id.
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            token_id: Token id.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.UpdatePersonalAccessTokenResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="PUT",
             path="/auth/pats/{tokenId}",
             path_params={"tokenId": token_id},
@@ -874,6 +904,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=body,
             user_action=user_action_token,
         )
+        return cast(T.UpdatePersonalAccessTokenResponse, response)
 
     def delete_personal_access_token_init(self, token_id: str) -> UserActionChallengeResponse:
         """
@@ -882,11 +913,11 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Creates a user action challenge for external signing.
 
         Args:
-        token_id: Token id.
+            token_id: Token id.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/pats/{tokenId}"
         path = path.replace("{tokenId}", str(token_id))
         payload = ""
@@ -898,25 +929,25 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             user_action_payload=payload,
         )
 
-    def delete_personal_access_token_complete(self, token_id: str, signed_challenge: SignUserActionChallengeRequest) -> T.DeletePersonalAccessTokenResponse:
+    def delete_personal_access_token_complete(
+        self, token_id: str, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.DeletePersonalAccessTokenResponse:
         """
         Complete Delete Personal Access Token.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        token_id: Token id.
-        signed_challenge: The signed challenge from external signing.
+            token_id: Token id.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.DeletePersonalAccessTokenResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="DELETE",
             path="/auth/pats/{tokenId}",
             path_params={"tokenId": token_id},
@@ -924,6 +955,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=None,
             user_action=user_action_token,
         )
+        return cast(T.DeletePersonalAccessTokenResponse, response)
 
     def activate_personal_access_token_init(self, token_id: str) -> UserActionChallengeResponse:
         """
@@ -932,11 +964,11 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Creates a user action challenge for external signing.
 
         Args:
-        token_id: Token id.
+            token_id: Token id.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/pats/{tokenId}/activate"
         path = path.replace("{tokenId}", str(token_id))
         payload = ""
@@ -948,25 +980,25 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             user_action_payload=payload,
         )
 
-    def activate_personal_access_token_complete(self, token_id: str, signed_challenge: SignUserActionChallengeRequest) -> T.ActivatePersonalAccessTokenResponse:
+    def activate_personal_access_token_complete(
+        self, token_id: str, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.ActivatePersonalAccessTokenResponse:
         """
         Complete Activate Personal Access Token.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        token_id: Token id.
-        signed_challenge: The signed challenge from external signing.
+            token_id: Token id.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.ActivatePersonalAccessTokenResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="PUT",
             path="/auth/pats/{tokenId}/activate",
             path_params={"tokenId": token_id},
@@ -974,6 +1006,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=None,
             user_action=user_action_token,
         )
+        return cast(T.ActivatePersonalAccessTokenResponse, response)
 
     def deactivate_personal_access_token_init(self, token_id: str) -> UserActionChallengeResponse:
         """
@@ -982,11 +1015,11 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Creates a user action challenge for external signing.
 
         Args:
-        token_id: Token id.
+            token_id: Token id.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/pats/{tokenId}/deactivate"
         path = path.replace("{tokenId}", str(token_id))
         payload = ""
@@ -998,25 +1031,25 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             user_action_payload=payload,
         )
 
-    def deactivate_personal_access_token_complete(self, token_id: str, signed_challenge: SignUserActionChallengeRequest) -> T.DeactivatePersonalAccessTokenResponse:
+    def deactivate_personal_access_token_complete(
+        self, token_id: str, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.DeactivatePersonalAccessTokenResponse:
         """
         Complete Deactivate Personal Access Token.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        token_id: Token id.
-        signed_challenge: The signed challenge from external signing.
+            token_id: Token id.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.DeactivatePersonalAccessTokenResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="PUT",
             path="/auth/pats/{tokenId}/deactivate",
             path_params={"tokenId": token_id},
@@ -1024,19 +1057,22 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=None,
             user_action=user_action_token,
         )
+        return cast(T.DeactivatePersonalAccessTokenResponse, response)
 
-    def create_delegated_recovery_challenge_init(self, body: T.CreateDelegatedRecoveryChallengeRequest) -> UserActionChallengeResponse:
+    def create_delegated_recovery_challenge_init(
+        self, body: T.CreateDelegatedRecoveryChallengeRequest
+    ) -> UserActionChallengeResponse:
         """
         Initialize Create Delegated Recovery Challenge.
 
         Creates a user action challenge for external signing.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/recover/user/delegated"
         payload = json.dumps(body, separators=(",", ":")) if body else ""
 
@@ -1047,25 +1083,25 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             user_action_payload=payload,
         )
 
-    def create_delegated_recovery_challenge_complete(self, body: T.CreateDelegatedRecoveryChallengeRequest, signed_challenge: SignUserActionChallengeRequest) -> T.CreateDelegatedRecoveryChallengeResponse:
+    def create_delegated_recovery_challenge_complete(
+        self, body: T.CreateDelegatedRecoveryChallengeRequest, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.CreateDelegatedRecoveryChallengeResponse:
         """
         Complete Create Delegated Recovery Challenge.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.CreateDelegatedRecoveryChallengeResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="POST",
             path="/auth/recover/user/delegated",
             path_params={},
@@ -1073,28 +1109,29 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=body,
             user_action=user_action_token,
         )
+        return cast(T.CreateDelegatedRecoveryChallengeResponse, response)
 
     def recover_user(self, body: T.RecoverUserRequest) -> T.RecoverUserResponse:
         """
-        Recover User.
+                Recover User.
 
-        Recovers a user, using a recovery credential. After successfully recovering the user, all of the user's previous credentials and personal access tokens will be invalidated.
+                Recovers a user, using a recovery credential. After successfully recovering the user, all of the user's previous credentials and personal access tokens will be invalidated.
 
-This flow requires cryptographic validation of newly created credential(s) using a recovery credential. The `recovery.credentialAssertion.clientData` field's challenge must be the _base64url-encoded_ representation of the `newCredential` object.
+        This flow requires cryptographic validation of newly created credential(s) using a recovery credential. The `recovery.credentialAssertion.clientData` field's challenge must be the _base64url-encoded_ representation of the `newCredential` object.
 
-The process is as follows:
+        The process is as follows:
 
-1. Construct the `newCredential` object, using the challenge obtained from either the [Create Recovery Challenge](https://docs.dfns.co/api-reference/auth/create-recovery-challenge) or [Create Delegated Recovery Challenge](https://docs.dfns.co/api-reference/auth/create-delegated-recovery-challenge) endpoints.
-2. Serialize the `newCredential` object to JSON and then base64url-encode the resulting JSON string. This _base64url-encoded_ string will serve as the challenge for the `recovery.credentialAssertion` object.
-3. Construct the `recovery.credentialAssertion` object, using the _base64url-encoded_ string generated in step 2 as its challenge.
+        1. Construct the `newCredential` object, using the challenge obtained from either the [Create Recovery Challenge](https://docs.dfns.co/api-reference/auth/create-recovery-challenge) or [Create Delegated Recovery Challenge](https://docs.dfns.co/api-reference/auth/create-delegated-recovery-challenge) endpoints.
+        2. Serialize the `newCredential` object to JSON and then base64url-encode the resulting JSON string. This _base64url-encoded_ string will serve as the challenge for the `recovery.credentialAssertion` object.
+        3. Construct the `recovery.credentialAssertion` object, using the _base64url-encoded_ string generated in step 2 as its challenge.
 
-        Args:
-        body: Request body.
+                Args:
+                    body: Request body.
 
-        Returns:
-            T.RecoverUserResponse: The API response.
-        """
-        return self._http.request(
+                Returns:
+                    T.RecoverUserResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/recover/user",
             path_params={},
@@ -1102,6 +1139,7 @@ The process is as follows:
             body=body,
             requires_signature=False,
         )
+        return cast(T.RecoverUserResponse, response)
 
     def create_recovery_challenge(self, body: T.CreateRecoveryChallengeRequest) -> T.CreateRecoveryChallengeResponse:
         """
@@ -1110,12 +1148,12 @@ The process is as follows:
         Starts a user recovery session, returning a challenge that will be used to verify the user's identity.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CreateRecoveryChallengeResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/recover/user/init",
             path_params={},
@@ -1123,6 +1161,7 @@ The process is as follows:
             body=body,
             requires_signature=False,
         )
+        return cast(T.CreateRecoveryChallengeResponse, response)
 
     def send_recovery_code_email(self, body: T.SendRecoveryCodeEmailRequest) -> T.SendRecoveryCodeEmailResponse:
         """
@@ -1131,12 +1170,12 @@ The process is as follows:
         Send the user a recovery verification code. This code is used as a second factor to verify the user initiated the recovery request.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.SendRecoveryCodeEmailResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/recover/user/code",
             path_params={},
@@ -1144,19 +1183,22 @@ The process is as follows:
             body=body,
             requires_signature=False,
         )
+        return cast(T.SendRecoveryCodeEmailResponse, response)
 
-    def create_delegated_registration_challenge_init(self, body: T.CreateDelegatedRegistrationChallengeRequest) -> UserActionChallengeResponse:
+    def create_delegated_registration_challenge_init(
+        self, body: T.CreateDelegatedRegistrationChallengeRequest
+    ) -> UserActionChallengeResponse:
         """
         Initialize Create Delegated Registration Challenge.
 
         Creates a user action challenge for external signing.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/registration/delegated"
         payload = json.dumps(body, separators=(",", ":")) if body else ""
 
@@ -1167,25 +1209,25 @@ The process is as follows:
             user_action_payload=payload,
         )
 
-    def create_delegated_registration_challenge_complete(self, body: T.CreateDelegatedRegistrationChallengeRequest, signed_challenge: SignUserActionChallengeRequest) -> T.CreateDelegatedRegistrationChallengeResponse:
+    def create_delegated_registration_challenge_complete(
+        self, body: T.CreateDelegatedRegistrationChallengeRequest, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.CreateDelegatedRegistrationChallengeResponse:
         """
         Complete Create Delegated Registration Challenge.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.CreateDelegatedRegistrationChallengeResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="POST",
             path="/auth/registration/delegated",
             path_params={},
@@ -1193,20 +1235,23 @@ The process is as follows:
             body=body,
             user_action=user_action_token,
         )
+        return cast(T.CreateDelegatedRegistrationChallengeResponse, response)
 
-    def create_registration_challenge(self, body: T.CreateRegistrationChallengeRequest) -> T.CreateRegistrationChallengeResponse:
+    def create_registration_challenge(
+        self, body: T.CreateRegistrationChallengeRequest
+    ) -> T.CreateRegistrationChallengeResponse:
         """
         Create Registration Challenge.
 
         Starts a user registration session. It returns a challenge that will need to be signed by a passkey and used to perform the step [Complete User Registration](/api-reference/auth/register)
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CreateRegistrationChallengeResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/registration/init",
             path_params={},
@@ -1214,20 +1259,23 @@ The process is as follows:
             body=body,
             requires_signature=False,
         )
+        return cast(T.CreateRegistrationChallengeResponse, response)
 
-    def create_social_registration_challenge(self, body: T.CreateSocialRegistrationChallengeRequest) -> T.CreateSocialRegistrationChallengeResponse:
+    def create_social_registration_challenge(
+        self, body: T.CreateSocialRegistrationChallengeRequest
+    ) -> T.CreateSocialRegistrationChallengeResponse:
         """
         Create Social Registration Challenge.
 
         Starts an end-user registration session by passing a JWT obtained by an IdP. It returns a challenge that will need to be signed by a passkey and used to perform [Complete End User Registration with Wallets](/api-reference/auth/register-end-user).
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CreateSocialRegistrationChallengeResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/registration/social",
             path_params={},
@@ -1235,30 +1283,31 @@ The process is as follows:
             body=body,
             requires_signature=False,
         )
+        return cast(T.CreateSocialRegistrationChallengeResponse, response)
 
     def complete_user_registration(self, body: T.CompleteUserRegistrationRequest) -> T.CompleteUserRegistrationResponse:
         """
-        Complete User Registration.
+                Complete User Registration.
 
-        Completes the user registration process and creates the user's initial credentials.
+                Completes the user registration process and creates the user's initial credentials.
 
-All credentials submitted in this call (`firstFactorCredential`, `secondFactorCredential`, `recoveryCredential`) sign the same challenge returned by the registration init endpoint ([Create Registration Challenge](https://docs.dfns.co/api-reference/auth/create-registration-challenge), [Create Delegated Registration Challenge](https://docs.dfns.co/api-reference/auth/create-delegated-registration-challenge), or [Create Social Registration Challenge](https://docs.dfns.co/api-reference/auth/create-social-registration-challenge)).
+        All credentials submitted in this call (`firstFactorCredential`, `secondFactorCredential`, `recoveryCredential`) sign the same challenge returned by the registration init endpoint ([Create Registration Challenge](https://docs.dfns.co/api-reference/auth/create-registration-challenge), [Create Delegated Registration Challenge](https://docs.dfns.co/api-reference/auth/create-delegated-registration-challenge), or [Create Social Registration Challenge](https://docs.dfns.co/api-reference/auth/create-social-registration-challenge)).
 
-Always include a `recoveryCredential` for end users. Without one, a user who loses their device cannot recover access and you must initiate a delegated recovery manually. See [Implement end-user recovery](https://docs.dfns.co/guides/developers/end-user-recovery).
+        Always include a `recoveryCredential` for end users. Without one, a user who loses their device cannot recover access and you must initiate a delegated recovery manually. See [Implement end-user recovery](https://docs.dfns.co/guides/developers/end-user-recovery).
 
-The type of credentials being registered is determined by the `credentialKind` field in the nested objects (`firstFactorCredential` , `secondFactorCredential` and `recoveryCredential`). Supported credential kinds are:
-* `Fido2`: User action is signed by a user's signing device using `WebAuthn`.
-* `Key`: User action is signed by a user's, or token's, private key.
-* `PasswordProtectedKey`: User action is signed by a user's, or token's, private key. The encrypted version of the private key is stored by Dfns and returns during the signing flow for the user to decrypt it.
-* `RecoveryKey` : Similar to `PasswordProtectedKey`, but this credential can only be used to recover an account not to sign an action or login. Once this credential is used all the other user's credentials are invalidated.
+        The type of credentials being registered is determined by the `credentialKind` field in the nested objects (`firstFactorCredential` , `secondFactorCredential` and `recoveryCredential`). Supported credential kinds are:
+        * `Fido2`: User action is signed by a user's signing device using `WebAuthn`.
+        * `Key`: User action is signed by a user's, or token's, private key.
+        * `PasswordProtectedKey`: User action is signed by a user's, or token's, private key. The encrypted version of the private key is stored by Dfns and returns during the signing flow for the user to decrypt it.
+        * `RecoveryKey` : Similar to `PasswordProtectedKey`, but this credential can only be used to recover an account not to sign an action or login. Once this credential is used all the other user's credentials are invalidated.
 
-        Args:
-        body: Request body.
+                Args:
+                    body: Request body.
 
-        Returns:
-            T.CompleteUserRegistrationResponse: The API response.
-        """
-        return self._http.request(
+                Returns:
+                    T.CompleteUserRegistrationResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/registration",
             path_params={},
@@ -1266,32 +1315,35 @@ The type of credentials being registered is determined by the `credentialKind` f
             body=body,
             requires_signature=False,
         )
+        return cast(T.CompleteUserRegistrationResponse, response)
 
-    def complete_end_user_registration_with_wallets(self, body: T.CompleteEndUserRegistrationWithWalletsRequest) -> T.CompleteEndUserRegistrationWithWalletsResponse:
+    def complete_end_user_registration_with_wallets(
+        self, body: T.CompleteEndUserRegistrationWithWalletsRequest
+    ) -> T.CompleteEndUserRegistrationWithWalletsResponse:
         """
-        Complete End User Registration with Wallets.
+                Complete End User Registration with Wallets.
 
-        Completes the end user registration process and creates the user's initial credentials along with delegated wallets for the new end user.
+                Completes the end user registration process and creates the user's initial credentials along with delegated wallets for the new end user.
 
-All credentials submitted in this call (`firstFactorCredential`, `secondFactorCredential`, `recoveryCredential`) sign the same challenge returned by the registration init endpoint ([Create Delegated Registration Challenge](https://docs.dfns.co/api-reference/auth/create-delegated-registration-challenge) or [Create Social Registration Challenge](https://docs.dfns.co/api-reference/auth/create-social-registration-challenge)).
+        All credentials submitted in this call (`firstFactorCredential`, `secondFactorCredential`, `recoveryCredential`) sign the same challenge returned by the registration init endpoint ([Create Delegated Registration Challenge](https://docs.dfns.co/api-reference/auth/create-delegated-registration-challenge) or [Create Social Registration Challenge](https://docs.dfns.co/api-reference/auth/create-social-registration-challenge)).
 
-Always include a `recoveryCredential` for end users. Without one, a user who loses their device cannot recover access and you must initiate a delegated recovery manually. See [Implement end-user recovery](https://docs.dfns.co/guides/developers/end-user-recovery).
+        Always include a `recoveryCredential` for end users. Without one, a user who loses their device cannot recover access and you must initiate a delegated recovery manually. See [Implement end-user recovery](https://docs.dfns.co/guides/developers/end-user-recovery).
 
-The type of credentials being registered is determined by the `credentialKind` field in the nested objects (`firstFactorCredential` , `secondFactorCredential` and `recoveryCredential`). Supported credential kinds are:
-* `Fido2`: User action is signed by a user's signing device using `WebAuthn`.
-* `Key`: User action is signed by a user's, or token's, private key.
-* `PasswordProtectedKey`: User action is signed by a user's, or token's, private key. The encrypted version of the private key is stored by Dfns and returns during the signing flow for the user to decrypt it.
-* `RecoveryKey`: Similar to `PasswordProtectedKey`, but this credential can only be used to recover an account, not to sign an action or login. Once this credential is used, all the other user's credentials are invalidated.
+        The type of credentials being registered is determined by the `credentialKind` field in the nested objects (`firstFactorCredential` , `secondFactorCredential` and `recoveryCredential`). Supported credential kinds are:
+        * `Fido2`: User action is signed by a user's signing device using `WebAuthn`.
+        * `Key`: User action is signed by a user's, or token's, private key.
+        * `PasswordProtectedKey`: User action is signed by a user's, or token's, private key. The encrypted version of the private key is stored by Dfns and returns during the signing flow for the user to decrypt it.
+        * `RecoveryKey`: Similar to `PasswordProtectedKey`, but this credential can only be used to recover an account, not to sign an action or login. Once this credential is used, all the other user's credentials are invalidated.
 
-The number of delegated wallets created and the wallet types are determined by the `wallets` specifications. The end user is automatically assigned `ManagedDefaultEndUserAccess` managed permission that grants the end user full access to the wallets.
+        The number of delegated wallets created and the wallet types are determined by the `wallets` specifications. The end user is automatically assigned `ManagedDefaultEndUserAccess` managed permission that grants the end user full access to the wallets.
 
-        Args:
-        body: Request body.
+                Args:
+                    body: Request body.
 
-        Returns:
-            T.CompleteEndUserRegistrationWithWalletsResponse: The API response.
-        """
-        return self._http.request(
+                Returns:
+                    T.CompleteEndUserRegistrationWithWalletsResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/registration/enduser",
             path_params={},
@@ -1299,6 +1351,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=body,
             requires_signature=False,
         )
+        return cast(T.CompleteEndUserRegistrationWithWalletsResponse, response)
 
     def resend_registration_code(self, body: T.ResendRegistrationCodeRequest) -> T.ResendRegistrationCodeResponse:
         """
@@ -1307,12 +1360,12 @@ The number of delegated wallets created and the wallet types are determined by t
         Sends the user a new registration code. The previous registration code will be marked invalid. If the user has already completed their registration no action will be taken.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.ResendRegistrationCodeResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/auth/registration/code",
             path_params={},
@@ -1320,6 +1373,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=body,
             requires_signature=False,
         )
+        return cast(T.ResendRegistrationCodeResponse, response)
 
     def list_service_accounts(self) -> T.ListServiceAccountsResponse:
         """
@@ -1329,8 +1383,8 @@ The number of delegated wallets created and the wallet types are determined by t
 
         Returns:
             T.ListServiceAccountsResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/auth/service-accounts",
             path_params={},
@@ -1338,6 +1392,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListServiceAccountsResponse, response)
 
     def create_service_account_init(self, body: T.CreateServiceAccountRequest) -> UserActionChallengeResponse:
         """
@@ -1346,11 +1401,11 @@ The number of delegated wallets created and the wallet types are determined by t
         Creates a user action challenge for external signing.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/service-accounts"
         payload = json.dumps(body, separators=(",", ":")) if body else ""
 
@@ -1361,25 +1416,25 @@ The number of delegated wallets created and the wallet types are determined by t
             user_action_payload=payload,
         )
 
-    def create_service_account_complete(self, body: T.CreateServiceAccountRequest, signed_challenge: SignUserActionChallengeRequest) -> T.CreateServiceAccountResponse:
+    def create_service_account_complete(
+        self, body: T.CreateServiceAccountRequest, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.CreateServiceAccountResponse:
         """
         Complete Create Service Account.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.CreateServiceAccountResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="POST",
             path="/auth/service-accounts",
             path_params={},
@@ -1387,6 +1442,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=body,
             user_action=user_action_token,
         )
+        return cast(T.CreateServiceAccountResponse, response)
 
     def get_service_account(self, service_account_id: str) -> T.GetServiceAccountResponse:
         """
@@ -1395,12 +1451,12 @@ The number of delegated wallets created and the wallet types are determined by t
         Get information about a specific Service Account.
 
         Args:
-        service_account_id: ID of the service account.
+            service_account_id: ID of the service account.
 
         Returns:
             T.GetServiceAccountResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/auth/service-accounts/{serviceAccountId}",
             path_params={"serviceAccountId": service_account_id},
@@ -1408,20 +1464,23 @@ The number of delegated wallets created and the wallet types are determined by t
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetServiceAccountResponse, response)
 
-    def update_service_account_init(self, service_account_id: str, body: T.UpdateServiceAccountRequest) -> UserActionChallengeResponse:
+    def update_service_account_init(
+        self, service_account_id: str, body: T.UpdateServiceAccountRequest
+    ) -> UserActionChallengeResponse:
         """
         Initialize Update Service Account.
 
         Creates a user action challenge for external signing.
 
         Args:
-        service_account_id: ID of the service account.
-        body: Request body.
+            service_account_id: ID of the service account.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/service-accounts/{serviceAccountId}"
         path = path.replace("{serviceAccountId}", str(service_account_id))
         payload = json.dumps(body, separators=(",", ":")) if body else ""
@@ -1433,26 +1492,29 @@ The number of delegated wallets created and the wallet types are determined by t
             user_action_payload=payload,
         )
 
-    def update_service_account_complete(self, service_account_id: str, body: T.UpdateServiceAccountRequest, signed_challenge: SignUserActionChallengeRequest) -> T.UpdateServiceAccountResponse:
+    def update_service_account_complete(
+        self,
+        service_account_id: str,
+        body: T.UpdateServiceAccountRequest,
+        signed_challenge: SignUserActionChallengeRequest,
+    ) -> T.UpdateServiceAccountResponse:
         """
         Complete Update Service Account.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        service_account_id: ID of the service account.
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            service_account_id: ID of the service account.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.UpdateServiceAccountResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="PUT",
             path="/auth/service-accounts/{serviceAccountId}",
             path_params={"serviceAccountId": service_account_id},
@@ -1460,20 +1522,23 @@ The number of delegated wallets created and the wallet types are determined by t
             body=body,
             user_action=user_action_token,
         )
+        return cast(T.UpdateServiceAccountResponse, response)
 
-    def delete_service_account_init(self, service_account_id: str, query: Optional[T.DeleteServiceAccountQuery] = None) -> UserActionChallengeResponse:
+    def delete_service_account_init(
+        self, service_account_id: str, query: T.DeleteServiceAccountQuery | None = None
+    ) -> UserActionChallengeResponse:
         """
         Initialize Delete Service Account.
 
         Creates a user action challenge for external signing.
 
         Args:
-        service_account_id: ID of the service account.
-        query: Query parameters.
+            service_account_id: ID of the service account.
+            query: Query parameters.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/service-accounts/{serviceAccountId}"
         path = path.replace("{serviceAccountId}", str(service_account_id))
         payload = ""
@@ -1485,26 +1550,29 @@ The number of delegated wallets created and the wallet types are determined by t
             user_action_payload=payload,
         )
 
-    def delete_service_account_complete(self, service_account_id: str, signed_challenge: SignUserActionChallengeRequest, query: Optional[T.DeleteServiceAccountQuery] = None) -> T.DeleteServiceAccountResponse:
+    def delete_service_account_complete(
+        self,
+        service_account_id: str,
+        signed_challenge: SignUserActionChallengeRequest,
+        query: T.DeleteServiceAccountQuery | None = None,
+    ) -> T.DeleteServiceAccountResponse:
         """
         Complete Delete Service Account.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        service_account_id: ID of the service account.
-        signed_challenge: The signed challenge from external signing.
-        query: Query parameters.
+            service_account_id: ID of the service account.
+            signed_challenge: The signed challenge from external signing.
+            query: Query parameters.
 
         Returns:
             T.DeleteServiceAccountResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="DELETE",
             path="/auth/service-accounts/{serviceAccountId}",
             path_params={"serviceAccountId": service_account_id},
@@ -1512,6 +1580,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=None,
             user_action=user_action_token,
         )
+        return cast(T.DeleteServiceAccountResponse, response)
 
     def activate_service_account_init(self, service_account_id: str) -> UserActionChallengeResponse:
         """
@@ -1520,11 +1589,11 @@ The number of delegated wallets created and the wallet types are determined by t
         Creates a user action challenge for external signing.
 
         Args:
-        service_account_id: ID of the service account.
+            service_account_id: ID of the service account.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/service-accounts/{serviceAccountId}/activate"
         path = path.replace("{serviceAccountId}", str(service_account_id))
         payload = ""
@@ -1536,25 +1605,25 @@ The number of delegated wallets created and the wallet types are determined by t
             user_action_payload=payload,
         )
 
-    def activate_service_account_complete(self, service_account_id: str, signed_challenge: SignUserActionChallengeRequest) -> T.ActivateServiceAccountResponse:
+    def activate_service_account_complete(
+        self, service_account_id: str, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.ActivateServiceAccountResponse:
         """
         Complete Activate Service Account.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        service_account_id: ID of the service account.
-        signed_challenge: The signed challenge from external signing.
+            service_account_id: ID of the service account.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.ActivateServiceAccountResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="PUT",
             path="/auth/service-accounts/{serviceAccountId}/activate",
             path_params={"serviceAccountId": service_account_id},
@@ -1562,20 +1631,23 @@ The number of delegated wallets created and the wallet types are determined by t
             body=None,
             user_action=user_action_token,
         )
+        return cast(T.ActivateServiceAccountResponse, response)
 
-    def deactivate_service_account_init(self, service_account_id: str, body: T.DeactivateServiceAccountRequest) -> UserActionChallengeResponse:
+    def deactivate_service_account_init(
+        self, service_account_id: str, body: T.DeactivateServiceAccountRequest
+    ) -> UserActionChallengeResponse:
         """
         Initialize Deactivate Service Account.
 
         Creates a user action challenge for external signing.
 
         Args:
-        service_account_id: ID of the service account.
-        body: Request body.
+            service_account_id: ID of the service account.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/service-accounts/{serviceAccountId}/deactivate"
         path = path.replace("{serviceAccountId}", str(service_account_id))
         payload = json.dumps(body, separators=(",", ":")) if body else ""
@@ -1587,26 +1659,29 @@ The number of delegated wallets created and the wallet types are determined by t
             user_action_payload=payload,
         )
 
-    def deactivate_service_account_complete(self, service_account_id: str, body: T.DeactivateServiceAccountRequest, signed_challenge: SignUserActionChallengeRequest) -> T.DeactivateServiceAccountResponse:
+    def deactivate_service_account_complete(
+        self,
+        service_account_id: str,
+        body: T.DeactivateServiceAccountRequest,
+        signed_challenge: SignUserActionChallengeRequest,
+    ) -> T.DeactivateServiceAccountResponse:
         """
         Complete Deactivate Service Account.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        service_account_id: ID of the service account.
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            service_account_id: ID of the service account.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.DeactivateServiceAccountResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="PUT",
             path="/auth/service-accounts/{serviceAccountId}/deactivate",
             path_params={"serviceAccountId": service_account_id},
@@ -1614,6 +1689,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=body,
             user_action=user_action_token,
         )
+        return cast(T.DeactivateServiceAccountResponse, response)
 
     def activate_user_init(self, user_id: str) -> UserActionChallengeResponse:
         """
@@ -1622,11 +1698,11 @@ The number of delegated wallets created and the wallet types are determined by t
         Creates a user action challenge for external signing.
 
         Args:
-        user_id: User id.
+            user_id: User id.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/users/{userId}/activate"
         path = path.replace("{userId}", str(user_id))
         payload = ""
@@ -1638,25 +1714,25 @@ The number of delegated wallets created and the wallet types are determined by t
             user_action_payload=payload,
         )
 
-    def activate_user_complete(self, user_id: str, signed_challenge: SignUserActionChallengeRequest) -> T.ActivateUserResponse:
+    def activate_user_complete(
+        self, user_id: str, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.ActivateUserResponse:
         """
         Complete Activate User.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        user_id: User id.
-        signed_challenge: The signed challenge from external signing.
+            user_id: User id.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.ActivateUserResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="PUT",
             path="/auth/users/{userId}/activate",
             path_params={"userId": user_id},
@@ -1664,6 +1740,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=None,
             user_action=user_action_token,
         )
+        return cast(T.ActivateUserResponse, response)
 
     def deactivate_user_init(self, user_id: str) -> UserActionChallengeResponse:
         """
@@ -1672,11 +1749,11 @@ The number of delegated wallets created and the wallet types are determined by t
         Creates a user action challenge for external signing.
 
         Args:
-        user_id: User id.
+            user_id: User id.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/users/{userId}/deactivate"
         path = path.replace("{userId}", str(user_id))
         payload = ""
@@ -1688,25 +1765,25 @@ The number of delegated wallets created and the wallet types are determined by t
             user_action_payload=payload,
         )
 
-    def deactivate_user_complete(self, user_id: str, signed_challenge: SignUserActionChallengeRequest) -> T.DeactivateUserResponse:
+    def deactivate_user_complete(
+        self, user_id: str, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.DeactivateUserResponse:
         """
         Complete Deactivate User.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        user_id: User id.
-        signed_challenge: The signed challenge from external signing.
+            user_id: User id.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.DeactivateUserResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="PUT",
             path="/auth/users/{userId}/deactivate",
             path_params={"userId": user_id},
@@ -1714,6 +1791,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=None,
             user_action=user_action_token,
         )
+        return cast(T.DeactivateUserResponse, response)
 
     def get_user(self, user_id: str) -> T.GetUserResponse:
         """
@@ -1722,12 +1800,12 @@ The number of delegated wallets created and the wallet types are determined by t
         Retrieve information about a specific User.
 
         Args:
-        user_id: User id.
+            user_id: User id.
 
         Returns:
             T.GetUserResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/auth/users/{userId}",
             path_params={"userId": user_id},
@@ -1735,6 +1813,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetUserResponse, response)
 
     def update_user_init(self, user_id: str, body: T.UpdateUserRequest) -> UserActionChallengeResponse:
         """
@@ -1743,12 +1822,12 @@ The number of delegated wallets created and the wallet types are determined by t
         Creates a user action challenge for external signing.
 
         Args:
-        user_id: User id.
-        body: Request body.
+            user_id: User id.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/users/{userId}"
         path = path.replace("{userId}", str(user_id))
         payload = json.dumps(body, separators=(",", ":")) if body else ""
@@ -1760,26 +1839,26 @@ The number of delegated wallets created and the wallet types are determined by t
             user_action_payload=payload,
         )
 
-    def update_user_complete(self, user_id: str, body: T.UpdateUserRequest, signed_challenge: SignUserActionChallengeRequest) -> T.UpdateUserResponse:
+    def update_user_complete(
+        self, user_id: str, body: T.UpdateUserRequest, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.UpdateUserResponse:
         """
         Complete Update User.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        user_id: User id.
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            user_id: User id.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.UpdateUserResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="PUT",
             path="/auth/users/{userId}",
             path_params={"userId": user_id},
@@ -1787,6 +1866,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=body,
             user_action=user_action_token,
         )
+        return cast(T.UpdateUserResponse, response)
 
     def delete_user_init(self, user_id: str) -> UserActionChallengeResponse:
         """
@@ -1795,11 +1875,11 @@ The number of delegated wallets created and the wallet types are determined by t
         Creates a user action challenge for external signing.
 
         Args:
-        user_id: User id.
+            user_id: User id.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/users/{userId}"
         path = path.replace("{userId}", str(user_id))
         payload = ""
@@ -1811,25 +1891,25 @@ The number of delegated wallets created and the wallet types are determined by t
             user_action_payload=payload,
         )
 
-    def delete_user_complete(self, user_id: str, signed_challenge: SignUserActionChallengeRequest) -> T.DeleteUserResponse:
+    def delete_user_complete(
+        self, user_id: str, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.DeleteUserResponse:
         """
         Complete Delete User.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        user_id: User id.
-        signed_challenge: The signed challenge from external signing.
+            user_id: User id.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.DeleteUserResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="DELETE",
             path="/auth/users/{userId}",
             path_params={"userId": user_id},
@@ -1837,20 +1917,21 @@ The number of delegated wallets created and the wallet types are determined by t
             body=None,
             user_action=user_action_token,
         )
+        return cast(T.DeleteUserResponse, response)
 
-    def list_users(self, query: Optional[T.ListUsersQuery] = None) -> T.ListUsersResponse:
+    def list_users(self, query: T.ListUsersQuery | None = None) -> T.ListUsersResponse:
         """
         List Users.
 
         List all Users in your organization.
 
         Args:
-        query: Query parameters.
+            query: Query parameters.
 
         Returns:
             T.ListUsersResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/auth/users",
             path_params={},
@@ -1858,6 +1939,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListUsersResponse, response)
 
     def create_user_init(self, body: T.CreateUserRequest) -> UserActionChallengeResponse:
         """
@@ -1866,11 +1948,11 @@ The number of delegated wallets created and the wallet types are determined by t
         Creates a user action challenge for external signing.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/users"
         payload = json.dumps(body, separators=(",", ":")) if body else ""
 
@@ -1881,25 +1963,25 @@ The number of delegated wallets created and the wallet types are determined by t
             user_action_payload=payload,
         )
 
-    def create_user_complete(self, body: T.CreateUserRequest, signed_challenge: SignUserActionChallengeRequest) -> T.CreateUserResponse:
+    def create_user_complete(
+        self, body: T.CreateUserRequest, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.CreateUserResponse:
         """
         Complete Create User.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.CreateUserResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="POST",
             path="/auth/users",
             path_params={},
@@ -1907,6 +1989,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=body,
             user_action=user_action_token,
         )
+        return cast(T.CreateUserResponse, response)
 
     def invite_tenant_user_init(self, body: T.InviteTenantUserRequest) -> UserActionChallengeResponse:
         """
@@ -1915,11 +1998,11 @@ The number of delegated wallets created and the wallet types are determined by t
         Creates a user action challenge for external signing.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/auth/users/invite"
         payload = json.dumps(body, separators=(",", ":")) if body else ""
 
@@ -1930,25 +2013,25 @@ The number of delegated wallets created and the wallet types are determined by t
             user_action_payload=payload,
         )
 
-    def invite_tenant_user_complete(self, body: T.InviteTenantUserRequest, signed_challenge: SignUserActionChallengeRequest) -> T.InviteTenantUserResponse:
+    def invite_tenant_user_complete(
+        self, body: T.InviteTenantUserRequest, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.InviteTenantUserResponse:
         """
         Complete Invite Tenant User.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.InviteTenantUserResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="POST",
             path="/auth/users/invite",
             path_params={},
@@ -1956,3 +2039,4 @@ The number of delegated wallets created and the wallet types are determined by t
             body=body,
             user_action=user_action_token,
         )
+        return cast(T.InviteTenantUserResponse, response)
