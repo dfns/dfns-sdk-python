@@ -1,14 +1,9 @@
 """Delegated client for the agreements domain."""
 
-import json
-from typing import Any, Literal, Optional, TypedDict, Union
+from typing import cast
 
 from ..._internal import HttpClient
-from ...base_auth_api import (
-    BaseAuthApi,
-    SignUserActionChallengeRequest,
-    UserActionChallengeResponse,
-)
+from ...base_auth_api import BaseAuthApi, SignUserActionChallengeRequest, UserActionChallengeResponse
 from . import types as T
 
 
@@ -23,19 +18,21 @@ class DelegatedAgreementsClient:
     def __init__(self, http_client: HttpClient):
         self._http = http_client
 
-    def get_latest_unaccepted_agreement(self, query: T.GetLatestUnacceptedAgreementQuery) -> T.GetLatestUnacceptedAgreementResponse:
+    def get_latest_unaccepted_agreement(
+        self, query: T.GetLatestUnacceptedAgreementQuery
+    ) -> T.GetLatestUnacceptedAgreementResponse:
         """
         Get Latest Unaccepted Agreement.
 
         Get the latest unaccepted agreement for a specific agreement type
 
         Args:
-        query: Query parameters.
+            query: Query parameters.
 
         Returns:
             T.GetLatestUnacceptedAgreementResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/agreements/latest-unaccepted",
             path_params={},
@@ -43,6 +40,7 @@ class DelegatedAgreementsClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetLatestUnacceptedAgreementResponse, response)
 
     def record_agreement_acceptance_init(self, agreement_id: str) -> UserActionChallengeResponse:
         """
@@ -51,11 +49,11 @@ class DelegatedAgreementsClient:
         Creates a user action challenge for external signing.
 
         Args:
-        agreement_id: ID of the agreement to accept.
+            agreement_id: ID of the agreement to accept.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/agreements/{agreementId}/accept"
         path = path.replace("{agreementId}", str(agreement_id))
         payload = ""
@@ -67,25 +65,25 @@ class DelegatedAgreementsClient:
             user_action_payload=payload,
         )
 
-    def record_agreement_acceptance_complete(self, agreement_id: str, signed_challenge: SignUserActionChallengeRequest) -> T.RecordAgreementAcceptanceResponse:
+    def record_agreement_acceptance_complete(
+        self, agreement_id: str, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.RecordAgreementAcceptanceResponse:
         """
         Complete Record Agreement Acceptance.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        agreement_id: ID of the agreement to accept.
-        signed_challenge: The signed challenge from external signing.
+            agreement_id: ID of the agreement to accept.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.RecordAgreementAcceptanceResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="POST",
             path="/agreements/{agreementId}/accept",
             path_params={"agreementId": agreement_id},
@@ -93,3 +91,4 @@ class DelegatedAgreementsClient:
             body=None,
             user_action=user_action_token,
         )
+        return cast(T.RecordAgreementAcceptanceResponse, response)

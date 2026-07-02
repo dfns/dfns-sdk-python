@@ -1,7 +1,7 @@
 """Signers domain module."""
 
+from . import types
 from .client import SignersClient
 from .delegated_client import DelegatedSignersClient
-from . import types
 
 __all__ = ["SignersClient", "DelegatedSignersClient", "types"]

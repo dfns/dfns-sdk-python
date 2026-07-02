@@ -1,6 +1,7 @@
 """Main Dfns client."""
 
-from .types import DfnsClientConfig
+from typing import Any
+
 from ._internal import HttpClient
 from .generated.agreements import AgreementsClient
 from .generated.allocations import AllocationsClient
@@ -17,6 +18,7 @@ from .generated.staking import StakingClient
 from .generated.swaps import SwapsClient
 from .generated.wallets import WalletsClient
 from .generated.webhooks import WebhooksClient
+from .types import DfnsClientConfig
 
 
 class DfnsClient:
@@ -80,5 +82,5 @@ class DfnsClient:
     def __enter__(self) -> "DfnsClient":
         return self
 
-    def __exit__(self, *args) -> None:
+    def __exit__(self, *args: Any) -> None:
         self.close()

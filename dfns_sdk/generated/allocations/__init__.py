@@ -1,7 +1,7 @@
 """Allocations domain module."""
 
+from . import types
 from .client import AllocationsClient
 from .delegated_client import DelegatedAllocationsClient
-from . import types
 
 __all__ = ["AllocationsClient", "DelegatedAllocationsClient", "types"]
