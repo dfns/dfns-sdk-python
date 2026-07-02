@@ -1,7 +1,7 @@
 """Client for the webhooks domain."""
 
-from typing import Any, Literal, Optional, TypedDict, Union
-
+from typing import Any, Literal, TypedDict, cast
+from typing_extensions import NotRequired, deprecated
 from ..._internal import HttpClient
 from . import types as T
 
@@ -12,19 +12,19 @@ class WebhooksClient:
     def __init__(self, http_client: HttpClient):
         self._http = http_client
 
-    def list_webhooks(self, query: Optional[T.ListWebhooksQuery] = None) -> T.ListWebhooksResponse:
+    def list_webhooks(self, query: T.ListWebhooksQuery | None = None) -> T.ListWebhooksResponse:
         """
         List Webhooks.
 
         List all webhooks for the authenticated user's organization. The results are paginated.
 
         Args:
-        query: Query parameters.
+            query: Query parameters.
 
         Returns:
             T.ListWebhooksResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/webhooks",
             path_params={},
@@ -32,6 +32,7 @@ class WebhooksClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListWebhooksResponse, response)
 
     def create_webhook(self, body: T.CreateWebhookRequest) -> T.CreateWebhookResponse:
         """
@@ -40,12 +41,12 @@ class WebhooksClient:
         Register a new webhook.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CreateWebhookResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/webhooks",
             path_params={},
@@ -53,6 +54,7 @@ class WebhooksClient:
             body=body,
             requires_signature=True,
         )
+        return cast(T.CreateWebhookResponse, response)
 
     def get_webhook(self, webhook_id: str) -> T.GetWebhookResponse:
         """
@@ -61,12 +63,12 @@ class WebhooksClient:
         Retrieve information about a specific webhook.
 
         Args:
-        webhook_id: Path parameter.
+            webhook_id: Path parameter.
 
         Returns:
             T.GetWebhookResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/webhooks/{webhookId}",
             path_params={"webhookId": webhook_id},
@@ -74,6 +76,7 @@ class WebhooksClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetWebhookResponse, response)
 
     def update_webhook(self, webhook_id: str, body: T.UpdateWebhookRequest) -> T.UpdateWebhookResponse:
         """
@@ -82,13 +85,13 @@ class WebhooksClient:
         Update the definition of an existing webhook.
 
         Args:
-        webhook_id: Path parameter.
-        body: Request body.
+            webhook_id: Path parameter.
+            body: Request body.
 
         Returns:
             T.UpdateWebhookResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/webhooks/{webhookId}",
             path_params={"webhookId": webhook_id},
@@ -96,6 +99,7 @@ class WebhooksClient:
             body=body,
             requires_signature=True,
         )
+        return cast(T.UpdateWebhookResponse, response)
 
     def delete_webhook(self, webhook_id: str) -> T.DeleteWebhookResponse:
         """
@@ -104,12 +108,12 @@ class WebhooksClient:
         Deletes an existing webhook registration.
 
         Args:
-        webhook_id: Path parameter.
+            webhook_id: Path parameter.
 
         Returns:
             T.DeleteWebhookResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="DELETE",
             path="/webhooks/{webhookId}",
             path_params={"webhookId": webhook_id},
@@ -117,6 +121,7 @@ class WebhooksClient:
             body=None,
             requires_signature=True,
         )
+        return cast(T.DeleteWebhookResponse, response)
 
     def ping_webhook(self, webhook_id: str) -> T.PingWebhookResponse:
         """
@@ -125,12 +130,12 @@ class WebhooksClient:
         This endpoint is meant for webhook setup and troubleshooting. Calling the endpoint will trigger a fake test event that will be pushed to the webhook URL. The fake event will not be saved and not appear in further requests to Webhook Events.
 
         Args:
-        webhook_id: Path parameter.
+            webhook_id: Path parameter.
 
         Returns:
             T.PingWebhookResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/webhooks/{webhookId}/ping",
             path_params={"webhookId": webhook_id},
@@ -138,6 +143,7 @@ class WebhooksClient:
             body=None,
             requires_signature=True,
         )
+        return cast(T.PingWebhookResponse, response)
 
     def get_webhook_event(self, webhook_id: str, webhook_event_id: str) -> T.GetWebhookEventResponse:
         """
@@ -150,13 +156,13 @@ We only keep a trace of those Webhook Events in our system for a **retention per
 </Warning>
 
         Args:
-        webhook_id: Path parameter.
-        webhook_event_id: Path parameter.
+            webhook_id: Path parameter.
+            webhook_event_id: Path parameter.
 
         Returns:
             T.GetWebhookEventResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/webhooks/{webhookId}/events/{webhookEventId}",
             path_params={"webhookId": webhook_id, "webhookEventId": webhook_event_id},
@@ -164,8 +170,9 @@ We only keep a trace of those Webhook Events in our system for a **retention per
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetWebhookEventResponse, response)
 
-    def list_webhook_events(self, webhook_id: str, query: Optional[T.ListWebhookEventsQuery] = None) -> T.ListWebhookEventsResponse:
+    def list_webhook_events(self, webhook_id: str, query: T.ListWebhookEventsQuery | None = None) -> T.ListWebhookEventsResponse:
         """
         List Webhook Events.
 
@@ -177,13 +184,13 @@ We only keep a trace of those Webhook Events in our system for a **retention per
 </Warning>
 
         Args:
-        webhook_id: Path parameter.
-        query: Query parameters.
+            webhook_id: Path parameter.
+            query: Query parameters.
 
         Returns:
             T.ListWebhookEventsResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/webhooks/{webhookId}/events",
             path_params={"webhookId": webhook_id},
@@ -191,3 +198,4 @@ We only keep a trace of those Webhook Events in our system for a **retention per
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListWebhookEventsResponse, response)

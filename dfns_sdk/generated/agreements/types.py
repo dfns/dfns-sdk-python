@@ -1,6 +1,8 @@
 """Types for the agreements domain."""
 
-from typing import Any, Literal, NotRequired, Optional, TypedDict, Union
+from typing import Any, Literal, TypedDict, cast
+from typing_extensions import NotRequired, deprecated
+
 
 class GetLatestUnacceptedAgreementResponse(TypedDict, total=False):
     """getLatestUnacceptedAgreement response."""

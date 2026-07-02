@@ -3,18 +3,18 @@
 from .agreements import AgreementsClient, DelegatedAgreementsClient
 from .allocations import AllocationsClient, DelegatedAllocationsClient
 from .auth import AuthClient, DelegatedAuthClient
-from .exchanges import ExchangesClient, DelegatedExchangesClient
-from .fee_sponsors import FeeSponsorsClient, DelegatedFeeSponsorsClient
-from .keys import KeysClient, DelegatedKeysClient
-from .networks import NetworksClient, DelegatedNetworksClient
-from .payouts import PayoutsClient, DelegatedPayoutsClient
-from .permissions import PermissionsClient, DelegatedPermissionsClient
-from .policies import PoliciesClient, DelegatedPoliciesClient
-from .signers import SignersClient, DelegatedSignersClient
-from .staking import StakingClient, DelegatedStakingClient
-from .swaps import SwapsClient, DelegatedSwapsClient
-from .wallets import WalletsClient, DelegatedWalletsClient
-from .webhooks import WebhooksClient, DelegatedWebhooksClient
+from .exchanges import DelegatedExchangesClient, ExchangesClient
+from .fee_sponsors import DelegatedFeeSponsorsClient, FeeSponsorsClient
+from .keys import DelegatedKeysClient, KeysClient
+from .networks import DelegatedNetworksClient, NetworksClient
+from .payouts import DelegatedPayoutsClient, PayoutsClient
+from .permissions import DelegatedPermissionsClient, PermissionsClient
+from .policies import DelegatedPoliciesClient, PoliciesClient
+from .signers import DelegatedSignersClient, SignersClient
+from .staking import DelegatedStakingClient, StakingClient
+from .swaps import DelegatedSwapsClient, SwapsClient
+from .wallets import DelegatedWalletsClient, WalletsClient
+from .webhooks import DelegatedWebhooksClient, WebhooksClient
 
 __all__ = [
     "AgreementsClient",

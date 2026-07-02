@@ -1,11 +1,13 @@
 """Types for the staking domain."""
 
-from typing import Any, Literal, NotRequired, Optional, TypedDict, Union
+from typing import Any, Literal, TypedDict, cast
+from typing_extensions import NotRequired, deprecated
+
 
 class ListStakesResponse(TypedDict, total=False):
     """listStakes response."""
 
-    items: list[TypedDict]
+    items: list[dict[str, Any]]
     next_page_token: NotRequired[str]
 
 class ListStakesQuery(TypedDict, total=False):
@@ -22,12 +24,12 @@ class CreateStakeRequest(TypedDict, total=False):
 class CreateStakeResponse(TypedDict, total=False):
     """createStake response."""
 
-    actions: list[TypedDict]
+    actions: list[dict[str, Any]]
 
 class ListStakeActionsResponse(TypedDict, total=False):
     """listStakeActions response."""
 
-    items: list[TypedDict]
+    items: list[dict[str, Any]]
     next_page_token: NotRequired[str]
 
 class ListStakeActionsQuery(TypedDict, total=False):
@@ -44,12 +46,12 @@ class CreateStakeActionRequest(TypedDict, total=False):
 class CreateStakeActionResponse(TypedDict, total=False):
     """createStakeAction response."""
 
-    actions: list[TypedDict]
+    actions: list[dict[str, Any]]
 
 class GetStakesResponse(TypedDict, total=False):
     """getStakes response."""
 
-    actions: list[TypedDict]
+    actions: list[dict[str, Any]]
 
 class GetStakesQuery(TypedDict, total=False):
     """getStakes query parameters."""

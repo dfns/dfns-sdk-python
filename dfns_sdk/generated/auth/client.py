@@ -1,9 +1,7 @@
 """Client for the auth domain."""
 
-from typing import Any, Literal, Optional, TypedDict, Union
-from warnings import deprecated
-
-
+from typing import Any, Literal, TypedDict, cast
+from typing_extensions import NotRequired, deprecated
 from ..._internal import HttpClient
 from . import types as T
 
@@ -28,12 +26,12 @@ The type of credentials used to sign the action is determined by the `kind` fiel
 * `PasswordProtectedKey`: Login challenge is signed by the decrypted user's private key that was sent during [Create User Action Signature Challenge](https://docs.dfns.co/api-reference/auth/create-user-action-challenge) step.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CreateUserActionSignatureResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/action",
             path_params={},
@@ -41,6 +39,7 @@ The type of credentials used to sign the action is determined by the `kind` fiel
             body=body,
             requires_signature=False,
         )
+        return cast(T.CreateUserActionSignatureResponse, response)
 
     def create_user_action_challenge(self, body: T.CreateUserActionChallengeRequest) -> T.CreateUserActionChallengeResponse:
         """
@@ -51,12 +50,12 @@ The type of credentials used to sign the action is determined by the `kind` fiel
   This is the first step of the [User Action Signing flow](http://docs.dfns.co/api-reference/auth/signing-flows).
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CreateUserActionChallengeResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/action/init",
             path_params={},
@@ -64,6 +63,7 @@ The type of credentials used to sign the action is determined by the `kind` fiel
             body=body,
             requires_signature=False,
         )
+        return cast(T.CreateUserActionChallengeResponse, response)
 
     def list_audit_logs(self, query: T.ListAuditLogsQuery) -> None:
         """
@@ -81,9 +81,9 @@ An additional optional query parameter, `userId` can be specified to filter down
 Dfns maintains a script which can be used for audit log signature validation: [WebAuthn Signature Verifier](https://github.com/dfns/example-scripts/tree/m/python/utils)
 
         Args:
-        query: Query parameters.
-        """
-        return self._http.request(
+            query: Query parameters.
+        """  # noqa: E501
+        self._http.request(
             method="GET",
             path="/auth/action/logs",
             path_params={},
@@ -101,12 +101,12 @@ Dfns maintains a script which can be used for audit log signature validation: [W
 Dfns maintains a script which can be used for audit log signature validation: [WebAuthn Signature Verifier](https://github.com/dfns/example-scripts/tree/m/python/utils)
 
         Args:
-        id: Log id you need information about.
+            id: Log id you need information about.
 
         Returns:
             T.GetAuditLogResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/auth/action/logs/{id}",
             path_params={"id": id},
@@ -114,6 +114,7 @@ Dfns maintains a script which can be used for audit log signature validation: [W
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetAuditLogResponse, response)
 
     @deprecated("This endpoint is deprecated.")
     def list_applications(self) -> T.ListApplicationsResponse:
@@ -126,8 +127,8 @@ Dfns maintains a script which can be used for audit log signature validation: [W
 
         Returns:
             T.ListApplicationsResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/auth/apps",
             path_params={},
@@ -135,6 +136,7 @@ Dfns maintains a script which can be used for audit log signature validation: [W
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListApplicationsResponse, response)
 
     @deprecated("This endpoint is deprecated.")
     def get_application(self, app_id: str) -> T.GetApplicationResponse:
@@ -146,12 +148,12 @@ Dfns maintains a script which can be used for audit log signature validation: [W
   </Warning>
 
         Args:
-        app_id: ID of the application (deprecated).
+            app_id: ID of the application (deprecated).
 
         Returns:
             T.GetApplicationResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/auth/apps/{appId}",
             path_params={"appId": app_id},
@@ -159,6 +161,7 @@ Dfns maintains a script which can be used for audit log signature validation: [W
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetApplicationResponse, response)
 
     def list_credentials(self) -> T.ListCredentialsResponse:
         """
@@ -168,8 +171,8 @@ Dfns maintains a script which can be used for audit log signature validation: [W
 
         Returns:
             T.ListCredentialsResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/auth/credentials",
             path_params={},
@@ -177,6 +180,7 @@ Dfns maintains a script which can be used for audit log signature validation: [W
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListCredentialsResponse, response)
 
     def create_credential(self, body: dict[str, Any]) -> T.CreateCredentialResponse:
         """
@@ -187,12 +191,12 @@ Dfns maintains a script which can be used for audit log signature validation: [W
 Adds a new credential to a user's account. See [Credential Kinds](https://docs.dfns.co/api-reference/auth/credentials#credential-kinds) for all supported credential types.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CreateCredentialResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/credentials",
             path_params={},
@@ -200,8 +204,9 @@ Adds a new credential to a user's account. See [Credential Kinds](https://docs.d
             body=body,
             requires_signature=True,
         )
+        return cast(T.CreateCredentialResponse, response)
 
-    def create_credential_challenge(self, body: T.CreateCredentialChallengeRequest) -> TypedDict:
+    def create_credential_challenge(self, body: T.CreateCredentialChallengeRequest) -> dict[str, Any]:
         """
         Create Credential Challenge.
 
@@ -210,12 +215,12 @@ Adds a new credential to a user's account. See [Credential Kinds](https://docs.d
   Starts a create user credential session, returning a challenge that will be used to verify the user's identity.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
-            TypedDict: The API response.
-        """
-        return self._http.request(
+            dict[str, Any]: The API response.
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/credentials/init",
             path_params={},
@@ -223,6 +228,7 @@ Adds a new credential to a user's account. See [Credential Kinds](https://docs.d
             body=body,
             requires_signature=False,
         )
+        return cast(dict[str, Any], response)
 
     def activate_credential(self, body: T.ActivateCredentialRequest) -> T.ActivateCredentialResponse:
         """
@@ -231,12 +237,12 @@ Adds a new credential to a user's account. See [Credential Kinds](https://docs.d
         Activates a credential that was previously deactivated. If the credential is already activated no action is taken.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.ActivateCredentialResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/auth/credentials/activate",
             path_params={},
@@ -244,6 +250,7 @@ Adds a new credential to a user's account. See [Credential Kinds](https://docs.d
             body=body,
             requires_signature=True,
         )
+        return cast(T.ActivateCredentialResponse, response)
 
     def delete_credential(self, credential_uuid: str) -> T.DeleteCredentialResponse:
         """
@@ -252,12 +259,12 @@ Adds a new credential to a user's account. See [Credential Kinds](https://docs.d
         Delete a specific credential.
 
         Args:
-        credential_uuid: Path parameter.
+            credential_uuid: Path parameter.
 
         Returns:
             T.DeleteCredentialResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="DELETE",
             path="/auth/credentials/{credentialUuid}",
             path_params={"credentialUuid": credential_uuid},
@@ -265,6 +272,7 @@ Adds a new credential to a user's account. See [Credential Kinds](https://docs.d
             body=None,
             requires_signature=True,
         )
+        return cast(T.DeleteCredentialResponse, response)
 
     def deactivate_credential(self, body: T.DeactivateCredentialRequest) -> T.DeactivateCredentialResponse:
         """
@@ -273,12 +281,12 @@ Adds a new credential to a user's account. See [Credential Kinds](https://docs.d
         Deactivates a credential that was previously active. If the credential is already deactivated no action is taken.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.DeactivateCredentialResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/auth/credentials/deactivate",
             path_params={},
@@ -286,6 +294,7 @@ Adds a new credential to a user's account. See [Credential Kinds](https://docs.d
             body=body,
             requires_signature=True,
         )
+        return cast(T.DeactivateCredentialResponse, response)
 
     def create_credential_code(self, body: T.CreateCredentialCodeRequest) -> T.CreateCredentialCodeResponse:
         """
@@ -296,12 +305,12 @@ Adds a new credential to a user's account. See [Credential Kinds](https://docs.d
 Creates a one-time-code that can then be used to create a new credential from a place you don't have access to one of your existing credential.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CreateCredentialCodeResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/credentials/code",
             path_params={},
@@ -309,8 +318,9 @@ Creates a one-time-code that can then be used to create a new credential from a 
             body=body,
             requires_signature=True,
         )
+        return cast(T.CreateCredentialCodeResponse, response)
 
-    def create_credential_challenge_with_code(self, body: T.CreateCredentialChallengeWithCodeRequest) -> TypedDict:
+    def create_credential_challenge_with_code(self, body: T.CreateCredentialChallengeWithCodeRequest) -> dict[str, Any]:
         """
         Create Credential Challenge With Code.
 
@@ -319,12 +329,12 @@ Creates a one-time-code that can then be used to create a new credential from a 
 Creates a credential challenge using a one time code-time-code. This challenge must then be signed by the new credential, before finalizing the flow.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
-            TypedDict: The API response.
-        """
-        return self._http.request(
+            dict[str, Any]: The API response.
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/credentials/code/init",
             path_params={},
@@ -332,6 +342,7 @@ Creates a credential challenge using a one time code-time-code. This challenge m
             body=body,
             requires_signature=False,
         )
+        return cast(dict[str, Any], response)
 
     def create_credential_with_code(self, body: dict[str, Any]) -> T.CreateCredentialWithCodeResponse:
         """
@@ -345,12 +356,12 @@ Adds a new credential to a user's account. This endpoint is similar to the [Crea
 * it will only work with the challenge gotten from the [Create Credential Challenge With Code](https://docs.dfns.co/api-reference/auth/create-credential-challenge-with-code) endpoint
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CreateCredentialWithCodeResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/credentials/code/verify",
             path_params={},
@@ -358,6 +369,7 @@ Adds a new credential to a user's account. This endpoint is similar to the [Crea
             body=body,
             requires_signature=False,
         )
+        return cast(T.CreateCredentialWithCodeResponse, response)
 
     def create_login_challenge(self, body: T.CreateLoginChallengeRequest) -> T.CreateLoginChallengeResponse:
         """
@@ -370,12 +382,12 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
 If the user has at least one discoverable WebAuthn credential, `username` is optional (username-less flow).
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CreateLoginChallengeResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/login/init",
             path_params={},
@@ -383,6 +395,7 @@ If the user has at least one discoverable WebAuthn credential, `username` is opt
             body=body,
             requires_signature=False,
         )
+        return cast(T.CreateLoginChallengeResponse, response)
 
     def delegated_login(self, body: T.DelegatedLoginRequest) -> T.DelegatedLoginResponse:
         """
@@ -399,12 +412,12 @@ If you want to use your own authentication system, while still using `Delegated 
 The user authentication token can be used for read operations within the Dfns API, however, write operations will still require the user to sign the action.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.DelegatedLoginResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/login/delegated",
             path_params={},
@@ -412,8 +425,9 @@ The user authentication token can be used for read operations within the Dfns AP
             body=body,
             requires_signature=True,
         )
+        return cast(T.DelegatedLoginResponse, response)
 
-    def complete_user_login(self, body: T.CompleteUserLoginRequest) -> TypedDict:
+    def complete_user_login(self, body: T.CompleteUserLoginRequest) -> dict[str, Any]:
         """
         Complete User Login.
 
@@ -425,12 +439,12 @@ The type of credentials used to login is determined by the `kind` field in the n
 * `PasswordProtectedKey`: Login challenge is signed by the decrypted user's private key that was sent during [Create User Login Challenge](../registration/inituserregistration) step.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
-            TypedDict: The API response.
-        """
-        return self._http.request(
+            dict[str, Any]: The API response.
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/login",
             path_params={},
@@ -438,6 +452,7 @@ The type of credentials used to login is determined by the `kind` field in the n
             body=body,
             requires_signature=False,
         )
+        return cast(dict[str, Any], response)
 
     def logout(self, body: T.LogoutRequest) -> T.LogoutResponse:
         """
@@ -446,12 +461,12 @@ The type of credentials used to login is determined by the `kind` field in the n
         Completes the user logout process.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.LogoutResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/auth/logout",
             path_params={},
@@ -459,6 +474,7 @@ The type of credentials used to login is determined by the `kind` field in the n
             body=body,
             requires_signature=False,
         )
+        return cast(T.LogoutResponse, response)
 
     def send_login_code(self, body: T.SendLoginCodeRequest) -> T.SendLoginCodeResponse:
         """
@@ -469,12 +485,12 @@ The type of credentials used to login is determined by the `kind` field in the n
 If the user has a credential of kind `PasswordProtectedKey` a temporary one time code needs to be passed in the `loginCode` field. That's because the [Create Login Challenge](https://docs.dfns.co/api-reference/auth/create-login-challenge) is unauthenticated and returns the encrypted private key of the user. So we need a first step to verify the identity of the user to prevent anybody from fetching the encrypted private key and trying to brute force it offline.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.SendLoginCodeResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/login/code",
             path_params={},
@@ -482,6 +498,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=body,
             requires_signature=False,
         )
+        return cast(T.SendLoginCodeResponse, response)
 
     def social_login(self, body: T.SocialLoginRequest) -> T.SocialLoginResponse:
         """
@@ -490,12 +507,12 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Completes the login process and provides the authenticated user with their authentication token.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.SocialLoginResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/login/social",
             path_params={},
@@ -503,6 +520,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=body,
             requires_signature=False,
         )
+        return cast(T.SocialLoginResponse, response)
 
     def complete_sso_login(self, body: T.CompleteSsoLoginRequest) -> T.CompleteSsoLoginResponse:
         """
@@ -511,12 +529,12 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Completes the login process and provides the authenticated user with their authentication token.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CompleteSsoLoginResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/login/sso",
             path_params={},
@@ -524,6 +542,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=body,
             requires_signature=False,
         )
+        return cast(T.CompleteSsoLoginResponse, response)
 
     def initiate_sso_login(self, body: T.InitiateSsoLoginRequest) -> T.InitiateSsoLoginResponse:
         """
@@ -532,12 +551,12 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Initialize the login process with SSO by returning the IdP URL to call.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.InitiateSsoLoginResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/login/sso/init",
             path_params={},
@@ -545,6 +564,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=body,
             requires_signature=False,
         )
+        return cast(T.InitiateSsoLoginResponse, response)
 
     def exchange_access_token(self, body: T.ExchangeAccessTokenRequest) -> T.ExchangeAccessTokenResponse:
         """
@@ -553,12 +573,12 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Only for TenantUsers - Exchanges the current user access token, for an org-bound or tenant-bound token. The user must have access to the target org / tenant. The new access token expiration won't exceed the current token's one.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.ExchangeAccessTokenResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/tokens",
             path_params={},
@@ -566,6 +586,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=body,
             requires_signature=False,
         )
+        return cast(T.ExchangeAccessTokenResponse, response)
 
     def list_personal_access_tokens(self) -> T.ListPersonalAccessTokensResponse:
         """
@@ -575,8 +596,8 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
 
         Returns:
             T.ListPersonalAccessTokensResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/auth/pats",
             path_params={},
@@ -584,6 +605,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListPersonalAccessTokensResponse, response)
 
     def create_personal_access_token(self, body: T.CreatePersonalAccessTokenRequest) -> T.CreatePersonalAccessTokenResponse:
         """
@@ -592,12 +614,12 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Create a new Personal Access Token for the caller.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CreatePersonalAccessTokenResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/pats",
             path_params={},
@@ -605,6 +627,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=body,
             requires_signature=True,
         )
+        return cast(T.CreatePersonalAccessTokenResponse, response)
 
     def get_personal_access_token(self, token_id: str) -> T.GetPersonalAccessTokenResponse:
         """
@@ -613,12 +636,12 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Retrieve a specific Personal Access Token.
 
         Args:
-        token_id: Token id.
+            token_id: Token id.
 
         Returns:
             T.GetPersonalAccessTokenResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/auth/pats/{tokenId}",
             path_params={"tokenId": token_id},
@@ -626,6 +649,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetPersonalAccessTokenResponse, response)
 
     def update_personal_access_token(self, token_id: str, body: T.UpdatePersonalAccessTokenRequest) -> T.UpdatePersonalAccessTokenResponse:
         """
@@ -634,13 +658,13 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Update a specific Personal Access Token.
 
         Args:
-        token_id: Token id.
-        body: Request body.
+            token_id: Token id.
+            body: Request body.
 
         Returns:
             T.UpdatePersonalAccessTokenResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/auth/pats/{tokenId}",
             path_params={"tokenId": token_id},
@@ -648,6 +672,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=body,
             requires_signature=True,
         )
+        return cast(T.UpdatePersonalAccessTokenResponse, response)
 
     def delete_personal_access_token(self, token_id: str) -> T.DeletePersonalAccessTokenResponse:
         """
@@ -656,12 +681,12 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Delete a specific Personal Access Token.
 
         Args:
-        token_id: Token id.
+            token_id: Token id.
 
         Returns:
             T.DeletePersonalAccessTokenResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="DELETE",
             path="/auth/pats/{tokenId}",
             path_params={"tokenId": token_id},
@@ -669,6 +694,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=None,
             requires_signature=True,
         )
+        return cast(T.DeletePersonalAccessTokenResponse, response)
 
     def activate_personal_access_token(self, token_id: str) -> T.ActivatePersonalAccessTokenResponse:
         """
@@ -677,12 +703,12 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Activate a specific Personal Access Token.
 
         Args:
-        token_id: Token id.
+            token_id: Token id.
 
         Returns:
             T.ActivatePersonalAccessTokenResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/auth/pats/{tokenId}/activate",
             path_params={"tokenId": token_id},
@@ -690,6 +716,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=None,
             requires_signature=True,
         )
+        return cast(T.ActivatePersonalAccessTokenResponse, response)
 
     def deactivate_personal_access_token(self, token_id: str) -> T.DeactivatePersonalAccessTokenResponse:
         """
@@ -698,12 +725,12 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
         Deactivates a credential that was previously active. If the credential is already deactivated no action is taken.
 
         Args:
-        token_id: Token id.
+            token_id: Token id.
 
         Returns:
             T.DeactivatePersonalAccessTokenResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/auth/pats/{tokenId}/deactivate",
             path_params={"tokenId": token_id},
@@ -711,6 +738,7 @@ If the user has a credential of kind `PasswordProtectedKey` a temporary one time
             body=None,
             requires_signature=True,
         )
+        return cast(T.DeactivatePersonalAccessTokenResponse, response)
 
     def create_delegated_recovery_challenge(self, body: T.CreateDelegatedRecoveryChallengeRequest) -> T.CreateDelegatedRecoveryChallengeResponse:
         """
@@ -725,12 +753,12 @@ Starts a recovery session for an end user under your brand, without sending a Df
 The response returns a recovery challenge. Pass it to your frontend so the user can decrypt their recovery credential and sign, then call [Recover User](https://docs.dfns.co/api-reference/auth/recover-user) to complete the recovery and register fresh credentials.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CreateDelegatedRecoveryChallengeResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/recover/user/delegated",
             path_params={},
@@ -738,6 +766,7 @@ The response returns a recovery challenge. Pass it to your frontend so the user 
             body=body,
             requires_signature=True,
         )
+        return cast(T.CreateDelegatedRecoveryChallengeResponse, response)
 
     def recover_user(self, body: T.RecoverUserRequest) -> T.RecoverUserResponse:
         """
@@ -754,12 +783,12 @@ The process is as follows:
 3. Construct the `recovery.credentialAssertion` object, using the _base64url-encoded_ string generated in step 2 as its challenge.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.RecoverUserResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/recover/user",
             path_params={},
@@ -767,6 +796,7 @@ The process is as follows:
             body=body,
             requires_signature=False,
         )
+        return cast(T.RecoverUserResponse, response)
 
     def create_recovery_challenge(self, body: T.CreateRecoveryChallengeRequest) -> T.CreateRecoveryChallengeResponse:
         """
@@ -775,12 +805,12 @@ The process is as follows:
         Starts a user recovery session, returning a challenge that will be used to verify the user's identity.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CreateRecoveryChallengeResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/recover/user/init",
             path_params={},
@@ -788,6 +818,7 @@ The process is as follows:
             body=body,
             requires_signature=False,
         )
+        return cast(T.CreateRecoveryChallengeResponse, response)
 
     def send_recovery_code_email(self, body: T.SendRecoveryCodeEmailRequest) -> T.SendRecoveryCodeEmailResponse:
         """
@@ -796,12 +827,12 @@ The process is as follows:
         Send the user a recovery verification code. This code is used as a second factor to verify the user initiated the recovery request.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.SendRecoveryCodeEmailResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/recover/user/code",
             path_params={},
@@ -809,6 +840,7 @@ The process is as follows:
             body=body,
             requires_signature=False,
         )
+        return cast(T.SendRecoveryCodeEmailResponse, response)
 
     def create_delegated_registration_challenge(self, body: T.CreateDelegatedRegistrationChallengeRequest) -> T.CreateDelegatedRegistrationChallengeResponse:
         """
@@ -829,12 +861,12 @@ Pass the challenge to your frontend so the user can create a passkey, then call 
 Bundle a `recoveryCredential` in the completion call alongside the first passkey. All credentials in that call sign the same challenge returned here. See [Implement end-user recovery](https://docs.dfns.co/guides/developers/end-user-recovery).
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CreateDelegatedRegistrationChallengeResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/registration/delegated",
             path_params={},
@@ -842,6 +874,7 @@ Bundle a `recoveryCredential` in the completion call alongside the first passkey
             body=body,
             requires_signature=True,
         )
+        return cast(T.CreateDelegatedRegistrationChallengeResponse, response)
 
     def create_registration_challenge(self, body: T.CreateRegistrationChallengeRequest) -> T.CreateRegistrationChallengeResponse:
         """
@@ -850,12 +883,12 @@ Bundle a `recoveryCredential` in the completion call alongside the first passkey
         Starts a user registration session. It returns a challenge that will need to be signed by a passkey and used to perform the step [Complete User Registration](/api-reference/auth/register)
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CreateRegistrationChallengeResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/registration/init",
             path_params={},
@@ -863,6 +896,7 @@ Bundle a `recoveryCredential` in the completion call alongside the first passkey
             body=body,
             requires_signature=False,
         )
+        return cast(T.CreateRegistrationChallengeResponse, response)
 
     def create_social_registration_challenge(self, body: T.CreateSocialRegistrationChallengeRequest) -> T.CreateSocialRegistrationChallengeResponse:
         """
@@ -871,12 +905,12 @@ Bundle a `recoveryCredential` in the completion call alongside the first passkey
         Starts an end-user registration session by passing a JWT obtained by an IdP. It returns a challenge that will need to be signed by a passkey and used to perform [Complete End User Registration with Wallets](/api-reference/auth/register-end-user).
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CreateSocialRegistrationChallengeResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/registration/social",
             path_params={},
@@ -884,6 +918,7 @@ Bundle a `recoveryCredential` in the completion call alongside the first passkey
             body=body,
             requires_signature=False,
         )
+        return cast(T.CreateSocialRegistrationChallengeResponse, response)
 
     def complete_user_registration(self, body: T.CompleteUserRegistrationRequest) -> T.CompleteUserRegistrationResponse:
         """
@@ -902,12 +937,12 @@ The type of credentials being registered is determined by the `credentialKind` f
 * `RecoveryKey` : Similar to `PasswordProtectedKey`, but this credential can only be used to recover an account not to sign an action or login. Once this credential is used all the other user's credentials are invalidated.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CompleteUserRegistrationResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/registration",
             path_params={},
@@ -915,6 +950,7 @@ The type of credentials being registered is determined by the `credentialKind` f
             body=body,
             requires_signature=False,
         )
+        return cast(T.CompleteUserRegistrationResponse, response)
 
     def complete_end_user_registration_with_wallets(self, body: T.CompleteEndUserRegistrationWithWalletsRequest) -> T.CompleteEndUserRegistrationWithWalletsResponse:
         """
@@ -935,12 +971,12 @@ The type of credentials being registered is determined by the `credentialKind` f
 The number of delegated wallets created and the wallet types are determined by the `wallets` specifications. The end user is automatically assigned `ManagedDefaultEndUserAccess` managed permission that grants the end user full access to the wallets.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CompleteEndUserRegistrationWithWalletsResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/registration/enduser",
             path_params={},
@@ -948,6 +984,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=body,
             requires_signature=False,
         )
+        return cast(T.CompleteEndUserRegistrationWithWalletsResponse, response)
 
     def resend_registration_code(self, body: T.ResendRegistrationCodeRequest) -> T.ResendRegistrationCodeResponse:
         """
@@ -956,12 +993,12 @@ The number of delegated wallets created and the wallet types are determined by t
         Sends the user a new registration code. The previous registration code will be marked invalid. If the user has already completed their registration no action will be taken.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.ResendRegistrationCodeResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/auth/registration/code",
             path_params={},
@@ -969,6 +1006,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=body,
             requires_signature=False,
         )
+        return cast(T.ResendRegistrationCodeResponse, response)
 
     def list_service_accounts(self) -> T.ListServiceAccountsResponse:
         """
@@ -978,8 +1016,8 @@ The number of delegated wallets created and the wallet types are determined by t
 
         Returns:
             T.ListServiceAccountsResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/auth/service-accounts",
             path_params={},
@@ -987,6 +1025,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListServiceAccountsResponse, response)
 
     def create_service_account(self, body: T.CreateServiceAccountRequest) -> T.CreateServiceAccountResponse:
         """
@@ -995,12 +1034,12 @@ The number of delegated wallets created and the wallet types are determined by t
         Create a new Service Account for your organization.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CreateServiceAccountResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/service-accounts",
             path_params={},
@@ -1008,6 +1047,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=body,
             requires_signature=True,
         )
+        return cast(T.CreateServiceAccountResponse, response)
 
     def get_service_account(self, service_account_id: str) -> T.GetServiceAccountResponse:
         """
@@ -1016,12 +1056,12 @@ The number of delegated wallets created and the wallet types are determined by t
         Get information about a specific Service Account.
 
         Args:
-        service_account_id: ID of the service account.
+            service_account_id: ID of the service account.
 
         Returns:
             T.GetServiceAccountResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/auth/service-accounts/{serviceAccountId}",
             path_params={"serviceAccountId": service_account_id},
@@ -1029,6 +1069,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetServiceAccountResponse, response)
 
     def update_service_account(self, service_account_id: str, body: T.UpdateServiceAccountRequest) -> T.UpdateServiceAccountResponse:
         """
@@ -1037,13 +1078,13 @@ The number of delegated wallets created and the wallet types are determined by t
         Update a specific Service Account.
 
         Args:
-        service_account_id: ID of the service account.
-        body: Request body.
+            service_account_id: ID of the service account.
+            body: Request body.
 
         Returns:
             T.UpdateServiceAccountResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/auth/service-accounts/{serviceAccountId}",
             path_params={"serviceAccountId": service_account_id},
@@ -1051,21 +1092,22 @@ The number of delegated wallets created and the wallet types are determined by t
             body=body,
             requires_signature=True,
         )
+        return cast(T.UpdateServiceAccountResponse, response)
 
-    def delete_service_account(self, service_account_id: str, query: Optional[T.DeleteServiceAccountQuery] = None) -> T.DeleteServiceAccountResponse:
+    def delete_service_account(self, service_account_id: str, query: T.DeleteServiceAccountQuery | None = None) -> T.DeleteServiceAccountResponse:
         """
         Delete Service Account.
 
         Delete a specific Service Account.
 
         Args:
-        service_account_id: ID of the service account.
-        query: Query parameters.
+            service_account_id: ID of the service account.
+            query: Query parameters.
 
         Returns:
             T.DeleteServiceAccountResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="DELETE",
             path="/auth/service-accounts/{serviceAccountId}",
             path_params={"serviceAccountId": service_account_id},
@@ -1073,6 +1115,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=None,
             requires_signature=True,
         )
+        return cast(T.DeleteServiceAccountResponse, response)
 
     def activate_service_account(self, service_account_id: str) -> T.ActivateServiceAccountResponse:
         """
@@ -1081,12 +1124,12 @@ The number of delegated wallets created and the wallet types are determined by t
         Activate a specific Service Account.
 
         Args:
-        service_account_id: ID of the service account.
+            service_account_id: ID of the service account.
 
         Returns:
             T.ActivateServiceAccountResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/auth/service-accounts/{serviceAccountId}/activate",
             path_params={"serviceAccountId": service_account_id},
@@ -1094,6 +1137,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=None,
             requires_signature=True,
         )
+        return cast(T.ActivateServiceAccountResponse, response)
 
     def deactivate_service_account(self, service_account_id: str, body: T.DeactivateServiceAccountRequest) -> T.DeactivateServiceAccountResponse:
         """
@@ -1102,13 +1146,13 @@ The number of delegated wallets created and the wallet types are determined by t
         Deactivate a specific Service Account.
 
         Args:
-        service_account_id: ID of the service account.
-        body: Request body.
+            service_account_id: ID of the service account.
+            body: Request body.
 
         Returns:
             T.DeactivateServiceAccountResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/auth/service-accounts/{serviceAccountId}/deactivate",
             path_params={"serviceAccountId": service_account_id},
@@ -1116,6 +1160,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=body,
             requires_signature=True,
         )
+        return cast(T.DeactivateServiceAccountResponse, response)
 
     def activate_user(self, user_id: str) -> T.ActivateUserResponse:
         """
@@ -1124,12 +1169,12 @@ The number of delegated wallets created and the wallet types are determined by t
         Activate a specific User.
 
         Args:
-        user_id: User id.
+            user_id: User id.
 
         Returns:
             T.ActivateUserResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/auth/users/{userId}/activate",
             path_params={"userId": user_id},
@@ -1137,6 +1182,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=None,
             requires_signature=True,
         )
+        return cast(T.ActivateUserResponse, response)
 
     def deactivate_user(self, user_id: str) -> T.DeactivateUserResponse:
         """
@@ -1145,12 +1191,12 @@ The number of delegated wallets created and the wallet types are determined by t
         Deactivate a specific User.
 
         Args:
-        user_id: User id.
+            user_id: User id.
 
         Returns:
             T.DeactivateUserResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/auth/users/{userId}/deactivate",
             path_params={"userId": user_id},
@@ -1158,6 +1204,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=None,
             requires_signature=True,
         )
+        return cast(T.DeactivateUserResponse, response)
 
     def get_user(self, user_id: str) -> T.GetUserResponse:
         """
@@ -1166,12 +1213,12 @@ The number of delegated wallets created and the wallet types are determined by t
         Retrieve information about a specific User.
 
         Args:
-        user_id: User id.
+            user_id: User id.
 
         Returns:
             T.GetUserResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/auth/users/{userId}",
             path_params={"userId": user_id},
@@ -1179,6 +1226,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetUserResponse, response)
 
     def update_user(self, user_id: str, body: T.UpdateUserRequest) -> T.UpdateUserResponse:
         """
@@ -1187,13 +1235,13 @@ The number of delegated wallets created and the wallet types are determined by t
         Update a specific User.
 
         Args:
-        user_id: User id.
-        body: Request body.
+            user_id: User id.
+            body: Request body.
 
         Returns:
             T.UpdateUserResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/auth/users/{userId}",
             path_params={"userId": user_id},
@@ -1201,6 +1249,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=body,
             requires_signature=True,
         )
+        return cast(T.UpdateUserResponse, response)
 
     def delete_user(self, user_id: str) -> T.DeleteUserResponse:
         """
@@ -1209,12 +1258,12 @@ The number of delegated wallets created and the wallet types are determined by t
         Delete a specific User.
 
         Args:
-        user_id: User id.
+            user_id: User id.
 
         Returns:
             T.DeleteUserResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="DELETE",
             path="/auth/users/{userId}",
             path_params={"userId": user_id},
@@ -1222,20 +1271,21 @@ The number of delegated wallets created and the wallet types are determined by t
             body=None,
             requires_signature=True,
         )
+        return cast(T.DeleteUserResponse, response)
 
-    def list_users(self, query: Optional[T.ListUsersQuery] = None) -> T.ListUsersResponse:
+    def list_users(self, query: T.ListUsersQuery | None = None) -> T.ListUsersResponse:
         """
         List Users.
 
         List all Users in your organization.
 
         Args:
-        query: Query parameters.
+            query: Query parameters.
 
         Returns:
             T.ListUsersResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/auth/users",
             path_params={},
@@ -1243,6 +1293,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListUsersResponse, response)
 
     def create_user(self, body: T.CreateUserRequest) -> T.CreateUserResponse:
         """
@@ -1255,12 +1306,12 @@ The number of delegated wallets created and the wallet types are determined by t
   endpoint.</Note>
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CreateUserResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/users",
             path_params={},
@@ -1268,6 +1319,7 @@ The number of delegated wallets created and the wallet types are determined by t
             body=body,
             requires_signature=True,
         )
+        return cast(T.CreateUserResponse, response)
 
     def invite_tenant_user(self, body: T.InviteTenantUserRequest) -> T.InviteTenantUserResponse:
         """
@@ -1276,12 +1328,12 @@ The number of delegated wallets created and the wallet types are determined by t
         Invite an existing Tenant User in the caller's org. The invited Tenant User starts without any permissions within the org.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.InviteTenantUserResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/auth/users/invite",
             path_params={},
@@ -1289,3 +1341,4 @@ The number of delegated wallets created and the wallet types are determined by t
             body=body,
             requires_signature=True,
         )
+        return cast(T.InviteTenantUserResponse, response)

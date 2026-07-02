@@ -1,18 +1,20 @@
 """Types for the networks domain."""
 
-from typing import Any, Literal, NotRequired, Optional, TypedDict, Union
+from typing import Any, Literal, TypedDict, cast
+from typing_extensions import NotRequired, deprecated
+
 
 class EstimateFeesQuery(TypedDict, total=False):
     """estimateFees query parameters."""
 
-    network: Literal["Bitcoin", "BitcoinSignet", "BitcoinTestnet3", "BitcoinTestnet4", "ArbitrumOne", "ArbitrumSepolia", "ArcTestnet", "AvalancheC", "AvalancheCFuji", "Base", "BaseSepolia", "Bob", "BobSepolia", "Bsc", "BscTestnet", "Berachain", "BerachainBepolia", "Celo", "CeloAlfajores", "Codex", "CodexSepolia", "Ethereum", "EthereumClassic", "EthereumClassicMordor", "EthereumSepolia", "EthereumHolesky", "EthereumHoodi", "FantomOpera", "FantomTestnet", "FlareC", "FlareCCoston2", "FlowEvm", "FlowEvmTestnet", "Ink", "InkSepolia", "Optimism", "OptimismSepolia", "Plasma", "PlasmaTestnet", "Plume", "PlumeSepolia", "Polygon", "PolygonAmoy", "Race", "RaceSepolia", "Tempo", "TempoModerato", "Tsc", "TscTestnet1", "Xdc", "XdcApothem", "XLayer", "XLayerSepolia", "Solana", "SolanaDevnet"]
+    network: Literal["Bitcoin", "BitcoinSignet", "BitcoinTestnet4", "Litecoin", "LitecoinTestnet", "Dogecoin", "DogecoinTestnet", "ArbitrumOne", "ArbitrumSepolia", "ArcTestnet", "AvalancheC", "AvalancheCFuji", "Base", "BaseSepolia", "Bob", "BobSepolia", "Bsc", "BscTestnet", "Berachain", "BerachainBepolia", "Celo", "CeloAlfajores", "Codex", "CodexSepolia", "Ethereum", "EthereumClassic", "EthereumClassicMordor", "EthereumSepolia", "EthereumHoodi", "FlareC", "FlareCCoston2", "FlowEvm", "FlowEvmTestnet", "Ink", "InkSepolia", "Optimism", "OptimismSepolia", "Plasma", "PlasmaTestnet", "Plume", "PlumeSepolia", "Polygon", "PolygonAmoy", "Race", "RaceSepolia", "Robinhood", "RobinhoodSepolia", "Sonic", "SonicTestnet", "Tempo", "TempoModerato", "Tsc", "TscTestnet1", "Xdc", "XdcApothem", "XLayer", "XLayerSepolia", "Solana", "SolanaDevnet"]
 
 class CallFunctionRequest(TypedDict, total=False):
     """callFunction request body."""
 
     contract: str
-    abi: TypedDict
-    calldata: NotRequired[TypedDict]
+    abi: dict[str, Any]
+    calldata: NotRequired[dict[str, Any]]
 
 class GetCantonValidatorResponse(TypedDict, total=False):
     """getCantonValidator response."""
@@ -29,8 +31,8 @@ class UpdateCantonValidatorRequest(TypedDict, total=False):
     """updateCantonValidator request body."""
 
     name: NotRequired[str]
-    validator: NotRequired[TypedDict]
-    ledger: NotRequired[TypedDict]
+    validator: NotRequired[dict[str, Any]]
+    ledger: NotRequired[dict[str, Any]]
 
 class UpdateCantonValidatorResponse(TypedDict, total=False):
     """updateCantonValidator response."""
@@ -57,7 +59,7 @@ class DeleteCantonValidatorResponse(TypedDict, total=False):
 class ListCantonValidatorsResponse(TypedDict, total=False):
     """listCantonValidators response."""
 
-    items: list[TypedDict]
+    items: list[dict[str, Any]]
     next_page_token: NotRequired[str]
 
 class ListCantonValidatorsQuery(TypedDict, total=False):

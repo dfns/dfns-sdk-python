@@ -1,7 +1,7 @@
 """Client for the keys domain."""
 
-from typing import Any, Literal, Optional, TypedDict, Union
-
+from typing import Any, Literal, TypedDict, cast
+from typing_extensions import NotRequired, deprecated
 from ..._internal import HttpClient
 from . import types as T
 
@@ -12,19 +12,19 @@ class KeysClient:
     def __init__(self, http_client: HttpClient):
         self._http = http_client
 
-    def list_keys(self, query: Optional[T.ListKeysQuery] = None) -> T.ListKeysResponse:
+    def list_keys(self, query: T.ListKeysQuery | None = None) -> T.ListKeysResponse:
         """
         List Keys.
 
         Retrieve all keys registered for your organization.
 
         Args:
-        query: Query parameters.
+            query: Query parameters.
 
         Returns:
             T.ListKeysResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/keys",
             path_params={},
@@ -32,6 +32,7 @@ class KeysClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListKeysResponse, response)
 
     def create_key(self, body: T.CreateKeyRequest) -> T.CreateKeyResponse:
         """
@@ -40,12 +41,12 @@ class KeysClient:
         Creates a key for the given scheme and curve. Returns the new key entity.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CreateKeyResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/keys",
             path_params={},
@@ -53,6 +54,7 @@ class KeysClient:
             body=body,
             requires_signature=True,
         )
+        return cast(T.CreateKeyResponse, response)
 
     def delegate_key(self, key_id: str, body: T.DelegateKeyRequest) -> T.DelegateKeyResponse:
         """
@@ -73,13 +75,13 @@ This operation is irreversible. The key ownership will be transferred to the end
 In most cases, when you want to implement [Wallet Delegation](https://docs.dfns.co/developers/guides/wallet-delegation), simply create the wallet by directly delegating it to an end user, in which case it will the non-custodial from the start.  There are some rare cases, however, where the key or wallet must be created before the user has accessed to the system.  To accommodate this, we've added the ability to create a key or wallet in delay delegation mode, and then later delegate it (i.e.: transfer ownership of it) to an end user via this endpoint.
 
         Args:
-        key_id: Path parameter.
-        body: Request body.
+            key_id: Path parameter.
+            body: Request body.
 
         Returns:
             T.DelegateKeyResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/keys/{keyId}/delegate",
             path_params={"keyId": key_id},
@@ -87,6 +89,7 @@ In most cases, when you want to implement [Wallet Delegation](https://docs.dfns.
             body=body,
             requires_signature=True,
         )
+        return cast(T.DelegateKeyResponse, response)
 
     def get_key(self, key_id: str) -> T.GetKeyResponse:
         """
@@ -95,12 +98,12 @@ In most cases, when you want to implement [Wallet Delegation](https://docs.dfns.
         Retrieves a key information by its ID.
 
         Args:
-        key_id: The key to retrieve.
+            key_id: The key to retrieve.
 
         Returns:
             T.GetKeyResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/keys/{keyId}",
             path_params={"keyId": key_id},
@@ -108,6 +111,7 @@ In most cases, when you want to implement [Wallet Delegation](https://docs.dfns.
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetKeyResponse, response)
 
     def update_key(self, key_id: str, body: T.UpdateKeyRequest) -> T.UpdateKeyResponse:
         """
@@ -116,13 +120,13 @@ In most cases, when you want to implement [Wallet Delegation](https://docs.dfns.
         Updates the name of an existing key.
 
         Args:
-        key_id: Path parameter.
-        body: Request body.
+            key_id: Path parameter.
+            body: Request body.
 
         Returns:
             T.UpdateKeyResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/keys/{keyId}",
             path_params={"keyId": key_id},
@@ -130,6 +134,7 @@ In most cases, when you want to implement [Wallet Delegation](https://docs.dfns.
             body=body,
             requires_signature=True,
         )
+        return cast(T.UpdateKeyResponse, response)
 
     def delete_key(self, key_id: str) -> T.DeleteKeyResponse:
         """
@@ -138,12 +143,12 @@ In most cases, when you want to implement [Wallet Delegation](https://docs.dfns.
         Deletes the key and all wallets using this key. Once deleted, keys (and wallets) are not usable anymore, and won't count in your overall organisation wallet count.
 
         Args:
-        key_id: Path parameter.
+            key_id: Path parameter.
 
         Returns:
             T.DeleteKeyResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="DELETE",
             path="/keys/{keyId}",
             path_params={"keyId": key_id},
@@ -151,6 +156,7 @@ In most cases, when you want to implement [Wallet Delegation](https://docs.dfns.
             body=None,
             requires_signature=True,
         )
+        return cast(T.DeleteKeyResponse, response)
 
     def derive_key(self, key_id: str, body: T.DeriveKeyRequest) -> T.DeriveKeyResponse:
         """
@@ -165,13 +171,13 @@ The seed doesn’t need to be secret. Without access to the DH key, it is not po
 This endpoint only supports Diffie-Hellman keys. Regular threshold signature keys, like `ECDSA` or `EdDSA`, will not work. You can create a Diffie-Hellman key with the [Create Key](https://docs.dfns.co/api-reference/keys/create-key) endpoint using `scheme=DH` and `curve=secp256k1`.
 
         Args:
-        key_id: Path parameter.
-        body: Request body.
+            key_id: Path parameter.
+            body: Request body.
 
         Returns:
             T.DeriveKeyResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/keys/{keyId}/derive",
             path_params={"keyId": key_id},
@@ -179,6 +185,7 @@ This endpoint only supports Diffie-Hellman keys. Regular threshold signature key
             body=body,
             requires_signature=True,
         )
+        return cast(T.DeriveKeyResponse, response)
 
     def export_key(self, key_id: str, body: T.ExportKeyRequest) -> T.ExportKeyResponse:
         """
@@ -193,13 +200,13 @@ Dfns can not guarantee the security of exported keys as we have no way to contro
 </Danger>
 
         Args:
-        key_id: Path parameter.
-        body: Request body.
+            key_id: Path parameter.
+            body: Request body.
 
         Returns:
             T.ExportKeyResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/keys/{keyId}/export",
             path_params={"keyId": key_id},
@@ -207,21 +214,22 @@ Dfns can not guarantee the security of exported keys as we have no way to contro
             body=body,
             requires_signature=True,
         )
+        return cast(T.ExportKeyResponse, response)
 
-    def list_signatures(self, key_id: str, query: Optional[T.ListSignaturesQuery] = None) -> T.ListSignaturesResponse:
+    def list_signatures(self, key_id: str, query: T.ListSignaturesQuery | None = None) -> T.ListSignaturesResponse:
         """
         List Signatures.
 
         List all signature requests for a key.
 
         Args:
-        key_id: The key to list signatures for.
-        query: Query parameters.
+            key_id: The key to list signatures for.
+            query: Query parameters.
 
         Returns:
             T.ListSignaturesResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/keys/{keyId}/signatures",
             path_params={"keyId": key_id},
@@ -229,6 +237,7 @@ Dfns can not guarantee the security of exported keys as we have no way to contro
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListSignaturesResponse, response)
 
     def generate_signature(self, key_id: str, body: dict[str, Any]) -> T.GenerateSignatureResponse:
         """
@@ -243,13 +252,13 @@ If you were using the deprecated `POST /wallets/{walletId}/signatures` endpoint,
 </Note>
 
         Args:
-        key_id: The key to sign with.
-        body: Request body.
+            key_id: The key to sign with.
+            body: Request body.
 
         Returns:
             T.GenerateSignatureResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/keys/{keyId}/signatures",
             path_params={"keyId": key_id},
@@ -257,6 +266,7 @@ If you were using the deprecated `POST /wallets/{walletId}/signatures` endpoint,
             body=body,
             requires_signature=True,
         )
+        return cast(T.GenerateSignatureResponse, response)
 
     def get_signature(self, key_id: str, signature_id: str) -> T.GetSignatureResponse:
         """
@@ -265,13 +275,13 @@ If you were using the deprecated `POST /wallets/{walletId}/signatures` endpoint,
         Retrieve a signature request details.
 
         Args:
-        key_id: The key that was used for signing.
-        signature_id: The signature request to retrieve.
+            key_id: The key that was used for signing.
+            signature_id: The signature request to retrieve.
 
         Returns:
             T.GetSignatureResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/keys/{keyId}/signatures/{signatureId}",
             path_params={"keyId": key_id, "signatureId": signature_id},
@@ -279,6 +289,7 @@ If you were using the deprecated `POST /wallets/{walletId}/signatures` endpoint,
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetSignatureResponse, response)
 
     def import_key(self, body: T.ImportKeyRequest) -> T.ImportKeyResponse:
         """
@@ -295,12 +306,12 @@ Dfns can not guarantee the security of imported wallets, as we have no way to co
 </Danger>
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.ImportKeyResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/keys/import",
             path_params={},
@@ -308,3 +319,4 @@ Dfns can not guarantee the security of imported wallets, as we have no way to co
             body=body,
             requires_signature=True,
         )
+        return cast(T.ImportKeyResponse, response)

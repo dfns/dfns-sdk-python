@@ -1,13 +1,15 @@
 """Types for the auth domain."""
 
-from typing import Any, Literal, NotRequired, Optional, TypedDict, Union
+from typing import Any, Literal, TypedDict, cast
+from typing_extensions import NotRequired, deprecated
+
 
 class CreateUserActionSignatureRequest(TypedDict, total=False):
     """createUserActionSignature request body."""
 
     challenge_identifier: str
-    first_factor: TypedDict
-    second_factor: NotRequired[TypedDict]
+    first_factor: dict[str, Any]
+    second_factor: NotRequired[dict[str, Any]]
 
 class CreateUserActionSignatureResponse(TypedDict, total=False):
     """createUserActionSignature response."""
@@ -27,11 +29,11 @@ class CreateUserActionChallengeResponse(TypedDict, total=False):
 
     challenge: str
     challenge_identifier: str
-    rp: NotRequired[TypedDict]
-    supported_credential_kinds: list[TypedDict]
+    rp: NotRequired[dict[str, Any]]
+    supported_credential_kinds: list[dict[str, Any]]
     user_verification: Literal["required", "preferred", "discouraged"]
     attestation: Literal["none", "indirect", "direct", "enterprise"]
-    allow_credentials: TypedDict
+    allow_credentials: dict[str, Any]
     external_authentication_url: str
 
 class ListAuditLogsQuery(TypedDict, total=False):
@@ -50,12 +52,12 @@ class GetAuditLogResponse(TypedDict, total=False):
     user_id: Any
     username: Any
     date_performed: str
-    first_factor_credential: TypedDict
+    first_factor_credential: dict[str, Any]
 
 class ListApplicationsResponse(TypedDict, total=False):
     """listApplications response."""
 
-    items: list[TypedDict]
+    items: list[dict[str, Any]]
 
 class GetApplicationResponse(TypedDict, total=False):
     """getApplication response."""
@@ -67,13 +69,13 @@ class GetApplicationResponse(TypedDict, total=False):
     name: str
     is_active: bool
     expected_origin: NotRequired[str]
-    permission_assignments: list[TypedDict]
-    access_tokens: list[TypedDict]
+    permission_assignments: list[dict[str, Any]]
+    access_tokens: list[dict[str, Any]]
 
 class ListCredentialsResponse(TypedDict, total=False):
     """listCredentials response."""
 
-    items: list[TypedDict]
+    items: list[dict[str, Any]]
 
 class CreateCredentialResponse(TypedDict, total=False):
     """createCredential response."""
@@ -121,7 +123,7 @@ class DeactivateCredentialResponse(TypedDict, total=False):
 class CreateCredentialCodeRequest(TypedDict, total=False):
     """createCredentialCode request body."""
 
-    expiration: Union[str, int]
+    expiration: str | int
 
 class CreateCredentialCodeResponse(TypedDict, total=False):
     """createCredentialCode response."""
@@ -161,11 +163,11 @@ class CreateLoginChallengeResponse(TypedDict, total=False):
 
     challenge: str
     challenge_identifier: str
-    rp: NotRequired[TypedDict]
-    supported_credential_kinds: list[TypedDict]
+    rp: NotRequired[dict[str, Any]]
+    supported_credential_kinds: list[dict[str, Any]]
     user_verification: Literal["required", "preferred", "discouraged"]
     attestation: Literal["none", "indirect", "direct", "enterprise"]
-    allow_credentials: TypedDict
+    allow_credentials: dict[str, Any]
     external_authentication_url: str
 
 class DelegatedLoginRequest(TypedDict, total=False):
@@ -182,8 +184,8 @@ class CompleteUserLoginRequest(TypedDict, total=False):
     """completeUserLogin request body."""
 
     challenge_identifier: str
-    first_factor: TypedDict
-    second_factor: NotRequired[TypedDict]
+    first_factor: dict[str, Any]
+    second_factor: NotRequired[dict[str, Any]]
 
 class LogoutRequest(TypedDict, total=False):
     """logout request body."""
@@ -255,7 +257,7 @@ class ExchangeAccessTokenResponse(TypedDict, total=False):
 class ListPersonalAccessTokensResponse(TypedDict, total=False):
     """listPersonalAccessTokens response."""
 
-    items: list[TypedDict]
+    items: list[dict[str, Any]]
 
 class CreatePersonalAccessTokenRequest(TypedDict, total=False):
     """createPersonalAccessToken request body."""
@@ -281,7 +283,7 @@ class CreatePersonalAccessTokenResponse(TypedDict, total=False):
     org_id: str
     public_key: str
     token_id: str
-    permission_assignments: list[TypedDict]
+    permission_assignments: list[dict[str, Any]]
 
 class GetPersonalAccessTokenResponse(TypedDict, total=False):
     """getPersonalAccessToken response."""
@@ -295,7 +297,7 @@ class GetPersonalAccessTokenResponse(TypedDict, total=False):
     linked_app_id: str
     name: str
     org_id: str
-    permission_assignments: list[TypedDict]
+    permission_assignments: list[dict[str, Any]]
     public_key: str
     token_id: str
 
@@ -317,7 +319,7 @@ class UpdatePersonalAccessTokenResponse(TypedDict, total=False):
     linked_app_id: str
     name: str
     org_id: str
-    permission_assignments: list[TypedDict]
+    permission_assignments: list[dict[str, Any]]
     public_key: str
     token_id: str
 
@@ -333,7 +335,7 @@ class DeletePersonalAccessTokenResponse(TypedDict, total=False):
     linked_app_id: str
     name: str
     org_id: str
-    permission_assignments: list[TypedDict]
+    permission_assignments: list[dict[str, Any]]
     public_key: str
     token_id: str
 
@@ -349,7 +351,7 @@ class ActivatePersonalAccessTokenResponse(TypedDict, total=False):
     linked_app_id: str
     name: str
     org_id: str
-    permission_assignments: list[TypedDict]
+    permission_assignments: list[dict[str, Any]]
     public_key: str
     token_id: str
 
@@ -365,7 +367,7 @@ class DeactivatePersonalAccessTokenResponse(TypedDict, total=False):
     linked_app_id: str
     name: str
     org_id: str
-    permission_assignments: list[TypedDict]
+    permission_assignments: list[dict[str, Any]]
     public_key: str
     token_id: str
 
@@ -378,29 +380,29 @@ class CreateDelegatedRecoveryChallengeRequest(TypedDict, total=False):
 class CreateDelegatedRecoveryChallengeResponse(TypedDict, total=False):
     """createDelegatedRecoveryChallenge response."""
 
-    user: TypedDict
+    user: dict[str, Any]
     temporary_authentication_token: str
     challenge: str
-    rp: NotRequired[TypedDict]
-    supported_credential_kinds: TypedDict
-    authenticator_selection: TypedDict
+    rp: NotRequired[dict[str, Any]]
+    supported_credential_kinds: dict[str, Any]
+    authenticator_selection: dict[str, Any]
     attestation: Literal["none", "indirect", "direct", "enterprise"]
-    pub_key_cred_params: list[TypedDict]
-    exclude_credentials: list[TypedDict]
+    pub_key_cred_params: list[dict[str, Any]]
+    exclude_credentials: list[dict[str, Any]]
     otp_url: str
-    allowed_recovery_credentials: list[TypedDict]
+    allowed_recovery_credentials: list[dict[str, Any]]
 
 class RecoverUserRequest(TypedDict, total=False):
     """recoverUser request body."""
 
-    recovery: TypedDict
-    new_credentials: TypedDict
+    recovery: dict[str, Any]
+    new_credentials: dict[str, Any]
 
 class RecoverUserResponse(TypedDict, total=False):
     """recoverUser response."""
 
-    credential: TypedDict
-    user: TypedDict
+    credential: dict[str, Any]
+    user: dict[str, Any]
 
 class CreateRecoveryChallengeRequest(TypedDict, total=False):
     """createRecoveryChallenge request body."""
@@ -414,17 +416,17 @@ class CreateRecoveryChallengeRequest(TypedDict, total=False):
 class CreateRecoveryChallengeResponse(TypedDict, total=False):
     """createRecoveryChallenge response."""
 
-    user: TypedDict
+    user: dict[str, Any]
     temporary_authentication_token: str
     challenge: str
-    rp: NotRequired[TypedDict]
-    supported_credential_kinds: TypedDict
-    authenticator_selection: TypedDict
+    rp: NotRequired[dict[str, Any]]
+    supported_credential_kinds: dict[str, Any]
+    authenticator_selection: dict[str, Any]
     attestation: Literal["none", "indirect", "direct", "enterprise"]
-    pub_key_cred_params: list[TypedDict]
-    exclude_credentials: list[TypedDict]
+    pub_key_cred_params: list[dict[str, Any]]
+    exclude_credentials: list[dict[str, Any]]
     otp_url: str
-    allowed_recovery_credentials: list[TypedDict]
+    allowed_recovery_credentials: list[dict[str, Any]]
 
 class SendRecoveryCodeEmailRequest(TypedDict, total=False):
     """sendRecoveryCodeEmail request body."""
@@ -448,15 +450,15 @@ class CreateDelegatedRegistrationChallengeRequest(TypedDict, total=False):
 class CreateDelegatedRegistrationChallengeResponse(TypedDict, total=False):
     """createDelegatedRegistrationChallenge response."""
 
-    user: TypedDict
+    user: dict[str, Any]
     temporary_authentication_token: str
     challenge: str
-    rp: NotRequired[TypedDict]
-    supported_credential_kinds: TypedDict
-    authenticator_selection: TypedDict
+    rp: NotRequired[dict[str, Any]]
+    supported_credential_kinds: dict[str, Any]
+    authenticator_selection: dict[str, Any]
     attestation: Literal["none", "indirect", "direct", "enterprise"]
-    pub_key_cred_params: list[TypedDict]
-    exclude_credentials: list[TypedDict]
+    pub_key_cred_params: list[dict[str, Any]]
+    exclude_credentials: list[dict[str, Any]]
     otp_url: str
 
 class CreateRegistrationChallengeRequest(TypedDict, total=False):
@@ -470,15 +472,15 @@ class CreateRegistrationChallengeRequest(TypedDict, total=False):
 class CreateRegistrationChallengeResponse(TypedDict, total=False):
     """createRegistrationChallenge response."""
 
-    user: TypedDict
+    user: dict[str, Any]
     temporary_authentication_token: str
     challenge: str
-    rp: NotRequired[TypedDict]
-    supported_credential_kinds: TypedDict
-    authenticator_selection: TypedDict
+    rp: NotRequired[dict[str, Any]]
+    supported_credential_kinds: dict[str, Any]
+    authenticator_selection: dict[str, Any]
     attestation: Literal["none", "indirect", "direct", "enterprise"]
-    pub_key_cred_params: list[TypedDict]
-    exclude_credentials: list[TypedDict]
+    pub_key_cred_params: list[dict[str, Any]]
+    exclude_credentials: list[dict[str, Any]]
     otp_url: str
 
 class CreateSocialRegistrationChallengeRequest(TypedDict, total=False):
@@ -491,45 +493,45 @@ class CreateSocialRegistrationChallengeRequest(TypedDict, total=False):
 class CreateSocialRegistrationChallengeResponse(TypedDict, total=False):
     """createSocialRegistrationChallenge response."""
 
-    user: TypedDict
+    user: dict[str, Any]
     temporary_authentication_token: str
     challenge: str
-    rp: NotRequired[TypedDict]
-    supported_credential_kinds: TypedDict
-    authenticator_selection: TypedDict
+    rp: NotRequired[dict[str, Any]]
+    supported_credential_kinds: dict[str, Any]
+    authenticator_selection: dict[str, Any]
     attestation: Literal["none", "indirect", "direct", "enterprise"]
-    pub_key_cred_params: list[TypedDict]
-    exclude_credentials: list[TypedDict]
+    pub_key_cred_params: list[dict[str, Any]]
+    exclude_credentials: list[dict[str, Any]]
     otp_url: str
 
 class CompleteUserRegistrationRequest(TypedDict, total=False):
     """completeUserRegistration request body."""
 
-    first_factor_credential: TypedDict
-    second_factor_credential: NotRequired[TypedDict]
-    recovery_credential: NotRequired[TypedDict]
+    first_factor_credential: dict[str, Any]
+    second_factor_credential: NotRequired[dict[str, Any]]
+    recovery_credential: NotRequired[dict[str, Any]]
 
 class CompleteUserRegistrationResponse(TypedDict, total=False):
     """completeUserRegistration response."""
 
-    credential: TypedDict
-    user: TypedDict
+    credential: dict[str, Any]
+    user: dict[str, Any]
 
 class CompleteEndUserRegistrationWithWalletsRequest(TypedDict, total=False):
     """completeEndUserRegistrationWithWallets request body."""
 
-    first_factor_credential: TypedDict
-    second_factor_credential: NotRequired[TypedDict]
-    recovery_credential: NotRequired[TypedDict]
-    wallets: list[TypedDict]
+    first_factor_credential: dict[str, Any]
+    second_factor_credential: NotRequired[dict[str, Any]]
+    recovery_credential: NotRequired[dict[str, Any]]
+    wallets: list[dict[str, Any]]
 
 class CompleteEndUserRegistrationWithWalletsResponse(TypedDict, total=False):
     """completeEndUserRegistrationWithWallets response."""
 
-    credential: TypedDict
-    user: TypedDict
-    authentication: TypedDict
-    wallets: list[TypedDict]
+    credential: dict[str, Any]
+    user: dict[str, Any]
+    authentication: dict[str, Any]
+    wallets: list[dict[str, Any]]
 
 class ResendRegistrationCodeRequest(TypedDict, total=False):
     """resendRegistrationCode request body."""
@@ -546,7 +548,7 @@ class ResendRegistrationCodeResponse(TypedDict, total=False):
 class ListServiceAccountsResponse(TypedDict, total=False):
     """listServiceAccounts response."""
 
-    items: list[TypedDict]
+    items: list[dict[str, Any]]
 
 class CreateServiceAccountRequest(TypedDict, total=False):
     """createServiceAccount request body."""
@@ -560,14 +562,14 @@ class CreateServiceAccountRequest(TypedDict, total=False):
 class CreateServiceAccountResponse(TypedDict, total=False):
     """createServiceAccount response."""
 
-    user_info: TypedDict
-    access_tokens: list[TypedDict]
+    user_info: dict[str, Any]
+    access_tokens: list[dict[str, Any]]
 
 class GetServiceAccountResponse(TypedDict, total=False):
     """getServiceAccount response."""
 
-    user_info: TypedDict
-    access_tokens: list[TypedDict]
+    user_info: dict[str, Any]
+    access_tokens: list[dict[str, Any]]
 
 class UpdateServiceAccountRequest(TypedDict, total=False):
     """updateServiceAccount request body."""
@@ -578,14 +580,14 @@ class UpdateServiceAccountRequest(TypedDict, total=False):
 class UpdateServiceAccountResponse(TypedDict, total=False):
     """updateServiceAccount response."""
 
-    user_info: TypedDict
-    access_tokens: list[TypedDict]
+    user_info: dict[str, Any]
+    access_tokens: list[dict[str, Any]]
 
 class DeleteServiceAccountResponse(TypedDict, total=False):
     """deleteServiceAccount response."""
 
-    user_info: TypedDict
-    access_tokens: list[TypedDict]
+    user_info: dict[str, Any]
+    access_tokens: list[dict[str, Any]]
 
 class DeleteServiceAccountQuery(TypedDict, total=False):
     """deleteServiceAccount query parameters."""
@@ -595,8 +597,8 @@ class DeleteServiceAccountQuery(TypedDict, total=False):
 class ActivateServiceAccountResponse(TypedDict, total=False):
     """activateServiceAccount response."""
 
-    user_info: TypedDict
-    access_tokens: list[TypedDict]
+    user_info: dict[str, Any]
+    access_tokens: list[dict[str, Any]]
 
 class DeactivateServiceAccountRequest(TypedDict, total=False):
     """deactivateServiceAccount request body."""
@@ -606,8 +608,8 @@ class DeactivateServiceAccountRequest(TypedDict, total=False):
 class DeactivateServiceAccountResponse(TypedDict, total=False):
     """deactivateServiceAccount response."""
 
-    user_info: TypedDict
-    access_tokens: list[TypedDict]
+    user_info: dict[str, Any]
+    access_tokens: list[dict[str, Any]]
 
 class ActivateUserResponse(TypedDict, total=False):
     """activateUser response."""
@@ -624,7 +626,7 @@ class ActivateUserResponse(TypedDict, total=False):
     is_service_account: bool
     is_registered: bool
     is_s_s_o_required: bool
-    permission_assignments: list[TypedDict]
+    permission_assignments: list[dict[str, Any]]
 
 class DeactivateUserResponse(TypedDict, total=False):
     """deactivateUser response."""
@@ -641,7 +643,7 @@ class DeactivateUserResponse(TypedDict, total=False):
     is_service_account: bool
     is_registered: bool
     is_s_s_o_required: bool
-    permission_assignments: list[TypedDict]
+    permission_assignments: list[dict[str, Any]]
 
 class GetUserResponse(TypedDict, total=False):
     """getUser response."""
@@ -658,7 +660,7 @@ class GetUserResponse(TypedDict, total=False):
     is_service_account: bool
     is_registered: bool
     is_s_s_o_required: bool
-    permission_assignments: list[TypedDict]
+    permission_assignments: list[dict[str, Any]]
 
 class UpdateUserRequest(TypedDict, total=False):
     """updateUser request body."""
@@ -680,7 +682,7 @@ class UpdateUserResponse(TypedDict, total=False):
     is_service_account: bool
     is_registered: bool
     is_s_s_o_required: bool
-    permission_assignments: list[TypedDict]
+    permission_assignments: list[dict[str, Any]]
 
 class DeleteUserResponse(TypedDict, total=False):
     """deleteUser response."""
@@ -697,12 +699,12 @@ class DeleteUserResponse(TypedDict, total=False):
     is_service_account: bool
     is_registered: bool
     is_s_s_o_required: bool
-    permission_assignments: list[TypedDict]
+    permission_assignments: list[dict[str, Any]]
 
 class ListUsersResponse(TypedDict, total=False):
     """listUsers response."""
 
-    items: list[TypedDict]
+    items: list[dict[str, Any]]
     next_page_token: NotRequired[str]
 
 class ListUsersQuery(TypedDict, total=False):
@@ -736,7 +738,7 @@ class CreateUserResponse(TypedDict, total=False):
     is_service_account: bool
     is_registered: bool
     is_s_s_o_required: bool
-    permission_assignments: list[TypedDict]
+    permission_assignments: list[dict[str, Any]]
 
 class InviteTenantUserRequest(TypedDict, total=False):
     """inviteTenantUser request body."""
