@@ -1,6 +1,9 @@
 """Types for the exchanges domain."""
 
-from typing import Any, Literal, NotRequired, Optional, TypedDict, Union
+from typing import Any, Literal, TypedDict
+
+from typing_extensions import NotRequired
+
 
 class GetExchangeResponse(TypedDict, total=False):
     """getExchange response."""
@@ -10,16 +13,19 @@ class GetExchangeResponse(TypedDict, total=False):
     kind: Literal["Binance", "Kraken", "CoinbaseApp", "CoinbasePrime"]
     date_created: str
 
+
 class DeleteExchangeResponse(TypedDict, total=False):
     """deleteExchange response."""
 
     deleted: Literal[True]
 
+
 class ListExchangesResponse(TypedDict, total=False):
     """listExchanges response."""
 
-    items: list[TypedDict]
+    items: list[dict[str, Any]]
     next_page_token: NotRequired[str]
+
 
 class ListExchangesQuery(TypedDict, total=False):
     """listExchanges query parameters."""
@@ -27,13 +33,15 @@ class ListExchangesQuery(TypedDict, total=False):
     limit: NotRequired[int]
     pagination_token: NotRequired[str]
 
+
 class CreateExchangeRequest(TypedDict, total=False):
     """createExchange request body."""
 
     name: NotRequired[str]
     kind: Literal["Binance", "Kraken", "CoinbaseApp", "CoinbasePrime"]
-    read_configuration: TypedDict
-    write_configuration: TypedDict
+    read_configuration: dict[str, Any]
+    write_configuration: dict[str, Any]
+
 
 class CreateExchangeResponse(TypedDict, total=False):
     """createExchange response."""
@@ -43,11 +51,13 @@ class CreateExchangeResponse(TypedDict, total=False):
     kind: Literal["Binance", "Kraken", "CoinbaseApp", "CoinbasePrime"]
     date_created: str
 
+
 class ListAccountsResponse(TypedDict, total=False):
     """listAccounts response."""
 
-    items: list[TypedDict]
+    items: list[dict[str, Any]]
     next_page_token: NotRequired[str]
+
 
 class ListAccountsQuery(TypedDict, total=False):
     """listAccounts query parameters."""
@@ -55,17 +65,20 @@ class ListAccountsQuery(TypedDict, total=False):
     limit: NotRequired[int]
     pagination_token: NotRequired[str]
 
+
 class ListAccountAssetsResponse(TypedDict, total=False):
     """listAccountAssets response."""
 
-    items: list[TypedDict]
+    items: list[dict[str, Any]]
     next_page_token: NotRequired[str]
+
 
 class ListAccountAssetsQuery(TypedDict, total=False):
     """listAccountAssets query parameters."""
 
     limit: NotRequired[int]
     pagination_token: NotRequired[str]
+
 
 class CreateExchangeDepositResponse(TypedDict, total=False):
     """createExchangeDeposit response."""
@@ -77,9 +90,10 @@ class CreateExchangeDepositResponse(TypedDict, total=False):
     exchange_reference: NotRequired[str]
     kind: Literal["Withdrawal", "Deposit"]
     wallet_id: str
-    requester: TypedDict
-    request_body: TypedDict
+    requester: dict[str, Any]
+    request_body: dict[str, Any]
     date_created: str
+
 
 class CreateExchangeWithdrawalResponse(TypedDict, total=False):
     """createExchangeWithdrawal response."""
@@ -91,6 +105,6 @@ class CreateExchangeWithdrawalResponse(TypedDict, total=False):
     exchange_reference: NotRequired[str]
     kind: Literal["Withdrawal", "Deposit"]
     wallet_id: str
-    requester: TypedDict
-    request_body: TypedDict
+    requester: dict[str, Any]
+    request_body: dict[str, Any]
     date_created: str

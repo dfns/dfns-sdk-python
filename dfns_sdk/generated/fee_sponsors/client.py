@@ -1,6 +1,6 @@
 """Client for the fee_sponsors domain."""
 
-from typing import Any, Literal, Optional, TypedDict, Union
+from typing import cast
 
 from ..._internal import HttpClient
 from . import types as T
@@ -12,19 +12,19 @@ class FeeSponsorsClient:
     def __init__(self, http_client: HttpClient):
         self._http = http_client
 
-    def list_fee_sponsors(self, query: Optional[T.ListFeeSponsorsQuery] = None) -> T.ListFeeSponsorsResponse:
+    def list_fee_sponsors(self, query: T.ListFeeSponsorsQuery | None = None) -> T.ListFeeSponsorsResponse:
         """
         List Fee Sponsors.
 
         Retrieves all Fee Sponsors configured in your organization.
 
         Args:
-        query: Query parameters.
+            query: Query parameters.
 
         Returns:
             T.ListFeeSponsorsResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/fee-sponsors",
             path_params={},
@@ -32,6 +32,7 @@ class FeeSponsorsClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListFeeSponsorsResponse, response)
 
     def create_fee_sponsor(self, body: T.CreateFeeSponsorRequest) -> T.CreateFeeSponsorResponse:
         """
@@ -40,12 +41,12 @@ class FeeSponsorsClient:
         Creates a new `FeeSponsor` associated with a sponsor wallet. Returns a new fee sponsor entity with the `id` to be used when making a transfer.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.CreateFeeSponsorResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/fee-sponsors",
             path_params={},
@@ -53,6 +54,7 @@ class FeeSponsorsClient:
             body=body,
             requires_signature=True,
         )
+        return cast(T.CreateFeeSponsorResponse, response)
 
     def get_fee_sponsor(self, fee_sponsor_id: str) -> T.GetFeeSponsorResponse:
         """
@@ -61,12 +63,12 @@ class FeeSponsorsClient:
         Retrieve a Fee Sponsor information by ID.
 
         Args:
-        fee_sponsor_id: Which Fee Sponsor you wish to retrieve.
+            fee_sponsor_id: Which Fee Sponsor you wish to retrieve.
 
         Returns:
             T.GetFeeSponsorResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/fee-sponsors/{feeSponsorId}",
             path_params={"feeSponsorId": fee_sponsor_id},
@@ -74,6 +76,7 @@ class FeeSponsorsClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetFeeSponsorResponse, response)
 
     def delete_fee_sponsor(self, fee_sponsor_id: str) -> T.DeleteFeeSponsorResponse:
         """
@@ -82,12 +85,12 @@ class FeeSponsorsClient:
         Delete a Fee Sponsor. This action is irreversible. The fee sponsor won't be able to be used anymore when making a transfer.
 
         Args:
-        fee_sponsor_id: Which Fee Sponsor you wish to delete.
+            fee_sponsor_id: Which Fee Sponsor you wish to delete.
 
         Returns:
             T.DeleteFeeSponsorResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="DELETE",
             path="/fee-sponsors/{feeSponsorId}",
             path_params={"feeSponsorId": fee_sponsor_id},
@@ -95,6 +98,7 @@ class FeeSponsorsClient:
             body=None,
             requires_signature=True,
         )
+        return cast(T.DeleteFeeSponsorResponse, response)
 
     def deactivate_fee_sponsor(self, fee_sponsor_id: str) -> T.DeactivateFeeSponsorResponse:
         """
@@ -103,12 +107,12 @@ class FeeSponsorsClient:
         Deactivate a Fee Sponsor: The fee sponsor won't be able to be used anymore when making a transfer.
 
         Args:
-        fee_sponsor_id: Which Fee Sponsor you wish to deactivate.
+            fee_sponsor_id: Which Fee Sponsor you wish to deactivate.
 
         Returns:
             T.DeactivateFeeSponsorResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/fee-sponsors/{feeSponsorId}/deactivate",
             path_params={"feeSponsorId": fee_sponsor_id},
@@ -116,6 +120,7 @@ class FeeSponsorsClient:
             body=None,
             requires_signature=True,
         )
+        return cast(T.DeactivateFeeSponsorResponse, response)
 
     def activate_fee_sponsor(self, fee_sponsor_id: str) -> T.ActivateFeeSponsorResponse:
         """
@@ -124,12 +129,12 @@ class FeeSponsorsClient:
         Activate a Fee Sponsor: The fee sponsor can be used when making a transfer.
 
         Args:
-        fee_sponsor_id: Which Fee Sponsor you wish to activate.
+            fee_sponsor_id: Which Fee Sponsor you wish to activate.
 
         Returns:
             T.ActivateFeeSponsorResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="PUT",
             path="/fee-sponsors/{feeSponsorId}/activate",
             path_params={"feeSponsorId": fee_sponsor_id},
@@ -137,21 +142,24 @@ class FeeSponsorsClient:
             body=None,
             requires_signature=True,
         )
+        return cast(T.ActivateFeeSponsorResponse, response)
 
-    def list_sponsored_fees(self, fee_sponsor_id: str, query: Optional[T.ListSponsoredFeesQuery] = None) -> T.ListSponsoredFeesResponse:
+    def list_sponsored_fees(
+        self, fee_sponsor_id: str, query: T.ListSponsoredFeesQuery | None = None
+    ) -> T.ListSponsoredFeesResponse:
         """
         List Sponsored Fees.
 
         Retrieves all fees paid by the specific Fee Sponsor.
 
         Args:
-        fee_sponsor_id: Fee Sponsor to retrieve the fees from.
-        query: Query parameters.
+            fee_sponsor_id: Fee Sponsor to retrieve the fees from.
+            query: Query parameters.
 
         Returns:
             T.ListSponsoredFeesResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/fee-sponsors/{feeSponsorId}/fees",
             path_params={"feeSponsorId": fee_sponsor_id},
@@ -159,3 +167,4 @@ class FeeSponsorsClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListSponsoredFeesResponse, response)
