@@ -1,7 +1,6 @@
 """Base authentication API for delegated client operations."""
 
-import json
-from typing import Any, TypedDict, Optional
+from typing import Any, TypedDict, cast
 
 from ._internal import HttpClient
 
@@ -93,7 +92,7 @@ class BaseAuthApi:
         Returns:
             The challenge response containing the challenge to sign.
         """
-        return http_client.request(
+        response = http_client.request(
             method="POST",
             path="/auth/action/init",
             body={
@@ -104,6 +103,7 @@ class BaseAuthApi:
             },
             requires_signature=False,
         )
+        return cast(UserActionChallengeResponse, response)
 
     @staticmethod
     def sign_user_action_challenge(
@@ -121,9 +121,10 @@ class BaseAuthApi:
         Returns:
             Dictionary containing the userAction token.
         """
-        return http_client.request(
+        response = http_client.request(
             method="POST",
             path="/auth/action",
             body=signed_challenge,
             requires_signature=False,
         )
+        return cast(dict[str, Any], response)

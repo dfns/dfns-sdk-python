@@ -1,14 +1,10 @@
 """Delegated client for the swaps domain."""
 
 import json
-from typing import Any, Literal, Optional, TypedDict, Union
+from typing import Any, cast
 
 from ..._internal import HttpClient
-from ...base_auth_api import (
-    BaseAuthApi,
-    SignUserActionChallengeRequest,
-    UserActionChallengeResponse,
-)
+from ...base_auth_api import BaseAuthApi, SignUserActionChallengeRequest, UserActionChallengeResponse
 from . import types as T
 
 
@@ -23,19 +19,19 @@ class DelegatedSwapsClient:
     def __init__(self, http_client: HttpClient):
         self._http = http_client
 
-    def list_swaps(self, query: Optional[T.ListSwapsQuery] = None) -> T.ListSwapsResponse:
+    def list_swaps(self, query: T.ListSwapsQuery | None = None) -> T.ListSwapsResponse:
         """
         List Swaps.
 
         List all swaps with pagination
 
         Args:
-        query: Query parameters.
+            query: Query parameters.
 
         Returns:
             T.ListSwapsResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/swaps",
             path_params={},
@@ -43,6 +39,7 @@ class DelegatedSwapsClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.ListSwapsResponse, response)
 
     def create_swap_init(self, body: dict[str, Any]) -> UserActionChallengeResponse:
         """
@@ -51,11 +48,11 @@ class DelegatedSwapsClient:
         Creates a user action challenge for external signing.
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """
+        """  # noqa: E501
         path = "/swaps"
         payload = json.dumps(body, separators=(",", ":")) if body else ""
 
@@ -66,25 +63,25 @@ class DelegatedSwapsClient:
             user_action_payload=payload,
         )
 
-    def create_swap_complete(self, body: dict[str, Any], signed_challenge: SignUserActionChallengeRequest) -> T.CreateSwapResponse:
+    def create_swap_complete(
+        self, body: dict[str, Any], signed_challenge: SignUserActionChallengeRequest
+    ) -> T.CreateSwapResponse:
         """
         Complete Create Swap.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-        body: Request body.
-        signed_challenge: The signed challenge from external signing.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.CreateSwapResponse: The API response.
-        """
-        user_action_result = BaseAuthApi.sign_user_action_challenge(
-            self._http, signed_challenge
-        )
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
 
-        return self._http.request_with_user_action(
+        response = self._http.request_with_user_action(
             method="POST",
             path="/swaps",
             path_params={},
@@ -92,6 +89,7 @@ class DelegatedSwapsClient:
             body=body,
             user_action=user_action_token,
         )
+        return cast(T.CreateSwapResponse, response)
 
     def request_swap_quote(self, body: dict[str, Any]) -> T.RequestSwapQuoteResponse:
         """
@@ -100,12 +98,12 @@ class DelegatedSwapsClient:
         Request a quote from a given provider for swapping assets. This is the first step of the [Swap flow](https://docs.dfns.co/api-reference/swaps#flow-overview).
 
         Args:
-        body: Request body.
+            body: Request body.
 
         Returns:
             T.RequestSwapQuoteResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="POST",
             path="/swaps/quotes",
             path_params={},
@@ -113,6 +111,7 @@ class DelegatedSwapsClient:
             body=body,
             requires_signature=False,
         )
+        return cast(T.RequestSwapQuoteResponse, response)
 
     def get_swap(self, swap_id: str) -> T.GetSwapResponse:
         """
@@ -121,12 +120,12 @@ class DelegatedSwapsClient:
         Get details of a specific swap by its ID
 
         Args:
-        swap_id: Id of the swap for which we want to get details.
+            swap_id: Id of the swap for which we want to get details.
 
         Returns:
             T.GetSwapResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/swaps/{swapId}",
             path_params={"swapId": swap_id},
@@ -134,6 +133,7 @@ class DelegatedSwapsClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetSwapResponse, response)
 
     def get_swap_quote(self, quote_id: str) -> T.GetSwapQuoteResponse:
         """
@@ -142,12 +142,12 @@ class DelegatedSwapsClient:
         Get details of a specific swap quote by its ID
 
         Args:
-        quote_id: The ID of the Swap Quote.
+            quote_id: The ID of the Swap Quote.
 
         Returns:
             T.GetSwapQuoteResponse: The API response.
-        """
-        return self._http.request(
+        """  # noqa: E501
+        response = self._http.request(
             method="GET",
             path="/swaps/quotes/{quoteId}",
             path_params={"quoteId": quote_id},
@@ -155,3 +155,4 @@ class DelegatedSwapsClient:
             body=None,
             requires_signature=False,
         )
+        return cast(T.GetSwapQuoteResponse, response)
