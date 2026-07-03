@@ -1,14 +1,18 @@
 """HTTP client for making API requests."""
 
-import hashlib
 import json
-from collections.abc import Mapping
-from typing import Any, cast
+from typing import Any, Optional, TypeVar, TYPE_CHECKING
 from urllib.parse import urlencode
 
 import httpx
 
 from dfns_sdk.types import DfnsClientConfig, DfnsDelegatedClientConfig, DfnsError
+
+if TYPE_CHECKING:
+    from dfns_sdk.auth import Signer
+
+T = TypeVar("T")
+
 
 
 class HttpClient:
@@ -21,7 +25,7 @@ class HttpClient:
             timeout=30.0,
         )
 
-    def _build_headers(self, user_action_token: str | None = None) -> dict[str, str]:
+    def _build_headers(self, user_action_token: Optional[str] = None) -> dict[str, str]:
         """Build request headers."""
         headers = {
             "Content-Type": "application/json",
@@ -37,8 +41,8 @@ class HttpClient:
     def _build_url(
         self,
         path: str,
-        path_params: Mapping[str, Any] | None = None,
-        query_params: Mapping[str, Any] | None = None,
+        path_params: Optional[dict[str, Any]] = None,
+        query_params: Optional[dict[str, Any]] = None,
     ) -> str:
         """Build the full URL with path and query parameters."""
         url = path
@@ -69,7 +73,7 @@ class HttpClient:
                 raise DfnsError(
                     message=response.text or "Unknown error",
                     status_code=response.status_code,
-                ) from None
+                )
 
         if response.status_code == 204 or not response.content:
             return None
@@ -80,7 +84,7 @@ class HttpClient:
         self,
         method: str,
         path: str,
-        body: Any = None,
+        body: Optional[Any] = None,
     ) -> str:
         """
         Get a user action token by creating and signing a challenge.
@@ -96,8 +100,7 @@ class HttpClient:
         Raises:
             DfnsError: If no signer is configured or signing fails.
         """
-        signer = getattr(self.config, "signer", None)
-        if signer is None:
+        if not self.config.signer:
             raise DfnsError(
                 message="Signer required for this operation. Configure a signer in DfnsClientConfig.",
                 status_code=None,
@@ -121,7 +124,7 @@ class HttpClient:
         challenge = self._handle_response(challenge_response)
 
         # Step 2: Sign the challenge
-        assertion = signer.sign(challenge)
+        assertion = self.config.signer.sign(challenge)
 
         # Step 3: Submit signed challenge to get user action token
         signature_body = {
@@ -137,52 +140,28 @@ class HttpClient:
         )
         result = self._handle_response(signature_response)
 
-        return cast(str, result["userAction"])
+        return result["userAction"]
 
     def request(
         self,
         method: str,
         path: str,
-        path_params: Mapping[str, Any] | None = None,
-        query_params: Mapping[str, Any] | None = None,
-        body: Any = None,
+        path_params: Optional[dict[str, Any]] = None,
+        query_params: Optional[dict[str, Any]] = None,
+        body: Optional[Any] = None,
         requires_signature: bool = False,
-        file: bytes | None = None,
     ) -> Any:
         """Make an HTTP request to the API."""
         url = self._build_url(path, path_params, query_params)
 
-        # Use the path with params substituted for signing
-        signing_path = path
-        if path_params:
-            for key, value in path_params.items():
-                signing_path = signing_path.replace(f"{{{key}}}", str(value))
-
-        # Multipart upload: send the JSON body (plus the file checksum the API
-        # expects) as the "data" part and the bytes as the "file" part. The signed
-        # payload is the "data" object so it matches what is transmitted.
-        if file is not None:
-            data = dict(body) if body else {}
-            data["fileChecksum"] = hashlib.sha256(file).hexdigest()
-            user_action_token = None
-            if requires_signature:
-                user_action_token = self._get_user_action_token(method, signing_path, data)
-            # Let httpx set the multipart Content-Type (with boundary); the default
-            # JSON content type from _build_headers would otherwise mislabel the body.
-            headers = self._build_headers(user_action_token)
-            headers.pop("Content-Type", None)
-            response = self._client.request(
-                method=method,
-                url=url,
-                headers=headers,
-                data={"data": json.dumps(data, separators=(",", ":"))},
-                files={"file": ("upload.bin", file)},
-            )
-            return self._handle_response(response)
-
         # Get user action token if required
         user_action_token = None
         if requires_signature:
+            # Use the path with params substituted for signing
+            signing_path = path
+            if path_params:
+                for key, value in path_params.items():
+                    signing_path = signing_path.replace(f"{{{key}}}", str(value))
             user_action_token = self._get_user_action_token(method, signing_path, body)
 
         headers = self._build_headers(user_action_token)
@@ -200,9 +179,9 @@ class HttpClient:
         self,
         method: str,
         path: str,
-        path_params: Mapping[str, Any] | None = None,
-        query_params: Mapping[str, Any] | None = None,
-        body: Any = None,
+        path_params: Optional[dict[str, Any]] = None,
+        query_params: Optional[dict[str, Any]] = None,
+        body: Optional[Any] = None,
         user_action: str = "",
     ) -> Any:
         """
@@ -244,6 +223,7 @@ class HttpClient:
         self.close()
 
 
+
 class AsyncHttpClient:
     """Async HTTP client for Dfns API requests."""
 
@@ -254,7 +234,7 @@ class AsyncHttpClient:
             timeout=30.0,
         )
 
-    def _build_headers(self, user_action_token: str | None = None) -> dict[str, str]:
+    def _build_headers(self, user_action_token: Optional[str] = None) -> dict[str, str]:
         """Build request headers."""
         headers = {
             "Content-Type": "application/json",
@@ -270,8 +250,8 @@ class AsyncHttpClient:
     def _build_url(
         self,
         path: str,
-        path_params: Mapping[str, Any] | None = None,
-        query_params: Mapping[str, Any] | None = None,
+        path_params: Optional[dict[str, Any]] = None,
+        query_params: Optional[dict[str, Any]] = None,
     ) -> str:
         """Build the full URL with path and query parameters."""
         url = path
@@ -302,7 +282,7 @@ class AsyncHttpClient:
                 raise DfnsError(
                     message=response.text or "Unknown error",
                     status_code=response.status_code,
-                ) from None
+                )
 
         if response.status_code == 204 or not response.content:
             return None
@@ -313,7 +293,7 @@ class AsyncHttpClient:
         self,
         method: str,
         path: str,
-        body: Any = None,
+        body: Optional[Any] = None,
     ) -> str:
         """
         Get a user action token by creating and signing a challenge.
@@ -329,8 +309,7 @@ class AsyncHttpClient:
         Raises:
             DfnsError: If no signer is configured or signing fails.
         """
-        signer = getattr(self.config, "signer", None)
-        if signer is None:
+        if not self.config.signer:
             raise DfnsError(
                 message="Signer required for this operation. Configure a signer in DfnsClientConfig.",
                 status_code=None,
@@ -354,7 +333,7 @@ class AsyncHttpClient:
         challenge = self._handle_response(challenge_response)
 
         # Step 2: Sign the challenge
-        assertion = signer.sign(challenge)
+        assertion = self.config.signer.sign(challenge)
 
         # Step 3: Submit signed challenge to get user action token
         signature_body = {
@@ -370,52 +349,28 @@ class AsyncHttpClient:
         )
         result = self._handle_response(signature_response)
 
-        return cast(str, result["userAction"])
+        return result["userAction"]
 
     async def request(
         self,
         method: str,
         path: str,
-        path_params: Mapping[str, Any] | None = None,
-        query_params: Mapping[str, Any] | None = None,
-        body: Any = None,
+        path_params: Optional[dict[str, Any]] = None,
+        query_params: Optional[dict[str, Any]] = None,
+        body: Optional[Any] = None,
         requires_signature: bool = False,
-        file: bytes | None = None,
     ) -> Any:
         """Make an async HTTP request to the API."""
         url = self._build_url(path, path_params, query_params)
 
-        # Use the path with params substituted for signing
-        signing_path = path
-        if path_params:
-            for key, value in path_params.items():
-                signing_path = signing_path.replace(f"{{{key}}}", str(value))
-
-        # Multipart upload: send the JSON body (plus the file checksum the API
-        # expects) as the "data" part and the bytes as the "file" part. The signed
-        # payload is the "data" object so it matches what is transmitted.
-        if file is not None:
-            data = dict(body) if body else {}
-            data["fileChecksum"] = hashlib.sha256(file).hexdigest()
-            user_action_token = None
-            if requires_signature:
-                user_action_token = await self._get_user_action_token(method, signing_path, data)
-            # Let httpx set the multipart Content-Type (with boundary); the default
-            # JSON content type from _build_headers would otherwise mislabel the body.
-            headers = self._build_headers(user_action_token)
-            headers.pop("Content-Type", None)
-            response = await self._client.request(
-                method=method,
-                url=url,
-                headers=headers,
-                data={"data": json.dumps(data, separators=(",", ":"))},
-                files={"file": ("upload.bin", file)},
-            )
-            return self._handle_response(response)
-
         # Get user action token if required
         user_action_token = None
         if requires_signature:
+            # Use the path with params substituted for signing
+            signing_path = path
+            if path_params:
+                for key, value in path_params.items():
+                    signing_path = signing_path.replace(f"{{{key}}}", str(value))
             user_action_token = await self._get_user_action_token(method, signing_path, body)
 
         headers = self._build_headers(user_action_token)

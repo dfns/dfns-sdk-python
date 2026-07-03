@@ -1,10 +1,14 @@
 """Delegated client for the policies domain."""
 
 import json
-from typing import Any, cast
+from typing import Any, Literal, Optional, TypedDict, Union
 
 from ..._internal import HttpClient
-from ...base_auth_api import BaseAuthApi, SignUserActionChallengeRequest, UserActionChallengeResponse
+from ...base_auth_api import (
+    BaseAuthApi,
+    SignUserActionChallengeRequest,
+    UserActionChallengeResponse,
+)
 from . import types as T
 
 
@@ -26,12 +30,12 @@ class DelegatedPoliciesClient:
         Retrieve information about a specific policy.
 
         Args:
-            policy_id: Path parameter.
+        policy_id: Path parameter.
 
         Returns:
             T.GetPolicyResponse: The API response.
-        """  # noqa: E501
-        response = self._http.request(
+        """
+        return self._http.request(
             method="GET",
             path="/v2/policies/{policyId}",
             path_params={"policyId": policy_id},
@@ -39,7 +43,6 @@ class DelegatedPoliciesClient:
             body=None,
             requires_signature=False,
         )
-        return cast(T.GetPolicyResponse, response)
 
     def update_policy_init(self, policy_id: str, body: dict[str, Any]) -> UserActionChallengeResponse:
         """
@@ -48,12 +51,12 @@ class DelegatedPoliciesClient:
         Creates a user action challenge for external signing.
 
         Args:
-            policy_id: Path parameter.
-            body: Request body.
+        policy_id: Path parameter.
+        body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """  # noqa: E501
+        """
         path = "/v2/policies/{policyId}"
         path = path.replace("{policyId}", str(policy_id))
         payload = json.dumps(body, separators=(",", ":")) if body else ""
@@ -65,26 +68,26 @@ class DelegatedPoliciesClient:
             user_action_payload=payload,
         )
 
-    def update_policy_complete(
-        self, policy_id: str, body: dict[str, Any], signed_challenge: SignUserActionChallengeRequest
-    ) -> dict[str, Any]:
+    def update_policy_complete(self, policy_id: str, body: dict[str, Any], signed_challenge: SignUserActionChallengeRequest) -> TypedDict:
         """
         Complete Update Policy.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-            policy_id: Path parameter.
-            body: Request body.
-            signed_challenge: The signed challenge from external signing.
+        policy_id: Path parameter.
+        body: Request body.
+        signed_challenge: The signed challenge from external signing.
 
         Returns:
-            dict[str, Any]: The API response.
-        """  # noqa: E501
-        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+            TypedDict: The API response.
+        """
+        user_action_result = BaseAuthApi.sign_user_action_challenge(
+            self._http, signed_challenge
+        )
         user_action_token = user_action_result["userAction"]
 
-        response = self._http.request_with_user_action(
+        return self._http.request_with_user_action(
             method="PUT",
             path="/v2/policies/{policyId}",
             path_params={"policyId": policy_id},
@@ -92,7 +95,6 @@ class DelegatedPoliciesClient:
             body=body,
             user_action=user_action_token,
         )
-        return cast(dict[str, Any], response)
 
     def delete_policy_init(self, policy_id: str) -> UserActionChallengeResponse:
         """
@@ -101,11 +103,11 @@ class DelegatedPoliciesClient:
         Creates a user action challenge for external signing.
 
         Args:
-            policy_id: Path parameter.
+        policy_id: Path parameter.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """  # noqa: E501
+        """
         path = "/v2/policies/{policyId}"
         path = path.replace("{policyId}", str(policy_id))
         payload = ""
@@ -117,25 +119,25 @@ class DelegatedPoliciesClient:
             user_action_payload=payload,
         )
 
-    def delete_policy_complete(
-        self, policy_id: str, signed_challenge: SignUserActionChallengeRequest
-    ) -> dict[str, Any]:
+    def delete_policy_complete(self, policy_id: str, signed_challenge: SignUserActionChallengeRequest) -> TypedDict:
         """
         Complete Delete Policy.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-            policy_id: Path parameter.
-            signed_challenge: The signed challenge from external signing.
+        policy_id: Path parameter.
+        signed_challenge: The signed challenge from external signing.
 
         Returns:
-            dict[str, Any]: The API response.
-        """  # noqa: E501
-        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+            TypedDict: The API response.
+        """
+        user_action_result = BaseAuthApi.sign_user_action_challenge(
+            self._http, signed_challenge
+        )
         user_action_token = user_action_result["userAction"]
 
-        response = self._http.request_with_user_action(
+        return self._http.request_with_user_action(
             method="DELETE",
             path="/v2/policies/{policyId}",
             path_params={"policyId": policy_id},
@@ -143,23 +145,20 @@ class DelegatedPoliciesClient:
             body=None,
             user_action=user_action_token,
         )
-        return cast(dict[str, Any], response)
 
-    def create_approval_decision_init(
-        self, approval_id: str, body: T.CreateApprovalDecisionRequest
-    ) -> UserActionChallengeResponse:
+    def create_approval_decision_init(self, approval_id: str, body: T.CreateApprovalDecisionRequest) -> UserActionChallengeResponse:
         """
         Initialize Create Approval Decision.
 
         Creates a user action challenge for external signing.
 
         Args:
-            approval_id: Path parameter.
-            body: Request body.
+        approval_id: Path parameter.
+        body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """  # noqa: E501
+        """
         path = "/v2/policy-approvals/{approvalId}/decisions"
         path = path.replace("{approvalId}", str(approval_id))
         payload = json.dumps(body, separators=(",", ":")) if body else ""
@@ -171,26 +170,26 @@ class DelegatedPoliciesClient:
             user_action_payload=payload,
         )
 
-    def create_approval_decision_complete(
-        self, approval_id: str, body: T.CreateApprovalDecisionRequest, signed_challenge: SignUserActionChallengeRequest
-    ) -> T.CreateApprovalDecisionResponse:
+    def create_approval_decision_complete(self, approval_id: str, body: T.CreateApprovalDecisionRequest, signed_challenge: SignUserActionChallengeRequest) -> T.CreateApprovalDecisionResponse:
         """
         Complete Create Approval Decision.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-            approval_id: Path parameter.
-            body: Request body.
-            signed_challenge: The signed challenge from external signing.
+        approval_id: Path parameter.
+        body: Request body.
+        signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.CreateApprovalDecisionResponse: The API response.
-        """  # noqa: E501
-        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+        """
+        user_action_result = BaseAuthApi.sign_user_action_challenge(
+            self._http, signed_challenge
+        )
         user_action_token = user_action_result["userAction"]
 
-        response = self._http.request_with_user_action(
+        return self._http.request_with_user_action(
             method="POST",
             path="/v2/policy-approvals/{approvalId}/decisions",
             path_params={"approvalId": approval_id},
@@ -198,21 +197,20 @@ class DelegatedPoliciesClient:
             body=body,
             user_action=user_action_token,
         )
-        return cast(T.CreateApprovalDecisionResponse, response)
 
-    def list_policies(self, query: T.ListPoliciesQuery | None = None) -> T.ListPoliciesResponse:
+    def list_policies(self, query: Optional[T.ListPoliciesQuery] = None) -> T.ListPoliciesResponse:
         """
         List Policies.
 
         Retrieve the list of policies on your organization.
 
         Args:
-            query: Query parameters.
+        query: Query parameters.
 
         Returns:
             T.ListPoliciesResponse: The API response.
-        """  # noqa: E501
-        response = self._http.request(
+        """
+        return self._http.request(
             method="GET",
             path="/v2/policies",
             path_params={},
@@ -220,7 +218,6 @@ class DelegatedPoliciesClient:
             body=None,
             requires_signature=False,
         )
-        return cast(T.ListPoliciesResponse, response)
 
     def create_policy_init(self, body: dict[str, Any]) -> UserActionChallengeResponse:
         """
@@ -229,11 +226,11 @@ class DelegatedPoliciesClient:
         Creates a user action challenge for external signing.
 
         Args:
-            body: Request body.
+        body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """  # noqa: E501
+        """
         path = "/v2/policies"
         payload = json.dumps(body, separators=(",", ":")) if body else ""
 
@@ -244,25 +241,25 @@ class DelegatedPoliciesClient:
             user_action_payload=payload,
         )
 
-    def create_policy_complete(
-        self, body: dict[str, Any], signed_challenge: SignUserActionChallengeRequest
-    ) -> dict[str, Any]:
+    def create_policy_complete(self, body: dict[str, Any], signed_challenge: SignUserActionChallengeRequest) -> TypedDict:
         """
         Complete Create Policy.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-            body: Request body.
-            signed_challenge: The signed challenge from external signing.
+        body: Request body.
+        signed_challenge: The signed challenge from external signing.
 
         Returns:
-            dict[str, Any]: The API response.
-        """  # noqa: E501
-        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+            TypedDict: The API response.
+        """
+        user_action_result = BaseAuthApi.sign_user_action_challenge(
+            self._http, signed_challenge
+        )
         user_action_token = user_action_result["userAction"]
 
-        response = self._http.request_with_user_action(
+        return self._http.request_with_user_action(
             method="POST",
             path="/v2/policies",
             path_params={},
@@ -270,7 +267,6 @@ class DelegatedPoliciesClient:
             body=body,
             user_action=user_action_token,
         )
-        return cast(dict[str, Any], response)
 
     def get_approval(self, approval_id: str) -> T.GetApprovalResponse:
         """
@@ -279,12 +275,12 @@ class DelegatedPoliciesClient:
         Retrieve information about a specific approval request.
 
         Args:
-            approval_id: Path parameter.
+        approval_id: Path parameter.
 
         Returns:
             T.GetApprovalResponse: The API response.
-        """  # noqa: E501
-        response = self._http.request(
+        """
+        return self._http.request(
             method="GET",
             path="/v2/policy-approvals/{approvalId}",
             path_params={"approvalId": approval_id},
@@ -292,21 +288,20 @@ class DelegatedPoliciesClient:
             body=None,
             requires_signature=False,
         )
-        return cast(T.GetApprovalResponse, response)
 
-    def list_approvals(self, query: T.ListApprovalsQuery | None = None) -> T.ListApprovalsResponse:
+    def list_approvals(self, query: Optional[T.ListApprovalsQuery] = None) -> T.ListApprovalsResponse:
         """
         List Approvals.
 
         Retrieve the list of pending approval requests.
 
         Args:
-            query: Query parameters.
+        query: Query parameters.
 
         Returns:
             T.ListApprovalsResponse: The API response.
-        """  # noqa: E501
-        response = self._http.request(
+        """
+        return self._http.request(
             method="GET",
             path="/v2/policy-approvals",
             path_params={},
@@ -314,4 +309,3 @@ class DelegatedPoliciesClient:
             body=None,
             requires_signature=False,
         )
-        return cast(T.ListApprovalsResponse, response)

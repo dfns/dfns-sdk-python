@@ -1,16 +1,12 @@
 """Types for the allocations domain."""
 
-from typing import Any, Literal, TypedDict
-
-from typing_extensions import NotRequired
-
+from typing import Any, Literal, NotRequired, Optional, TypedDict, Union
 
 class ListAllocationsResponse(TypedDict, total=False):
     """listAllocations response."""
 
-    items: list[dict[str, Any]]
+    items: list[TypedDict]
     next_page_token: NotRequired[str]
-
 
 class ListAllocationsQuery(TypedDict, total=False):
     """listAllocations query parameters."""
@@ -18,34 +14,22 @@ class ListAllocationsQuery(TypedDict, total=False):
     limit: NotRequired[int]
     pagination_token: NotRequired[str]
 
-
 class CreateAllocationResponse(TypedDict, total=False):
     """createAllocation response."""
 
     id: str
     wallet_id: str
-    protocol: Literal[
-        "0fns",
-        "SkySusds",
-        "GauntletUsdcPrime",
-        "SteakhouseUsdt",
-        "GauntletUsdcPrimeBase",
-        "SteakhouseUsdcBase",
-        "SentoraPyusdMain",
-    ]
-    provider: NotRequired[Literal["M0", "Yield.xyz"]]
-    amount: dict[str, Any]
-    rewards: dict[str, Any]
+    protocol: Literal["0fns"]
+    amount: TypedDict
+    rewards: TypedDict
     date_created: str
-    actions: list[dict[str, Any]]
-
+    actions: list[TypedDict]
 
 class ListAllocationActionsResponse(TypedDict, total=False):
     """listAllocationActions response."""
 
-    items: list[dict[str, Any]]
+    items: list[TypedDict]
     next_page_token: NotRequired[str]
-
 
 class ListAllocationActionsQuery(TypedDict, total=False):
     """listAllocationActions query parameters."""
@@ -53,44 +37,33 @@ class ListAllocationActionsQuery(TypedDict, total=False):
     limit: NotRequired[int]
     pagination_token: NotRequired[str]
 
+class CreateAllocationActionRequest(TypedDict, total=False):
+    """createAllocationAction request body."""
+
+    kind: Literal["Deposit", "Withdraw"]
+    external_id: NotRequired[str]
+    source_asset: TypedDict
+    target_asset: TypedDict
+    slippage_bps: int
 
 class CreateAllocationActionResponse(TypedDict, total=False):
     """createAllocationAction response."""
 
     id: str
     wallet_id: str
-    protocol: Literal[
-        "0fns",
-        "SkySusds",
-        "GauntletUsdcPrime",
-        "SteakhouseUsdt",
-        "GauntletUsdcPrimeBase",
-        "SteakhouseUsdcBase",
-        "SentoraPyusdMain",
-    ]
-    provider: NotRequired[Literal["M0", "Yield.xyz"]]
-    amount: dict[str, Any]
-    rewards: dict[str, Any]
+    protocol: Literal["0fns"]
+    amount: TypedDict
+    rewards: TypedDict
     date_created: str
-    actions: list[dict[str, Any]]
-
+    actions: list[TypedDict]
 
 class GetAllocationResponse(TypedDict, total=False):
     """getAllocation response."""
 
     id: str
     wallet_id: str
-    protocol: Literal[
-        "0fns",
-        "SkySusds",
-        "GauntletUsdcPrime",
-        "SteakhouseUsdt",
-        "GauntletUsdcPrimeBase",
-        "SteakhouseUsdcBase",
-        "SentoraPyusdMain",
-    ]
-    provider: NotRequired[Literal["M0", "Yield.xyz"]]
-    amount: dict[str, Any]
-    rewards: dict[str, Any]
+    protocol: Literal["0fns"]
+    amount: TypedDict
+    rewards: TypedDict
     date_created: str
-    actions: list[dict[str, Any]]
+    actions: list[TypedDict]
