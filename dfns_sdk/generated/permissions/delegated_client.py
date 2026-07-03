@@ -1,10 +1,14 @@
 """Delegated client for the permissions domain."""
 
 import json
-from typing import cast
+from typing import Any, Literal, Optional, TypedDict, Union
 
 from ..._internal import HttpClient
-from ...base_auth_api import BaseAuthApi, SignUserActionChallengeRequest, UserActionChallengeResponse
+from ...base_auth_api import (
+    BaseAuthApi,
+    SignUserActionChallengeRequest,
+    UserActionChallengeResponse,
+)
 from . import types as T
 
 
@@ -19,21 +23,19 @@ class DelegatedPermissionsClient:
     def __init__(self, http_client: HttpClient):
         self._http = http_client
 
-    def archive_permission_init(
-        self, permission_id: str, body: T.ArchivePermissionRequest
-    ) -> UserActionChallengeResponse:
+    def archive_permission_init(self, permission_id: str, body: T.ArchivePermissionRequest) -> UserActionChallengeResponse:
         """
         Initialize Archive Permission.
 
         Creates a user action challenge for external signing.
 
         Args:
-            permission_id: ID of the permission (also referred to as "role" in the dashboard).
-            body: Request body.
+        permission_id: ID of the permission (also referred to as "role" in the dashboard).
+        body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """  # noqa: E501
+        """
         path = "/permissions/{permissionId}/archive"
         path = path.replace("{permissionId}", str(permission_id))
         payload = json.dumps(body, separators=(",", ":")) if body else ""
@@ -45,26 +47,26 @@ class DelegatedPermissionsClient:
             user_action_payload=payload,
         )
 
-    def archive_permission_complete(
-        self, permission_id: str, body: T.ArchivePermissionRequest, signed_challenge: SignUserActionChallengeRequest
-    ) -> T.ArchivePermissionResponse:
+    def archive_permission_complete(self, permission_id: str, body: T.ArchivePermissionRequest, signed_challenge: SignUserActionChallengeRequest) -> T.ArchivePermissionResponse:
         """
         Complete Archive Permission.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-            permission_id: ID of the permission (also referred to as "role" in the dashboard).
-            body: Request body.
-            signed_challenge: The signed challenge from external signing.
+        permission_id: ID of the permission (also referred to as "role" in the dashboard).
+        body: Request body.
+        signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.ArchivePermissionResponse: The API response.
-        """  # noqa: E501
-        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+        """
+        user_action_result = BaseAuthApi.sign_user_action_challenge(
+            self._http, signed_challenge
+        )
         user_action_token = user_action_result["userAction"]
 
-        response = self._http.request_with_user_action(
+        return self._http.request_with_user_action(
             method="PUT",
             path="/permissions/{permissionId}/archive",
             path_params={"permissionId": permission_id},
@@ -72,24 +74,21 @@ class DelegatedPermissionsClient:
             body=body,
             user_action=user_action_token,
         )
-        return cast(T.ArchivePermissionResponse, response)
 
-    def list_permission_assignments(
-        self, permission_id: str, query: T.ListPermissionAssignmentsQuery | None = None
-    ) -> T.ListPermissionAssignmentsResponse:
+    def list_permission_assignments(self, permission_id: str, query: Optional[T.ListPermissionAssignmentsQuery] = None) -> T.ListPermissionAssignmentsResponse:
         """
         List Permission Assignments.
 
         Lists all permission (role) assignments for a given permission.
 
         Args:
-            permission_id: ID of the permission (also referred to as "role" in the dashboard).
-            query: Query parameters.
+        permission_id: ID of the permission (also referred to as "role" in the dashboard).
+        query: Query parameters.
 
         Returns:
             T.ListPermissionAssignmentsResponse: The API response.
-        """  # noqa: E501
-        response = self._http.request(
+        """
+        return self._http.request(
             method="GET",
             path="/permissions/{permissionId}/assignments",
             path_params={"permissionId": permission_id},
@@ -97,23 +96,20 @@ class DelegatedPermissionsClient:
             body=None,
             requires_signature=False,
         )
-        return cast(T.ListPermissionAssignmentsResponse, response)
 
-    def assign_permission_init(
-        self, permission_id: str, body: T.AssignPermissionRequest
-    ) -> UserActionChallengeResponse:
+    def assign_permission_init(self, permission_id: str, body: T.AssignPermissionRequest) -> UserActionChallengeResponse:
         """
         Initialize Assign Permission.
 
         Creates a user action challenge for external signing.
 
         Args:
-            permission_id: ID of the permission (also referred to as "role" in the dashboard).
-            body: Request body.
+        permission_id: ID of the permission (also referred to as "role" in the dashboard).
+        body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """  # noqa: E501
+        """
         path = "/permissions/{permissionId}/assignments"
         path = path.replace("{permissionId}", str(permission_id))
         payload = json.dumps(body, separators=(",", ":")) if body else ""
@@ -125,26 +121,26 @@ class DelegatedPermissionsClient:
             user_action_payload=payload,
         )
 
-    def assign_permission_complete(
-        self, permission_id: str, body: T.AssignPermissionRequest, signed_challenge: SignUserActionChallengeRequest
-    ) -> T.AssignPermissionResponse:
+    def assign_permission_complete(self, permission_id: str, body: T.AssignPermissionRequest, signed_challenge: SignUserActionChallengeRequest) -> T.AssignPermissionResponse:
         """
         Complete Assign Permission.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-            permission_id: ID of the permission (also referred to as "role" in the dashboard).
-            body: Request body.
-            signed_challenge: The signed challenge from external signing.
+        permission_id: ID of the permission (also referred to as "role" in the dashboard).
+        body: Request body.
+        signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.AssignPermissionResponse: The API response.
-        """  # noqa: E501
-        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+        """
+        user_action_result = BaseAuthApi.sign_user_action_challenge(
+            self._http, signed_challenge
+        )
         user_action_token = user_action_result["userAction"]
 
-        response = self._http.request_with_user_action(
+        return self._http.request_with_user_action(
             method="POST",
             path="/permissions/{permissionId}/assignments",
             path_params={"permissionId": permission_id},
@@ -152,21 +148,20 @@ class DelegatedPermissionsClient:
             body=body,
             user_action=user_action_token,
         )
-        return cast(T.AssignPermissionResponse, response)
 
-    def list_permissions(self, query: T.ListPermissionsQuery | None = None) -> T.ListPermissionsResponse:
+    def list_permissions(self, query: Optional[T.ListPermissionsQuery] = None) -> T.ListPermissionsResponse:
         """
         List Permissions.
 
         Lists all permissions (roles) in the organization.
 
         Args:
-            query: Query parameters.
+        query: Query parameters.
 
         Returns:
             T.ListPermissionsResponse: The API response.
-        """  # noqa: E501
-        response = self._http.request(
+        """
+        return self._http.request(
             method="GET",
             path="/permissions",
             path_params={},
@@ -174,7 +169,6 @@ class DelegatedPermissionsClient:
             body=None,
             requires_signature=False,
         )
-        return cast(T.ListPermissionsResponse, response)
 
     def create_permission_init(self, body: T.CreatePermissionRequest) -> UserActionChallengeResponse:
         """
@@ -183,11 +177,11 @@ class DelegatedPermissionsClient:
         Creates a user action challenge for external signing.
 
         Args:
-            body: Request body.
+        body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """  # noqa: E501
+        """
         path = "/permissions"
         payload = json.dumps(body, separators=(",", ":")) if body else ""
 
@@ -198,25 +192,25 @@ class DelegatedPermissionsClient:
             user_action_payload=payload,
         )
 
-    def create_permission_complete(
-        self, body: T.CreatePermissionRequest, signed_challenge: SignUserActionChallengeRequest
-    ) -> T.CreatePermissionResponse:
+    def create_permission_complete(self, body: T.CreatePermissionRequest, signed_challenge: SignUserActionChallengeRequest) -> T.CreatePermissionResponse:
         """
         Complete Create Permission.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-            body: Request body.
-            signed_challenge: The signed challenge from external signing.
+        body: Request body.
+        signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.CreatePermissionResponse: The API response.
-        """  # noqa: E501
-        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+        """
+        user_action_result = BaseAuthApi.sign_user_action_challenge(
+            self._http, signed_challenge
+        )
         user_action_token = user_action_result["userAction"]
 
-        response = self._http.request_with_user_action(
+        return self._http.request_with_user_action(
             method="POST",
             path="/permissions",
             path_params={},
@@ -224,24 +218,21 @@ class DelegatedPermissionsClient:
             body=body,
             user_action=user_action_token,
         )
-        return cast(T.CreatePermissionResponse, response)
 
-    def revoke_permission_init(
-        self, permission_id: str, assignment_id: str, query: T.RevokePermissionQuery | None = None
-    ) -> UserActionChallengeResponse:
+    def revoke_permission_init(self, permission_id: str, assignment_id: str, query: Optional[T.RevokePermissionQuery] = None) -> UserActionChallengeResponse:
         """
         Initialize Revoke Permission.
 
         Creates a user action challenge for external signing.
 
         Args:
-            permission_id: ID of the permission (also referred to as "role" in the dashboard).
-            assignment_id: ID of the permission assignment.
-            query: Query parameters.
+        permission_id: ID of the permission (also referred to as "role" in the dashboard).
+        assignment_id: ID of the permission assignment.
+        query: Query parameters.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """  # noqa: E501
+        """
         path = "/permissions/{permissionId}/assignments/{assignmentId}"
         path = path.replace("{permissionId}", str(permission_id))
         path = path.replace("{assignmentId}", str(assignment_id))
@@ -254,28 +245,24 @@ class DelegatedPermissionsClient:
             user_action_payload=payload,
         )
 
-    def revoke_permission_complete(
-        self,
-        permission_id: str,
-        assignment_id: str,
-        signed_challenge: SignUserActionChallengeRequest,
-        query: T.RevokePermissionQuery | None = None,
-    ) -> None:
+    def revoke_permission_complete(self, permission_id: str, assignment_id: str, signed_challenge: SignUserActionChallengeRequest, query: Optional[T.RevokePermissionQuery] = None) -> None:
         """
         Complete Revoke Permission.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-            permission_id: ID of the permission (also referred to as "role" in the dashboard).
-            assignment_id: ID of the permission assignment.
-            signed_challenge: The signed challenge from external signing.
-            query: Query parameters.
-        """  # noqa: E501
-        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+        permission_id: ID of the permission (also referred to as "role" in the dashboard).
+        assignment_id: ID of the permission assignment.
+        signed_challenge: The signed challenge from external signing.
+        query: Query parameters.
+        """
+        user_action_result = BaseAuthApi.sign_user_action_challenge(
+            self._http, signed_challenge
+        )
         user_action_token = user_action_result["userAction"]
 
-        self._http.request_with_user_action(
+        return self._http.request_with_user_action(
             method="DELETE",
             path="/permissions/{permissionId}/assignments/{assignmentId}",
             path_params={"permissionId": permission_id, "assignmentId": assignment_id},
@@ -291,12 +278,12 @@ class DelegatedPermissionsClient:
         Retrieves a permission (role) by ID, including any pending change request.
 
         Args:
-            permission_id: ID of the permission (also referred to as "role" in the dashboard).
+        permission_id: ID of the permission (also referred to as "role" in the dashboard).
 
         Returns:
             T.GetPermissionResponse: The API response.
-        """  # noqa: E501
-        response = self._http.request(
+        """
+        return self._http.request(
             method="GET",
             path="/permissions/{permissionId}",
             path_params={"permissionId": permission_id},
@@ -304,23 +291,20 @@ class DelegatedPermissionsClient:
             body=None,
             requires_signature=False,
         )
-        return cast(T.GetPermissionResponse, response)
 
-    def update_permission_init(
-        self, permission_id: str, body: T.UpdatePermissionRequest
-    ) -> UserActionChallengeResponse:
+    def update_permission_init(self, permission_id: str, body: T.UpdatePermissionRequest) -> UserActionChallengeResponse:
         """
         Initialize Update Permission.
 
         Creates a user action challenge for external signing.
 
         Args:
-            permission_id: ID of the permission (also referred to as "role" in the dashboard).
-            body: Request body.
+        permission_id: ID of the permission (also referred to as "role" in the dashboard).
+        body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
-        """  # noqa: E501
+        """
         path = "/permissions/{permissionId}"
         path = path.replace("{permissionId}", str(permission_id))
         payload = json.dumps(body, separators=(",", ":")) if body else ""
@@ -332,26 +316,26 @@ class DelegatedPermissionsClient:
             user_action_payload=payload,
         )
 
-    def update_permission_complete(
-        self, permission_id: str, body: T.UpdatePermissionRequest, signed_challenge: SignUserActionChallengeRequest
-    ) -> T.UpdatePermissionResponse:
+    def update_permission_complete(self, permission_id: str, body: T.UpdatePermissionRequest, signed_challenge: SignUserActionChallengeRequest) -> T.UpdatePermissionResponse:
         """
         Complete Update Permission.
 
         Submits the signed challenge and makes the API request.
 
         Args:
-            permission_id: ID of the permission (also referred to as "role" in the dashboard).
-            body: Request body.
-            signed_challenge: The signed challenge from external signing.
+        permission_id: ID of the permission (also referred to as "role" in the dashboard).
+        body: Request body.
+        signed_challenge: The signed challenge from external signing.
 
         Returns:
             T.UpdatePermissionResponse: The API response.
-        """  # noqa: E501
-        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+        """
+        user_action_result = BaseAuthApi.sign_user_action_challenge(
+            self._http, signed_challenge
+        )
         user_action_token = user_action_result["userAction"]
 
-        response = self._http.request_with_user_action(
+        return self._http.request_with_user_action(
             method="PUT",
             path="/permissions/{permissionId}",
             path_params={"permissionId": permission_id},
@@ -359,4 +343,3 @@ class DelegatedPermissionsClient:
             body=body,
             user_action=user_action_token,
         )
-        return cast(T.UpdatePermissionResponse, response)
