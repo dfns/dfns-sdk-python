@@ -1,16 +1,12 @@
 """Types for the keys domain."""
 
-from typing import Any, Literal, TypedDict
-
-from typing_extensions import NotRequired
-
+from typing import Any, Literal, NotRequired, Optional, TypedDict, Union
 
 class ListKeysResponse(TypedDict, total=False):
     """listKeys response."""
 
-    items: list[dict[str, Any]]
+    items: list[TypedDict]
     next_page_token: NotRequired[str]
-
 
 class ListKeysQuery(TypedDict, total=False):
     """listKeys query parameters."""
@@ -19,7 +15,6 @@ class ListKeysQuery(TypedDict, total=False):
     pagination_token: NotRequired[str]
     owner: NotRequired[str]
 
-
 class CreateKeyRequest(TypedDict, total=False):
     """createKey request body."""
 
@@ -27,11 +22,10 @@ class CreateKeyRequest(TypedDict, total=False):
     curve: Literal["ed25519", "secp256k1", "stark"]
     name: NotRequired[str]
     master_key: NotRequired[bool]
-    derive_from: NotRequired[dict[str, Any]]
+    derive_from: NotRequired[TypedDict]
     store_id: NotRequired[str]
     delegate_to: NotRequired[str]
     delay_delegation: NotRequired[bool]
-
 
 class CreateKeyResponse(TypedDict, total=False):
     """createKey response."""
@@ -41,7 +35,7 @@ class CreateKeyResponse(TypedDict, total=False):
     curve: Literal["ed25519", "secp256k1", "stark"]
     public_key: str
     master_key: NotRequired[bool]
-    derived_from: NotRequired[dict[str, Any]]
+    derived_from: NotRequired[TypedDict]
     name: NotRequired[str]
     status: Literal["Active", "Archived"]
     custodial: bool
@@ -51,19 +45,16 @@ class CreateKeyResponse(TypedDict, total=False):
     date_exported: NotRequired[str]
     date_deleted: NotRequired[str]
 
-
 class DelegateKeyRequest(TypedDict, total=False):
     """delegateKey request body."""
 
     delegate_to: str
-
 
 class DelegateKeyResponse(TypedDict, total=False):
     """delegateKey response."""
 
     key_id: str
     status: Literal["Delegated"]
-
 
 class GetKeyResponse(TypedDict, total=False):
     """getKey response."""
@@ -73,7 +64,7 @@ class GetKeyResponse(TypedDict, total=False):
     curve: Literal["ed25519", "secp256k1", "stark"]
     public_key: str
     master_key: NotRequired[bool]
-    derived_from: NotRequired[dict[str, Any]]
+    derived_from: NotRequired[TypedDict]
     name: NotRequired[str]
     status: Literal["Active", "Archived"]
     custodial: bool
@@ -82,15 +73,13 @@ class GetKeyResponse(TypedDict, total=False):
     exported: NotRequired[bool]
     date_exported: NotRequired[str]
     date_deleted: NotRequired[str]
-    wallets: list[dict[str, Any]]
-    store: dict[str, Any]
-
+    wallets: list[TypedDict]
+    store: TypedDict
 
 class UpdateKeyRequest(TypedDict, total=False):
     """updateKey request body."""
 
     name: Any
-
 
 class UpdateKeyResponse(TypedDict, total=False):
     """updateKey response."""
@@ -100,7 +89,7 @@ class UpdateKeyResponse(TypedDict, total=False):
     curve: Literal["ed25519", "secp256k1", "stark"]
     public_key: str
     master_key: NotRequired[bool]
-    derived_from: NotRequired[dict[str, Any]]
+    derived_from: NotRequired[TypedDict]
     name: NotRequired[str]
     status: Literal["Active", "Archived"]
     custodial: bool
@@ -109,7 +98,6 @@ class UpdateKeyResponse(TypedDict, total=False):
     exported: NotRequired[bool]
     date_exported: NotRequired[str]
     date_deleted: NotRequired[str]
-
 
 class DeleteKeyResponse(TypedDict, total=False):
     """deleteKey response."""
@@ -119,7 +107,7 @@ class DeleteKeyResponse(TypedDict, total=False):
     curve: Literal["ed25519", "secp256k1", "stark"]
     public_key: str
     master_key: NotRequired[bool]
-    derived_from: NotRequired[dict[str, Any]]
+    derived_from: NotRequired[TypedDict]
     name: NotRequired[str]
     status: Literal["Active", "Archived"]
     custodial: bool
@@ -129,44 +117,38 @@ class DeleteKeyResponse(TypedDict, total=False):
     date_exported: NotRequired[str]
     date_deleted: NotRequired[str]
 
-
 class DeriveKeyRequest(TypedDict, total=False):
     """deriveKey request body."""
 
     domain: str
     seed: str
 
-
 class DeriveKeyResponse(TypedDict, total=False):
     """deriveKey response."""
 
     output: str
 
-
 class ExportKeyRequest(TypedDict, total=False):
     """exportKey request body."""
 
     encryption_key: str
-    supported_schemes: list[dict[str, Any]]
-
+    supported_schemes: list[TypedDict]
 
 class ExportKeyResponse(TypedDict, total=False):
     """exportKey response."""
 
     public_key: str
-    protocol: Literal["CGGMP24", "FROST", "FROST_BITCOIN", "GLOW20_DH", "KU23"] | Literal["CGGMP21"]
+    protocol: Union[Literal["CGGMP24", "FROST", "FROST_BITCOIN", "GLOW20_DH", "KU23"], Literal["CGGMP21"]]
     curve: Literal["ed25519", "secp256k1", "stark"]
     min_signers: float
-    encrypted_key_shares: list[dict[str, Any]]
-
+    encrypted_key_shares: list[TypedDict]
 
 class ListSignaturesResponse(TypedDict, total=False):
     """listSignatures response."""
 
-    items: list[dict[str, Any]]
+    items: list[TypedDict]
     next_page_token: NotRequired[str]
     key_id: str
-
 
 class ListSignaturesQuery(TypedDict, total=False):
     """listSignatures query parameters."""
@@ -174,136 +156,19 @@ class ListSignaturesQuery(TypedDict, total=False):
     limit: NotRequired[int]
     pagination_token: NotRequired[str]
 
-
 class GenerateSignatureResponse(TypedDict, total=False):
     """generateSignature response."""
 
     id: str
     key_id: str
-    requester: dict[str, Any]
-    request_body: dict[str, Any]
+    requester: TypedDict
+    request_body: TypedDict
     status: Literal["Pending", "Executing", "Signed", "Confirmed", "Failed", "Rejected"]
     reason: NotRequired[str]
-    signature: NotRequired[dict[str, Any]]
-    signatures: NotRequired[list[dict[str, Any]]]
+    signature: NotRequired[TypedDict]
+    signatures: NotRequired[list[TypedDict]]
     signed_data: NotRequired[str]
-    network: NotRequired[
-        Literal[
-            "Algorand",
-            "AlgorandTestnet",
-            "Aptos",
-            "AptosTestnet",
-            "ArbitrumOne",
-            "ArbitrumSepolia",
-            "ArcTestnet",
-            "AvalancheC",
-            "AvalancheCFuji",
-            "BabylonGenesis",
-            "BabylonTestnet5",
-            "Base",
-            "BaseSepolia",
-            "Berachain",
-            "BerachainBepolia",
-            "Bitcoin",
-            "BitcoinSignet",
-            "BitcoinTestnet4",
-            "BitcoinCash",
-            "Bob",
-            "BobSepolia",
-            "Bsc",
-            "BscTestnet",
-            "Canton",
-            "CantonTestnet",
-            "Cardano",
-            "CardanoPreprod",
-            "Concordium",
-            "ConcordiumTestnet",
-            "Celo",
-            "CeloAlfajores",
-            "Codex",
-            "CodexSepolia",
-            "CosmosHub4",
-            "CosmosIcsTestnet",
-            "Dogecoin",
-            "DogecoinTestnet",
-            "Ethereum",
-            "EthereumClassic",
-            "EthereumClassicMordor",
-            "EthereumSepolia",
-            "EthereumHoodi",
-            "FlareC",
-            "FlareCCoston2",
-            "FlowEvm",
-            "FlowEvmTestnet",
-            "Hedera",
-            "HederaTestnet",
-            "Ink",
-            "InkSepolia",
-            "InternetComputer",
-            "Ion",
-            "IonTestnet",
-            "Iota",
-            "IotaTestnet",
-            "Kusama",
-            "KusamaAssetHub",
-            "Litecoin",
-            "LitecoinTestnet",
-            "Movement",
-            "MovementTestnet",
-            "Near",
-            "NearTestnet",
-            "Optimism",
-            "OptimismSepolia",
-            "Origyn",
-            "Plasma",
-            "PlasmaTestnet",
-            "Plume",
-            "PlumeSepolia",
-            "Paseo",
-            "PaseoAssetHub",
-            "Polkadot",
-            "PolkadotAssetHub",
-            "Polygon",
-            "PolygonAmoy",
-            "Polymesh",
-            "PolymeshTestnet",
-            "Race",
-            "RaceSepolia",
-            "Robinhood",
-            "RobinhoodSepolia",
-            "SeiAtlantic2",
-            "SeiPacific1",
-            "Solana",
-            "SolanaDevnet",
-            "Sonic",
-            "SonicTestnet",
-            "Starknet",
-            "StarknetSepolia",
-            "Stellar",
-            "StellarTestnet",
-            "Sui",
-            "SuiTestnet",
-            "Tezos",
-            "TezosGhostnet",
-            "TezosShadownet",
-            "Tempo",
-            "TempoModerato",
-            "Tsc",
-            "TscTestnet1",
-            "Ton",
-            "TonTestnet",
-            "Tron",
-            "TronNile",
-            "Westend",
-            "WestendAssetHub",
-            "Xdc",
-            "XdcApothem",
-            "XLayer",
-            "XLayerSepolia",
-            "XrpLedger",
-            "XrpLedgerTestnet",
-        ]
-    ]
+    network: NotRequired[Literal["Algorand", "AlgorandTestnet", "Aptos", "AptosTestnet", "ArbitrumOne", "ArbitrumSepolia", "ArcTestnet", "AvalancheC", "AvalancheCFuji", "BabylonGenesis", "BabylonTestnet5", "Base", "BaseSepolia", "Berachain", "BerachainBepolia", "Bitcoin", "BitcoinSignet", "BitcoinTestnet3", "BitcoinTestnet4", "BitcoinCash", "Bob", "BobSepolia", "Bsc", "BscTestnet", "Canton", "CantonTestnet", "Cardano", "CardanoPreprod", "Concordium", "ConcordiumTestnet", "Celo", "CeloAlfajores", "Codex", "CodexSepolia", "CosmosHub4", "CosmosIcsTestnet", "Dogecoin", "DogecoinTestnet", "Ethereum", "EthereumClassic", "EthereumClassicMordor", "EthereumSepolia", "EthereumHolesky", "EthereumHoodi", "FantomOpera", "FantomTestnet", "FlareC", "FlareCCoston2", "FlowEvm", "FlowEvmTestnet", "Hedera", "HederaTestnet", "Ink", "InkSepolia", "InternetComputer", "Ion", "IonTestnet", "Iota", "IotaTestnet", "Kaspa", "Kusama", "KusamaAssetHub", "Litecoin", "LitecoinTestnet", "Movement", "MovementTestnet", "Near", "NearTestnet", "Optimism", "OptimismSepolia", "Origyn", "Plasma", "PlasmaTestnet", "Plume", "PlumeSepolia", "Paseo", "PaseoAssetHub", "Polkadot", "PolkadotAssetHub", "Polygon", "PolygonAmoy", "Polymesh", "PolymeshTestnet", "Race", "RaceSepolia", "SeiAtlantic2", "SeiPacific1", "Solana", "SolanaDevnet", "Starknet", "StarknetSepolia", "Stellar", "StellarTestnet", "Sui", "SuiTestnet", "Tezos", "TezosGhostnet", "TezosShadownet", "Tempo", "TempoModerato", "Tsc", "TscTestnet1", "Ton", "TonTestnet", "Tron", "TronNile", "Westend", "WestendAssetHub", "Xdc", "XdcApothem", "XLayer", "XLayerSepolia", "XrpLedger", "XrpLedgerTestnet"]]
     tx_hash: NotRequired[str]
     fee: NotRequired[str]
     approval_id: NotRequired[str]
@@ -313,137 +178,20 @@ class GenerateSignatureResponse(TypedDict, total=False):
     date_confirmed: NotRequired[str]
     external_id: NotRequired[str]
     details: NotRequired[dict[str, dict[str, Any]]]
-
 
 class GetSignatureResponse(TypedDict, total=False):
     """getSignature response."""
 
     id: str
     key_id: str
-    requester: dict[str, Any]
-    request_body: dict[str, Any]
+    requester: TypedDict
+    request_body: TypedDict
     status: Literal["Pending", "Executing", "Signed", "Confirmed", "Failed", "Rejected"]
     reason: NotRequired[str]
-    signature: NotRequired[dict[str, Any]]
-    signatures: NotRequired[list[dict[str, Any]]]
+    signature: NotRequired[TypedDict]
+    signatures: NotRequired[list[TypedDict]]
     signed_data: NotRequired[str]
-    network: NotRequired[
-        Literal[
-            "Algorand",
-            "AlgorandTestnet",
-            "Aptos",
-            "AptosTestnet",
-            "ArbitrumOne",
-            "ArbitrumSepolia",
-            "ArcTestnet",
-            "AvalancheC",
-            "AvalancheCFuji",
-            "BabylonGenesis",
-            "BabylonTestnet5",
-            "Base",
-            "BaseSepolia",
-            "Berachain",
-            "BerachainBepolia",
-            "Bitcoin",
-            "BitcoinSignet",
-            "BitcoinTestnet4",
-            "BitcoinCash",
-            "Bob",
-            "BobSepolia",
-            "Bsc",
-            "BscTestnet",
-            "Canton",
-            "CantonTestnet",
-            "Cardano",
-            "CardanoPreprod",
-            "Concordium",
-            "ConcordiumTestnet",
-            "Celo",
-            "CeloAlfajores",
-            "Codex",
-            "CodexSepolia",
-            "CosmosHub4",
-            "CosmosIcsTestnet",
-            "Dogecoin",
-            "DogecoinTestnet",
-            "Ethereum",
-            "EthereumClassic",
-            "EthereumClassicMordor",
-            "EthereumSepolia",
-            "EthereumHoodi",
-            "FlareC",
-            "FlareCCoston2",
-            "FlowEvm",
-            "FlowEvmTestnet",
-            "Hedera",
-            "HederaTestnet",
-            "Ink",
-            "InkSepolia",
-            "InternetComputer",
-            "Ion",
-            "IonTestnet",
-            "Iota",
-            "IotaTestnet",
-            "Kusama",
-            "KusamaAssetHub",
-            "Litecoin",
-            "LitecoinTestnet",
-            "Movement",
-            "MovementTestnet",
-            "Near",
-            "NearTestnet",
-            "Optimism",
-            "OptimismSepolia",
-            "Origyn",
-            "Plasma",
-            "PlasmaTestnet",
-            "Plume",
-            "PlumeSepolia",
-            "Paseo",
-            "PaseoAssetHub",
-            "Polkadot",
-            "PolkadotAssetHub",
-            "Polygon",
-            "PolygonAmoy",
-            "Polymesh",
-            "PolymeshTestnet",
-            "Race",
-            "RaceSepolia",
-            "Robinhood",
-            "RobinhoodSepolia",
-            "SeiAtlantic2",
-            "SeiPacific1",
-            "Solana",
-            "SolanaDevnet",
-            "Sonic",
-            "SonicTestnet",
-            "Starknet",
-            "StarknetSepolia",
-            "Stellar",
-            "StellarTestnet",
-            "Sui",
-            "SuiTestnet",
-            "Tezos",
-            "TezosGhostnet",
-            "TezosShadownet",
-            "Tempo",
-            "TempoModerato",
-            "Tsc",
-            "TscTestnet1",
-            "Ton",
-            "TonTestnet",
-            "Tron",
-            "TronNile",
-            "Westend",
-            "WestendAssetHub",
-            "Xdc",
-            "XdcApothem",
-            "XLayer",
-            "XLayerSepolia",
-            "XrpLedger",
-            "XrpLedgerTestnet",
-        ]
-    ]
+    network: NotRequired[Literal["Algorand", "AlgorandTestnet", "Aptos", "AptosTestnet", "ArbitrumOne", "ArbitrumSepolia", "ArcTestnet", "AvalancheC", "AvalancheCFuji", "BabylonGenesis", "BabylonTestnet5", "Base", "BaseSepolia", "Berachain", "BerachainBepolia", "Bitcoin", "BitcoinSignet", "BitcoinTestnet3", "BitcoinTestnet4", "BitcoinCash", "Bob", "BobSepolia", "Bsc", "BscTestnet", "Canton", "CantonTestnet", "Cardano", "CardanoPreprod", "Concordium", "ConcordiumTestnet", "Celo", "CeloAlfajores", "Codex", "CodexSepolia", "CosmosHub4", "CosmosIcsTestnet", "Dogecoin", "DogecoinTestnet", "Ethereum", "EthereumClassic", "EthereumClassicMordor", "EthereumSepolia", "EthereumHolesky", "EthereumHoodi", "FantomOpera", "FantomTestnet", "FlareC", "FlareCCoston2", "FlowEvm", "FlowEvmTestnet", "Hedera", "HederaTestnet", "Ink", "InkSepolia", "InternetComputer", "Ion", "IonTestnet", "Iota", "IotaTestnet", "Kaspa", "Kusama", "KusamaAssetHub", "Litecoin", "LitecoinTestnet", "Movement", "MovementTestnet", "Near", "NearTestnet", "Optimism", "OptimismSepolia", "Origyn", "Plasma", "PlasmaTestnet", "Plume", "PlumeSepolia", "Paseo", "PaseoAssetHub", "Polkadot", "PolkadotAssetHub", "Polygon", "PolygonAmoy", "Polymesh", "PolymeshTestnet", "Race", "RaceSepolia", "SeiAtlantic2", "SeiPacific1", "Solana", "SolanaDevnet", "Starknet", "StarknetSepolia", "Stellar", "StellarTestnet", "Sui", "SuiTestnet", "Tezos", "TezosGhostnet", "TezosShadownet", "Tempo", "TempoModerato", "Tsc", "TscTestnet1", "Ton", "TonTestnet", "Tron", "TronNile", "Westend", "WestendAssetHub", "Xdc", "XdcApothem", "XLayer", "XLayerSepolia", "XrpLedger", "XrpLedgerTestnet"]]
     tx_hash: NotRequired[str]
     fee: NotRequired[str]
     approval_id: NotRequired[str]
@@ -454,17 +202,15 @@ class GetSignatureResponse(TypedDict, total=False):
     external_id: NotRequired[str]
     details: NotRequired[dict[str, dict[str, Any]]]
 
-
 class ImportKeyRequest(TypedDict, total=False):
     """importKey request body."""
 
     name: NotRequired[str]
     curve: Literal["ed25519", "secp256k1", "stark"]
-    protocol: Literal["CGGMP24", "FROST", "FROST_BITCOIN", "GLOW20_DH", "KU23"] | Literal["CGGMP21"]
+    protocol: Union[Literal["CGGMP24", "FROST", "FROST_BITCOIN", "GLOW20_DH", "KU23"], Literal["CGGMP21"]]
     min_signers: int
-    encrypted_key_shares: list[dict[str, Any]]
+    encrypted_key_shares: list[TypedDict]
     master_key: NotRequired[bool]
-
 
 class ImportKeyResponse(TypedDict, total=False):
     """importKey response."""
@@ -474,7 +220,7 @@ class ImportKeyResponse(TypedDict, total=False):
     curve: Literal["ed25519", "secp256k1", "stark"]
     public_key: str
     master_key: NotRequired[bool]
-    derived_from: NotRequired[dict[str, Any]]
+    derived_from: NotRequired[TypedDict]
     name: NotRequired[str]
     status: Literal["Active", "Archived"]
     custodial: bool

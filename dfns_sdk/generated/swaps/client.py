@@ -1,6 +1,6 @@
 """Client for the swaps domain."""
 
-from typing import Any, cast
+from typing import Any, Literal, Optional, TypedDict, Union
 
 from ..._internal import HttpClient
 from . import types as T
@@ -12,19 +12,19 @@ class SwapsClient:
     def __init__(self, http_client: HttpClient):
         self._http = http_client
 
-    def list_swaps(self, query: T.ListSwapsQuery | None = None) -> T.ListSwapsResponse:
+    def list_swaps(self, query: Optional[T.ListSwapsQuery] = None) -> T.ListSwapsResponse:
         """
         List Swaps.
 
         List all swaps with pagination
 
         Args:
-            query: Query parameters.
+        query: Query parameters.
 
         Returns:
             T.ListSwapsResponse: The API response.
-        """  # noqa: E501
-        response = self._http.request(
+        """
+        return self._http.request(
             method="GET",
             path="/swaps",
             path_params={},
@@ -32,7 +32,6 @@ class SwapsClient:
             body=None,
             requires_signature=False,
         )
-        return cast(T.ListSwapsResponse, response)
 
     def create_swap(self, body: dict[str, Any]) -> T.CreateSwapResponse:
         """
@@ -41,12 +40,12 @@ class SwapsClient:
         Create a new swap based on an existing quote. This is the second step of the [Swap flow](https://docs.dfns.co/api-reference/swaps#flow-overview).
 
         Args:
-            body: Request body.
+        body: Request body.
 
         Returns:
             T.CreateSwapResponse: The API response.
-        """  # noqa: E501
-        response = self._http.request(
+        """
+        return self._http.request(
             method="POST",
             path="/swaps",
             path_params={},
@@ -54,7 +53,6 @@ class SwapsClient:
             body=body,
             requires_signature=True,
         )
-        return cast(T.CreateSwapResponse, response)
 
     def request_swap_quote(self, body: dict[str, Any]) -> T.RequestSwapQuoteResponse:
         """
@@ -63,12 +61,12 @@ class SwapsClient:
         Request a quote from a given provider for swapping assets. This is the first step of the [Swap flow](https://docs.dfns.co/api-reference/swaps#flow-overview).
 
         Args:
-            body: Request body.
+        body: Request body.
 
         Returns:
             T.RequestSwapQuoteResponse: The API response.
-        """  # noqa: E501
-        response = self._http.request(
+        """
+        return self._http.request(
             method="POST",
             path="/swaps/quotes",
             path_params={},
@@ -76,7 +74,6 @@ class SwapsClient:
             body=body,
             requires_signature=False,
         )
-        return cast(T.RequestSwapQuoteResponse, response)
 
     def get_swap(self, swap_id: str) -> T.GetSwapResponse:
         """
@@ -85,12 +82,12 @@ class SwapsClient:
         Get details of a specific swap by its ID
 
         Args:
-            swap_id: Id of the swap for which we want to get details.
+        swap_id: Id of the swap for which we want to get details.
 
         Returns:
             T.GetSwapResponse: The API response.
-        """  # noqa: E501
-        response = self._http.request(
+        """
+        return self._http.request(
             method="GET",
             path="/swaps/{swapId}",
             path_params={"swapId": swap_id},
@@ -98,7 +95,6 @@ class SwapsClient:
             body=None,
             requires_signature=False,
         )
-        return cast(T.GetSwapResponse, response)
 
     def get_swap_quote(self, quote_id: str) -> T.GetSwapQuoteResponse:
         """
@@ -107,12 +103,12 @@ class SwapsClient:
         Get details of a specific swap quote by its ID
 
         Args:
-            quote_id: The ID of the Swap Quote.
+        quote_id: The ID of the Swap Quote.
 
         Returns:
             T.GetSwapQuoteResponse: The API response.
-        """  # noqa: E501
-        response = self._http.request(
+        """
+        return self._http.request(
             method="GET",
             path="/swaps/quotes/{quoteId}",
             path_params={"quoteId": quote_id},
@@ -120,4 +116,3 @@ class SwapsClient:
             body=None,
             requires_signature=False,
         )
-        return cast(T.GetSwapQuoteResponse, response)

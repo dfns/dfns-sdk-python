@@ -1,7 +1,6 @@
 """Delegated Dfns client for external signing orchestration."""
 
-from typing import Any
-
+from .types import DfnsDelegatedClientConfig
 from ._internal import HttpClient
 from .generated.agreements import DelegatedAgreementsClient
 from .generated.allocations import DelegatedAllocationsClient
@@ -18,7 +17,6 @@ from .generated.staking import DelegatedStakingClient
 from .generated.swaps import DelegatedSwapsClient
 from .generated.wallets import DelegatedWalletsClient
 from .generated.webhooks import DelegatedWebhooksClient
-from .types import DfnsDelegatedClientConfig
 
 
 class DfnsDelegatedClient:
@@ -98,5 +96,5 @@ class DfnsDelegatedClient:
     def __enter__(self) -> "DfnsDelegatedClient":
         return self
 
-    def __exit__(self, *args: Any) -> None:
+    def __exit__(self, *args) -> None:
         self.close()
