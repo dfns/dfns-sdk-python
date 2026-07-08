@@ -59,6 +59,10 @@ class CreateWebhookRequest(TypedDict, total=False):
             "wallet.offer.rejected",
             "wallet.offer.withdrawn",
             "wallet.tags.modified",
+            "vault.created",
+            "vault.updated",
+            "vault.tags.modified",
+            "vault.event.created",
             "payout.action.required",
         ]
         | Literal["*"]
@@ -104,6 +108,10 @@ class CreateWebhookResponse(TypedDict, total=False):
             "wallet.offer.rejected",
             "wallet.offer.withdrawn",
             "wallet.tags.modified",
+            "vault.created",
+            "vault.updated",
+            "vault.tags.modified",
+            "vault.event.created",
             "payout.action.required",
         ]
         | Literal["*"]
@@ -154,6 +162,10 @@ class GetWebhookResponse(TypedDict, total=False):
             "wallet.offer.rejected",
             "wallet.offer.withdrawn",
             "wallet.tags.modified",
+            "vault.created",
+            "vault.updated",
+            "vault.tags.modified",
+            "vault.event.created",
             "payout.action.required",
         ]
         | Literal["*"]
@@ -204,6 +216,10 @@ class UpdateWebhookRequest(TypedDict, total=False):
                 "wallet.offer.rejected",
                 "wallet.offer.withdrawn",
                 "wallet.tags.modified",
+                "vault.created",
+                "vault.updated",
+                "vault.tags.modified",
+                "vault.event.created",
                 "payout.action.required",
             ]
             | Literal["*"]
@@ -251,6 +267,10 @@ class UpdateWebhookResponse(TypedDict, total=False):
             "wallet.offer.rejected",
             "wallet.offer.withdrawn",
             "wallet.tags.modified",
+            "vault.created",
+            "vault.updated",
+            "vault.tags.modified",
+            "vault.event.created",
             "payout.action.required",
         ]
         | Literal["*"]
@@ -312,6 +332,10 @@ class GetWebhookEventResponse(TypedDict, total=False):
         "wallet.offer.rejected",
         "wallet.offer.withdrawn",
         "wallet.tags.modified",
+        "vault.created",
+        "vault.updated",
+        "vault.tags.modified",
+        "vault.event.created",
         "payout.action.required",
     ]
     data: dict[str, dict[str, Any]]
@@ -364,6 +388,10 @@ class ListWebhookEventsQuery(TypedDict, total=False):
             "wallet.offer.rejected",
             "wallet.offer.withdrawn",
             "wallet.tags.modified",
+            "vault.created",
+            "vault.updated",
+            "vault.tags.modified",
+            "vault.event.created",
             "payout.action.required",
         ]
     ]
