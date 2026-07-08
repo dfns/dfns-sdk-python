@@ -276,6 +276,8 @@ class DelegatedSignersClient:
         """
         List Key Stores.
 
+        Lists the key stores of your organization.
+
         Returns:
             T.ListKeyStoresResponse: The API response.
         """  # noqa: E501
@@ -292,6 +294,8 @@ class DelegatedSignersClient:
     def list_signers(self) -> T.ListSignersResponse:
         """
         List Signers.
+
+        Lists the signer clusters of your key store, including each signer's ID and encryption public key.
 
         Returns:
             T.ListSignersResponse: The API response.
@@ -311,6 +315,8 @@ class DelegatedSignersClient:
     ) -> T.SubmitAddMacUserOutputResponse:
         """
         Submit Add Mac User Output.
+
+        Submits the output archive produced by the offline signer fleet for an add-mac-user operation.
 
         Args:
             store_id: Path parameter.
@@ -337,6 +343,8 @@ class DelegatedSignersClient:
         """
         Submit Clone Output.
 
+        Submits the output archive produced by the offline signer fleet for a clone operation.
+
         Args:
             store_id: Path parameter.
             body: Request body.
@@ -361,6 +369,8 @@ class DelegatedSignersClient:
     ) -> T.SubmitGenesisOutputResponse:
         """
         Submit Genesis Output.
+
+        Submits the output archive produced by the offline signer fleet for a genesis operation.
 
         Args:
             store_id: Path parameter.
@@ -387,6 +397,8 @@ class DelegatedSignersClient:
         """
         Submit Onchain Sign Output.
 
+        Submits the output archive produced by the offline signer fleet for an onchain-sign operation.
+
         Args:
             store_id: Path parameter.
             body: Request body.
@@ -411,6 +423,8 @@ class DelegatedSignersClient:
     ) -> T.SubmitProofOfControlOutputResponse:
         """
         Submit Proof Of Control Output.
+
+        Submits the output archive produced by the offline signer fleet for a proof-of-control operation.
 
         Args:
             store_id: Path parameter.

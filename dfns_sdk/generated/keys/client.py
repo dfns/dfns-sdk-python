@@ -72,7 +72,7 @@ class KeysClient:
         This operation is irreversible. The key ownership will be transferred to the end-user
         </Danger>
 
-        In most cases, when you want to implement [Wallet Delegation](https://docs.dfns.co/developers/guides/wallet-delegation), simply create the wallet by directly delegating it to an end user, in which case it will the non-custodial from the start.  There are some rare cases, however, where the key or wallet must be created before the user has accessed to the system.  To accommodate this, we've added the ability to create a key or wallet in delay delegation mode, and then later delegate it (i.e.: transfer ownership of it) to an end user via this endpoint.
+        In most cases, when you want to implement [Wallet Delegation](https://docs.dfns.co/guides/developers/delegated-wallets), simply create the wallet by directly delegating it to an end user, in which case it will the non-custodial from the start.  There are some rare cases, however, where the key or wallet must be created before the user has accessed to the system.  To accommodate this, we've added the ability to create a key or wallet in delay delegation mode, and then later delegate it (i.e.: transfer ownership of it) to an end user via this endpoint.
 
                 Args:
                     key_id: Path parameter.
@@ -248,7 +248,7 @@ class KeysClient:
         Dfns is compatible with any blockchain that uses a supported [key format](https://docs.dfns.co/networks/supported-key-formats). If Dfns doesn't officially integrate with a blockchain, you can use hash signing to generate the signatures to interact with the chain.
 
         <Note>
-        If you were using the deprecated `POST /wallets/{walletId}/signatures` endpoint, then you should now use this one. See the [deprecation notice](https://docs.dfns.co/developers/guides/keys-and-multichain-migration-guide) to get more information about how to change your code. TL,DR: from a wallet you can obtain the key as `wallet.signingKey.id`.
+        If you were using the deprecated `POST /wallets/{walletId}/signatures` endpoint, then you should now use this one. See the [deprecation notice](https://docs.dfns.co/deprecation/keys-and-multichain-migration-guide) to get more information about how to change your code. TL,DR: from a wallet you can obtain the key as `wallet.signingKey.id`.
         </Note>
 
                 Args:
