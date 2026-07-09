@@ -217,6 +217,8 @@ class DelegatedExchangesClient:
         """
         List Asset Withdrawal Networks.
 
+        Lists the networks to which the given asset can be withdrawn from an exchange account.
+
         Args:
             exchange_id: Path parameter.
             account_id: Path parameter.

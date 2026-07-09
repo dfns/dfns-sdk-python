@@ -22,7 +22,7 @@ class AuthClient:
 
                 Completes the user action signing process and provides a signing token that can be used to verify the user intended to perform the action.
 
-        This is the first step of the [User Action Signing flow](http://docs.dfns.co/api-reference/auth/signing-flows).
+        This is the first step of the [User Action Signing flow](https://docs.dfns.co/api-reference/auth/signing-flows).
 
         The type of credentials used to sign the action is determined by the `kind` field in the nested objects (`firstFactor` and `secondFactor`). Supported credential kinds are:
         * `Fido2`: User action is signed by a user's signing device using `WebAuthn`.
@@ -53,7 +53,7 @@ class AuthClient:
 
               Starts a user action signing session, returning a challenge that will be used to verify the user's intent to perform an action.
 
-        This is the first step of the [User Action Signing flow](http://docs.dfns.co/api-reference/auth/signing-flows).
+        This is the first step of the [User Action Signing flow](https://docs.dfns.co/api-reference/auth/signing-flows).
 
               Args:
                   body: Request body.
@@ -128,7 +128,7 @@ class AuthClient:
               List Applications.
 
               <Warning>
-        Applications are deprecated and will be removed in a future release. See details [here](https://docs.dfns.co/developers/guides/applications-deprecation).
+        Applications are deprecated and will be removed in a future release. See details [here](https://docs.dfns.co/deprecation/applications-deprecation).
         </Warning>
 
               Returns:
@@ -150,7 +150,7 @@ class AuthClient:
               Get Application.
 
               <Warning>
-        Applications are deprecated and will be removed in a future release. See details [here](https://docs.dfns.co/developers/guides/applications-deprecation).
+        Applications are deprecated and will be removed in a future release. See details [here](https://docs.dfns.co/deprecation/applications-deprecation).
         </Warning>
 
               Args:
@@ -442,7 +442,7 @@ class AuthClient:
         The type of credentials used to login is determined by the `kind` field in the nested objects (`firstFactor` and `secondFactor`). Supported credential kinds are:
         * `Fido2`: Login challenge is signed by a user's signing device using `WebAuthn`.
         * `Key`: Login challenge is signed by a user's private key.
-        * `PasswordProtectedKey`: Login challenge is signed by the decrypted user's private key that was sent during [Create User Login Challenge](../registration/inituserregistration) step.
+        * `PasswordProtectedKey`: Login challenge is signed by the decrypted user's private key that was sent during the [Create Login Challenge](https://docs.dfns.co/api-reference/auth/create-login-challenge) step.
 
                 Args:
                     body: Request body.
@@ -510,7 +510,7 @@ class AuthClient:
         """
         Social Login.
 
-        Completes the login process and provides the authenticated user with their authentication token.
+        Logs a user in with a JWT id token issued by a social login provider and provides the authenticated user with their authentication token.
 
         Args:
             body: Request body.
@@ -532,7 +532,7 @@ class AuthClient:
         """
         Complete SSO Login.
 
-        Completes the login process and provides the authenticated user with their authentication token.
+        Completes the SSO login process by exchanging the authorization code obtained from the identity provider for the user's authentication token.
 
         Args:
             body: Request body.
@@ -732,7 +732,7 @@ class AuthClient:
         """
         Deactivate Personal Access Token.
 
-        Deactivates a credential that was previously active. If the credential is already deactivated no action is taken.
+        Deactivates a personal access token that was previously active. If the token is already deactivated no action is taken.
 
         Args:
             token_id: Token id.
@@ -896,7 +896,7 @@ class AuthClient:
         """
         Create Registration Challenge.
 
-        Starts a user registration session. It returns a challenge that will need to be signed by a passkey and used to perform the step [Complete User Registration](/api-reference/auth/register)
+        Starts a user registration session. It returns a challenge that will need to be signed by a passkey and used to perform the step [Complete User Registration](/api-reference/auth/complete-user-registration)
 
         Args:
             body: Request body.
@@ -920,7 +920,7 @@ class AuthClient:
         """
         Create Social Registration Challenge.
 
-        Starts an end-user registration session by passing a JWT obtained by an IdP. It returns a challenge that will need to be signed by a passkey and used to perform [Complete End User Registration with Wallets](/api-reference/auth/register-end-user).
+        Starts an end-user registration session by passing a JWT obtained by an IdP. It returns a challenge that will need to be signed by a passkey and used to perform [Complete End User Registration with Wallets](/api-reference/auth/complete-end-user-registration-with-wallets).
 
         Args:
             body: Request body.

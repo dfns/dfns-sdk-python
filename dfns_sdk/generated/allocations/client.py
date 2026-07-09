@@ -16,6 +16,8 @@ class AllocationsClient:
         """
         List Allocations.
 
+        Lists the allocations of your organization.
+
         Args:
             query: Query parameters.
 

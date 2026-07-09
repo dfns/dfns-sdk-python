@@ -16,6 +16,8 @@ class SignersClient:
         """
         Create Add Mac User Input.
 
+        Creates the input archive for an add-mac-user fleet operation, which registers a new Mac operator machine with an HSM in the key store's trust set.
+
         Args:
             store_id: Path parameter.
             body: Request body.
@@ -32,6 +34,8 @@ class SignersClient:
     def create_clone_input(self, store_id: str, body: T.CreateCloneInputRequest) -> None:
         """
         Create Clone Input.
+
+        Creates the input archive for a clone fleet operation, which replicates a key store from a source HSM to a target HSM.
 
         Args:
             store_id: Path parameter.
@@ -50,6 +54,8 @@ class SignersClient:
         """
         Create Genesis Input.
 
+        Creates the input archive for a genesis fleet operation, which provisions a new offline signer fleet and generates the key store's initial signing keys.
+
         Args:
             store_id: Path parameter.
             body: Request body.
@@ -66,6 +72,8 @@ class SignersClient:
     def create_onchain_sign_input(self, store_id: str, body: T.CreateOnchainSignInputRequest) -> None:
         """
         Create Onchain Sign Input.
+
+        Creates the input archive for an onchain-sign operation covering the key store's pending signature requests.
 
         Args:
             store_id: Path parameter.
@@ -84,6 +92,8 @@ class SignersClient:
         """
         Create Proof Of Control Input.
 
+        Creates the input archive for a proof-of-control operation covering the keys of the specified wallets.
+
         Args:
             store_id: Path parameter.
             body: Request body.
@@ -101,6 +111,8 @@ class SignersClient:
         """
         List Key Stores.
 
+        Lists the key stores of your organization.
+
         Returns:
             T.ListKeyStoresResponse: The API response.
         """  # noqa: E501
@@ -117,6 +129,8 @@ class SignersClient:
     def list_signers(self) -> T.ListSignersResponse:
         """
         List Signers.
+
+        Lists the signer clusters of your key store, including each signer's ID and encryption public key.
 
         Returns:
             T.ListSignersResponse: The API response.
@@ -136,6 +150,8 @@ class SignersClient:
     ) -> T.SubmitAddMacUserOutputResponse:
         """
         Submit Add Mac User Output.
+
+        Submits the output archive produced by the offline signer fleet for an add-mac-user operation.
 
         Args:
             store_id: Path parameter.
@@ -162,6 +178,8 @@ class SignersClient:
         """
         Submit Clone Output.
 
+        Submits the output archive produced by the offline signer fleet for a clone operation.
+
         Args:
             store_id: Path parameter.
             body: Request body.
@@ -186,6 +204,8 @@ class SignersClient:
     ) -> T.SubmitGenesisOutputResponse:
         """
         Submit Genesis Output.
+
+        Submits the output archive produced by the offline signer fleet for a genesis operation.
 
         Args:
             store_id: Path parameter.
@@ -212,6 +232,8 @@ class SignersClient:
         """
         Submit Onchain Sign Output.
 
+        Submits the output archive produced by the offline signer fleet for an onchain-sign operation.
+
         Args:
             store_id: Path parameter.
             body: Request body.
@@ -236,6 +258,8 @@ class SignersClient:
     ) -> T.SubmitProofOfControlOutputResponse:
         """
         Submit Proof Of Control Output.
+
+        Submits the output archive produced by the offline signer fleet for a proof-of-control operation.
 
         Args:
             store_id: Path parameter.

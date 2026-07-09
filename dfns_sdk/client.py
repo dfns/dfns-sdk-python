@@ -10,12 +10,14 @@ from .generated.exchanges import ExchangesClient
 from .generated.fee_sponsors import FeeSponsorsClient
 from .generated.keys import KeysClient
 from .generated.networks import NetworksClient
+from .generated.payins import PayinsClient
 from .generated.payouts import PayoutsClient
 from .generated.permissions import PermissionsClient
 from .generated.policies import PoliciesClient
 from .generated.signers import SignersClient
 from .generated.staking import StakingClient
 from .generated.swaps import SwapsClient
+from .generated.vaults import VaultsClient
 from .generated.wallets import WalletsClient
 from .generated.webhooks import WebhooksClient
 from .types import DfnsClientConfig
@@ -41,12 +43,14 @@ class DfnsClient:
     fee_sponsors: FeeSponsorsClient
     keys: KeysClient
     networks: NetworksClient
+    payins: PayinsClient
     payouts: PayoutsClient
     permissions: PermissionsClient
     policies: PoliciesClient
     signers: SignersClient
     staking: StakingClient
     swaps: SwapsClient
+    vaults: VaultsClient
     wallets: WalletsClient
     webhooks: WebhooksClient
 
@@ -66,12 +70,14 @@ class DfnsClient:
         self.fee_sponsors = FeeSponsorsClient(self._http)
         self.keys = KeysClient(self._http)
         self.networks = NetworksClient(self._http)
+        self.payins = PayinsClient(self._http)
         self.payouts = PayoutsClient(self._http)
         self.permissions = PermissionsClient(self._http)
         self.policies = PoliciesClient(self._http)
         self.signers = SignersClient(self._http)
         self.staking = StakingClient(self._http)
         self.swaps = SwapsClient(self._http)
+        self.vaults = VaultsClient(self._http)
         self.wallets = WalletsClient(self._http)
         self.webhooks = WebhooksClient(self._http)
 
