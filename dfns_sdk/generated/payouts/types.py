@@ -19,12 +19,13 @@ class ListPayoutsQuery(TypedDict, total=False):
     pagination_token: NotRequired[str]
     wallet_id: NotRequired[str]
     status: NotRequired[list[Literal["Processing", "Completed", "Failed", "Rejected", "Expired", "Canceled"]]]
+    provider: NotRequired[list[Literal["Borderless", "CircleMint"]]]
 
 
 class RequestPayoutQuoteResponse(TypedDict, total=False):
     """requestPayoutQuote response."""
 
-    provider: Literal["Borderless"]
+    provider: Literal["Borderless", "CircleMint"]
     asset: dict[str, Any]
     timestamp: str
     quotes: list[dict[str, Any]]
