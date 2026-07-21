@@ -10,12 +10,14 @@ from .generated.exchanges import DelegatedExchangesClient
 from .generated.fee_sponsors import DelegatedFeeSponsorsClient
 from .generated.keys import DelegatedKeysClient
 from .generated.networks import DelegatedNetworksClient
+from .generated.payins import DelegatedPayinsClient
 from .generated.payouts import DelegatedPayoutsClient
 from .generated.permissions import DelegatedPermissionsClient
 from .generated.policies import DelegatedPoliciesClient
 from .generated.signers import DelegatedSignersClient
 from .generated.staking import DelegatedStakingClient
 from .generated.swaps import DelegatedSwapsClient
+from .generated.vaults import DelegatedVaultsClient
 from .generated.wallets import DelegatedWalletsClient
 from .generated.webhooks import DelegatedWebhooksClient
 from .types import DfnsDelegatedClientConfig
@@ -57,12 +59,14 @@ class DfnsDelegatedClient:
     fee_sponsors: DelegatedFeeSponsorsClient
     keys: DelegatedKeysClient
     networks: DelegatedNetworksClient
+    payins: DelegatedPayinsClient
     payouts: DelegatedPayoutsClient
     permissions: DelegatedPermissionsClient
     policies: DelegatedPoliciesClient
     signers: DelegatedSignersClient
     staking: DelegatedStakingClient
     swaps: DelegatedSwapsClient
+    vaults: DelegatedVaultsClient
     wallets: DelegatedWalletsClient
     webhooks: DelegatedWebhooksClient
 
@@ -82,12 +86,14 @@ class DfnsDelegatedClient:
         self.fee_sponsors = DelegatedFeeSponsorsClient(self._http)
         self.keys = DelegatedKeysClient(self._http)
         self.networks = DelegatedNetworksClient(self._http)
+        self.payins = DelegatedPayinsClient(self._http)
         self.payouts = DelegatedPayoutsClient(self._http)
         self.permissions = DelegatedPermissionsClient(self._http)
         self.policies = DelegatedPoliciesClient(self._http)
         self.signers = DelegatedSignersClient(self._http)
         self.staking = DelegatedStakingClient(self._http)
         self.swaps = DelegatedSwapsClient(self._http)
+        self.vaults = DelegatedVaultsClient(self._http)
         self.wallets = DelegatedWalletsClient(self._http)
         self.webhooks = DelegatedWebhooksClient(self._http)
 

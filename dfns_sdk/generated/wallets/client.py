@@ -140,7 +140,7 @@ class WalletsClient:
 
 
           <Info>
-          for reading from a "view" function on EVM chains, please use [Read Contract](https://docs.dfns.co/api-reference/networks/read-contract) endpoint.
+          for reading from a "view" function on EVM chains, please use [Read Contract](https://docs.dfns.co/api-reference/networks/call-function) endpoint.
           </Info>
 
                 Args:

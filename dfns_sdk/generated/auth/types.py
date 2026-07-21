@@ -269,7 +269,8 @@ class CompleteSsoLoginResponse(TypedDict, total=False):
 class InitiateSsoLoginRequest(TypedDict, total=False):
     """initiateSsoLogin request body."""
 
-    org_id: str
+    org_id: NotRequired[str]
+    tenant_id: NotRequired[str]
     client_id: str
     redirect_uri: str
 

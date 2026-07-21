@@ -32,6 +32,18 @@ class CreateGenesisInputRequest(TypedDict, total=False):
     hsm_genesis_serial: str
     mac_genesis_serial: NotRequired[str]
     hsm_genesis_firmware_version: NotRequired[Literal["2.2", "2.4"]]
+    debug_options: NotRequired[dict[str, dict[str, Any]]]
+
+
+class CreateKeyHarvestInputRequest(TypedDict, total=False):
+    """createKeyHarvestInput request body."""
+
+    kind: Literal["KeyHarvest"]
+    hsm_target_serial: str
+    mac_target_serial: str
+    mac_target_username: str
+    num_secp256k1: NotRequired[int]
+    num_ed25519: NotRequired[int]
 
 
 class CreateOnchainSignInputRequest(TypedDict, total=False):
@@ -93,6 +105,19 @@ class SubmitGenesisOutputRequest(TypedDict, total=False):
 
 class SubmitGenesisOutputResponse(TypedDict, total=False):
     """submitGenesisOutput response."""
+
+    message: str
+
+
+class SubmitKeyHarvestOutputRequest(TypedDict, total=False):
+    """submitKeyHarvestOutput request body."""
+
+    file_checksum: str
+    output_json: dict[str, Any]
+
+
+class SubmitKeyHarvestOutputResponse(TypedDict, total=False):
+    """submitKeyHarvestOutput response."""
 
     message: str
 

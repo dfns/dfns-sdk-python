@@ -170,6 +170,57 @@ class DelegatedSignersClient:
             user_action=user_action_token,
         )
 
+    def create_key_harvest_input_init(
+        self, store_id: str, body: T.CreateKeyHarvestInputRequest
+    ) -> UserActionChallengeResponse:
+        """
+        Initialize Create Key Harvest Input.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+            store_id: Path parameter.
+            body: Request body.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """  # noqa: E501
+        path = "/key-stores/{storeId}/key-harvest/input"
+        path = path.replace("{storeId}", str(store_id))
+        payload = json.dumps(body, separators=(",", ":")) if body else ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="POST",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def create_key_harvest_input_complete(
+        self, store_id: str, body: T.CreateKeyHarvestInputRequest, signed_challenge: SignUserActionChallengeRequest
+    ) -> None:
+        """
+        Complete Create Key Harvest Input.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+            store_id: Path parameter.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+        user_action_token = user_action_result["userAction"]
+
+        self._http.request_with_user_action(
+            method="POST",
+            path="/key-stores/{storeId}/key-harvest/input",
+            path_params={"storeId": store_id},
+            query_params=None,
+            body=body,
+            user_action=user_action_token,
+        )
+
     def create_onchain_sign_input_init(
         self, store_id: str, body: T.CreateOnchainSignInputRequest
     ) -> UserActionChallengeResponse:
@@ -276,6 +327,8 @@ class DelegatedSignersClient:
         """
         List Key Stores.
 
+        Lists the key stores of your organization.
+
         Returns:
             T.ListKeyStoresResponse: The API response.
         """  # noqa: E501
@@ -292,6 +345,8 @@ class DelegatedSignersClient:
     def list_signers(self) -> T.ListSignersResponse:
         """
         List Signers.
+
+        Lists the signer clusters of your key store, including each signer's ID and encryption public key.
 
         Returns:
             T.ListSignersResponse: The API response.
@@ -311,6 +366,8 @@ class DelegatedSignersClient:
     ) -> T.SubmitAddMacUserOutputResponse:
         """
         Submit Add Mac User Output.
+
+        Submits the output archive produced by the offline signer fleet for an add-mac-user operation.
 
         Args:
             store_id: Path parameter.
@@ -337,6 +394,8 @@ class DelegatedSignersClient:
         """
         Submit Clone Output.
 
+        Submits the output archive produced by the offline signer fleet for a clone operation.
+
         Args:
             store_id: Path parameter.
             body: Request body.
@@ -362,6 +421,8 @@ class DelegatedSignersClient:
         """
         Submit Genesis Output.
 
+        Submits the output archive produced by the offline signer fleet for a genesis operation.
+
         Args:
             store_id: Path parameter.
             body: Request body.
@@ -381,11 +442,38 @@ class DelegatedSignersClient:
         )
         return cast(T.SubmitGenesisOutputResponse, response)
 
+    def submit_key_harvest_output(
+        self, store_id: str, body: T.SubmitKeyHarvestOutputRequest, file: bytes
+    ) -> T.SubmitKeyHarvestOutputResponse:
+        """
+        Submit Key Harvest Output.
+
+        Args:
+            store_id: Path parameter.
+            body: Request body.
+            file: The file bytes to upload.
+
+        Returns:
+            T.SubmitKeyHarvestOutputResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="POST",
+            path="/key-stores/{storeId}/key-harvest/output",
+            path_params={"storeId": store_id},
+            query_params=None,
+            body=body,
+            file=file,
+            requires_signature=True,
+        )
+        return cast(T.SubmitKeyHarvestOutputResponse, response)
+
     def submit_onchain_sign_output(
         self, store_id: str, body: T.SubmitOnchainSignOutputRequest, file: bytes
     ) -> T.SubmitOnchainSignOutputResponse:
         """
         Submit Onchain Sign Output.
+
+        Submits the output archive produced by the offline signer fleet for an onchain-sign operation.
 
         Args:
             store_id: Path parameter.
@@ -411,6 +499,8 @@ class DelegatedSignersClient:
     ) -> T.SubmitProofOfControlOutputResponse:
         """
         Submit Proof Of Control Output.
+
+        Submits the output archive produced by the offline signer fleet for a proof-of-control operation.
 
         Args:
             store_id: Path parameter.

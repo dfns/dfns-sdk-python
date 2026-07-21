@@ -29,6 +29,7 @@ class CreateSwapResponse(TypedDict, total=False):
     target_wallet_id: str
     status: Literal["PendingPolicyApproval", "InProgress", "Completed", "Failed", "Rejected"]
     provider: Literal["UniswapX", "UniswapClassic", "CircleCctp"]
+    fee_sponsor_id: NotRequired[str]
     quoted_source_asset: dict[str, Any]
     quoted_target_asset: dict[str, Any]
     slippage_bps: float
@@ -65,6 +66,7 @@ class GetSwapResponse(TypedDict, total=False):
     target_wallet_id: str
     status: Literal["PendingPolicyApproval", "InProgress", "Completed", "Failed", "Rejected"]
     provider: Literal["UniswapX", "UniswapClassic", "CircleCctp"]
+    fee_sponsor_id: NotRequired[str]
     quoted_source_asset: dict[str, Any]
     quoted_target_asset: dict[str, Any]
     slippage_bps: float
