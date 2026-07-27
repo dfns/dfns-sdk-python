@@ -2023,7 +2023,6 @@ class GetWalletHistoryQuery(TypedDict, total=False):
             "Trc721Transfer",
             "UtxoTransfer",
             "Xls33Transfer",
-            "SmartContractEvent",
         ]
     ]
     contract: NotRequired[str]

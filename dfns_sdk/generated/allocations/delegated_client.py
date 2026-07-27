@@ -190,3 +190,22 @@ class DelegatedAllocationsClient:
             requires_signature=False,
         )
         return cast(T.GetAllocationResponse, response)
+
+    def get_allocations_info(self) -> T.GetAllocationsInfoResponse:
+        """
+        Get Allocations Info.
+
+        Retrieve the current reward rate (APY) for each supported allocation protocol.
+
+        Returns:
+            T.GetAllocationsInfoResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="GET",
+            path="/allocations/info",
+            path_params={},
+            query_params=None,
+            body=None,
+            requires_signature=False,
+        )
+        return cast(T.GetAllocationsInfoResponse, response)

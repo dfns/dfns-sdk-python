@@ -94,3 +94,15 @@ class GetAllocationResponse(TypedDict, total=False):
     rewards: dict[str, Any]
     date_created: str
     actions: list[dict[str, Any]]
+
+
+class GetAllocationsInfoResponse(TypedDict, total=False):
+    """getAllocationsInfo response."""
+
+    ofns: NotRequired[dict[str, Any]]
+    sky_susds: NotRequired[dict[str, Any]]
+    gauntlet_usdc_prime: NotRequired[dict[str, Any]]
+    steakhouse_usdt: NotRequired[dict[str, Any]]
+    gauntlet_usdc_prime_base: NotRequired[dict[str, Any]]
+    steakhouse_usdc_base: NotRequired[dict[str, Any]]
+    sentora_pyusd_main: NotRequired[dict[str, Any]]
