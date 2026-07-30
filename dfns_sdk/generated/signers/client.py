@@ -12,6 +12,29 @@ class SignersClient:
     def __init__(self, http_client: HttpClient):
         self._http = http_client
 
+    def cancel_fleet_operation(
+        self, store_id: str, body: T.CancelFleetOperationRequest
+    ) -> T.CancelFleetOperationResponse:
+        """
+        Cancel Fleet Operation.
+
+        Args:
+            store_id: Path parameter.
+            body: Request body.
+
+        Returns:
+            T.CancelFleetOperationResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="POST",
+            path="/key-stores/{storeId}/fleet-operations/cancel",
+            path_params={"storeId": store_id},
+            query_params=None,
+            body=body,
+            requires_signature=True,
+        )
+        return cast(T.CancelFleetOperationResponse, response)
+
     def create_add_mac_user_input(self, store_id: str, body: T.CreateAddMacUserInputRequest) -> None:
         """
         Create Add Mac User Input.
@@ -25,6 +48,25 @@ class SignersClient:
         self._http.request(
             method="POST",
             path="/key-stores/{storeId}/add-mac-user/input",
+            path_params={"storeId": store_id},
+            query_params=None,
+            body=body,
+            requires_signature=True,
+        )
+
+    def create_add_provisioner_input(self, store_id: str, body: T.CreateAddProvisionerInputRequest) -> None:
+        """
+        Create Add Provisioner Input.
+
+        Creates the input archive for an add-provisioner fleet operation, which registers a new provisioner YubiKey into the key store's governance set.
+
+        Args:
+            store_id: Path parameter.
+            body: Request body.
+        """  # noqa: E501
+        self._http.request(
+            method="POST",
+            path="/key-stores/{storeId}/add-provisioner/input",
             path_params={"storeId": store_id},
             query_params=None,
             body=body,
@@ -188,6 +230,33 @@ class SignersClient:
             requires_signature=True,
         )
         return cast(T.SubmitAddMacUserOutputResponse, response)
+
+    def submit_add_provisioner_output(
+        self, store_id: str, body: T.SubmitAddProvisionerOutputRequest, file: bytes
+    ) -> T.SubmitAddProvisionerOutputResponse:
+        """
+        Submit Add Provisioner Output.
+
+        Submits the output archive produced by the offline signer fleet for an add-provisioner operation.
+
+        Args:
+            store_id: Path parameter.
+            body: Request body.
+            file: The file bytes to upload.
+
+        Returns:
+            T.SubmitAddProvisionerOutputResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="POST",
+            path="/key-stores/{storeId}/add-provisioner/output",
+            path_params={"storeId": store_id},
+            query_params=None,
+            body=body,
+            file=file,
+            requires_signature=True,
+        )
+        return cast(T.SubmitAddProvisionerOutputResponse, response)
 
     def submit_clone_output(
         self, store_id: str, body: T.SubmitCloneOutputRequest, file: bytes

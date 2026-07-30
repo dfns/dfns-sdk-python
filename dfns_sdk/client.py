@@ -3,6 +3,7 @@
 from typing import Any
 
 from ._internal import HttpClient
+from .generated.address_watches import AddressWatchesClient
 from .generated.agreements import AgreementsClient
 from .generated.allocations import AllocationsClient
 from .generated.auth import AuthClient
@@ -36,6 +37,7 @@ class DfnsClient:
         >>> wallets = client.wallets.list_wallets()
     """
 
+    address_watches: AddressWatchesClient
     agreements: AgreementsClient
     allocations: AllocationsClient
     auth: AuthClient
@@ -63,6 +65,7 @@ class DfnsClient:
         """
         self._config = config
         self._http = HttpClient(config)
+        self.address_watches = AddressWatchesClient(self._http)
         self.agreements = AgreementsClient(self._http)
         self.allocations = AllocationsClient(self._http)
         self.auth = AuthClient(self._http)

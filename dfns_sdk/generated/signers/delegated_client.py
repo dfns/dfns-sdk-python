@@ -19,6 +19,61 @@ class DelegatedSignersClient:
     def __init__(self, http_client: HttpClient):
         self._http = http_client
 
+    def cancel_fleet_operation_init(
+        self, store_id: str, body: T.CancelFleetOperationRequest
+    ) -> UserActionChallengeResponse:
+        """
+        Initialize Cancel Fleet Operation.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+            store_id: Path parameter.
+            body: Request body.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """  # noqa: E501
+        path = "/key-stores/{storeId}/fleet-operations/cancel"
+        path = path.replace("{storeId}", str(store_id))
+        payload = json.dumps(body, separators=(",", ":")) if body else ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="POST",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def cancel_fleet_operation_complete(
+        self, store_id: str, body: T.CancelFleetOperationRequest, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.CancelFleetOperationResponse:
+        """
+        Complete Cancel Fleet Operation.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+            store_id: Path parameter.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
+
+        Returns:
+            T.CancelFleetOperationResponse: The API response.
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+        user_action_token = user_action_result["userAction"]
+
+        response = self._http.request_with_user_action(
+            method="POST",
+            path="/key-stores/{storeId}/fleet-operations/cancel",
+            path_params={"storeId": store_id},
+            query_params=None,
+            body=body,
+            user_action=user_action_token,
+        )
+        return cast(T.CancelFleetOperationResponse, response)
+
     def create_add_mac_user_input_init(
         self, store_id: str, body: T.CreateAddMacUserInputRequest
     ) -> UserActionChallengeResponse:
@@ -64,6 +119,57 @@ class DelegatedSignersClient:
         self._http.request_with_user_action(
             method="POST",
             path="/key-stores/{storeId}/add-mac-user/input",
+            path_params={"storeId": store_id},
+            query_params=None,
+            body=body,
+            user_action=user_action_token,
+        )
+
+    def create_add_provisioner_input_init(
+        self, store_id: str, body: T.CreateAddProvisionerInputRequest
+    ) -> UserActionChallengeResponse:
+        """
+        Initialize Create Add Provisioner Input.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+            store_id: Path parameter.
+            body: Request body.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """  # noqa: E501
+        path = "/key-stores/{storeId}/add-provisioner/input"
+        path = path.replace("{storeId}", str(store_id))
+        payload = json.dumps(body, separators=(",", ":")) if body else ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="POST",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def create_add_provisioner_input_complete(
+        self, store_id: str, body: T.CreateAddProvisionerInputRequest, signed_challenge: SignUserActionChallengeRequest
+    ) -> None:
+        """
+        Complete Create Add Provisioner Input.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+            store_id: Path parameter.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+        user_action_token = user_action_result["userAction"]
+
+        self._http.request_with_user_action(
+            method="POST",
+            path="/key-stores/{storeId}/add-provisioner/input",
             path_params={"storeId": store_id},
             query_params=None,
             body=body,
@@ -387,6 +493,33 @@ class DelegatedSignersClient:
             requires_signature=True,
         )
         return cast(T.SubmitAddMacUserOutputResponse, response)
+
+    def submit_add_provisioner_output(
+        self, store_id: str, body: T.SubmitAddProvisionerOutputRequest, file: bytes
+    ) -> T.SubmitAddProvisionerOutputResponse:
+        """
+        Submit Add Provisioner Output.
+
+        Submits the output archive produced by the offline signer fleet for an add-provisioner operation.
+
+        Args:
+            store_id: Path parameter.
+            body: Request body.
+            file: The file bytes to upload.
+
+        Returns:
+            T.SubmitAddProvisionerOutputResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="POST",
+            path="/key-stores/{storeId}/add-provisioner/output",
+            path_params={"storeId": store_id},
+            query_params=None,
+            body=body,
+            file=file,
+            requires_signature=True,
+        )
+        return cast(T.SubmitAddProvisionerOutputResponse, response)
 
     def submit_clone_output(
         self, store_id: str, body: T.SubmitCloneOutputRequest, file: bytes
