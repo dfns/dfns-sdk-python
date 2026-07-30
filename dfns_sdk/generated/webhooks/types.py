@@ -36,6 +36,7 @@ class CreateWebhookRequest(TypedDict, total=False):
             "key.exported",
             "wallet.blockchainevent.detected",
             "wallet.blockchain_event.transfer.included",
+            "wallet.blockchain_event.misc.confirmed",
             "wallet.created",
             "wallet.activated",
             "wallet.delegated",
@@ -63,6 +64,8 @@ class CreateWebhookRequest(TypedDict, total=False):
             "vault.updated",
             "vault.tags.modified",
             "vault.event.created",
+            "address_watch.blockchain_event.transfer.confirmed",
+            "address_watch.blockchain_event.misc.confirmed",
             "payout.action.required",
         ]
         | Literal["*"]
@@ -85,6 +88,7 @@ class CreateWebhookResponse(TypedDict, total=False):
             "key.exported",
             "wallet.blockchainevent.detected",
             "wallet.blockchain_event.transfer.included",
+            "wallet.blockchain_event.misc.confirmed",
             "wallet.created",
             "wallet.activated",
             "wallet.delegated",
@@ -112,6 +116,8 @@ class CreateWebhookResponse(TypedDict, total=False):
             "vault.updated",
             "vault.tags.modified",
             "vault.event.created",
+            "address_watch.blockchain_event.transfer.confirmed",
+            "address_watch.blockchain_event.misc.confirmed",
             "payout.action.required",
         ]
         | Literal["*"]
@@ -139,6 +145,7 @@ class GetWebhookResponse(TypedDict, total=False):
             "key.exported",
             "wallet.blockchainevent.detected",
             "wallet.blockchain_event.transfer.included",
+            "wallet.blockchain_event.misc.confirmed",
             "wallet.created",
             "wallet.activated",
             "wallet.delegated",
@@ -166,6 +173,8 @@ class GetWebhookResponse(TypedDict, total=False):
             "vault.updated",
             "vault.tags.modified",
             "vault.event.created",
+            "address_watch.blockchain_event.transfer.confirmed",
+            "address_watch.blockchain_event.misc.confirmed",
             "payout.action.required",
         ]
         | Literal["*"]
@@ -193,6 +202,7 @@ class UpdateWebhookRequest(TypedDict, total=False):
                 "key.exported",
                 "wallet.blockchainevent.detected",
                 "wallet.blockchain_event.transfer.included",
+                "wallet.blockchain_event.misc.confirmed",
                 "wallet.created",
                 "wallet.activated",
                 "wallet.delegated",
@@ -220,6 +230,8 @@ class UpdateWebhookRequest(TypedDict, total=False):
                 "vault.updated",
                 "vault.tags.modified",
                 "vault.event.created",
+                "address_watch.blockchain_event.transfer.confirmed",
+                "address_watch.blockchain_event.misc.confirmed",
                 "payout.action.required",
             ]
             | Literal["*"]
@@ -244,6 +256,7 @@ class UpdateWebhookResponse(TypedDict, total=False):
             "key.exported",
             "wallet.blockchainevent.detected",
             "wallet.blockchain_event.transfer.included",
+            "wallet.blockchain_event.misc.confirmed",
             "wallet.created",
             "wallet.activated",
             "wallet.delegated",
@@ -271,6 +284,8 @@ class UpdateWebhookResponse(TypedDict, total=False):
             "vault.updated",
             "vault.tags.modified",
             "vault.event.created",
+            "address_watch.blockchain_event.transfer.confirmed",
+            "address_watch.blockchain_event.misc.confirmed",
             "payout.action.required",
         ]
         | Literal["*"]
@@ -309,6 +324,7 @@ class GetWebhookEventResponse(TypedDict, total=False):
         "key.exported",
         "wallet.blockchainevent.detected",
         "wallet.blockchain_event.transfer.included",
+        "wallet.blockchain_event.misc.confirmed",
         "wallet.created",
         "wallet.activated",
         "wallet.delegated",
@@ -336,6 +352,8 @@ class GetWebhookEventResponse(TypedDict, total=False):
         "vault.updated",
         "vault.tags.modified",
         "vault.event.created",
+        "address_watch.blockchain_event.transfer.confirmed",
+        "address_watch.blockchain_event.misc.confirmed",
         "payout.action.required",
     ]
     data: dict[str, dict[str, Any]]
@@ -365,6 +383,7 @@ class ListWebhookEventsQuery(TypedDict, total=False):
             "key.exported",
             "wallet.blockchainevent.detected",
             "wallet.blockchain_event.transfer.included",
+            "wallet.blockchain_event.misc.confirmed",
             "wallet.created",
             "wallet.activated",
             "wallet.delegated",
@@ -392,6 +411,8 @@ class ListWebhookEventsQuery(TypedDict, total=False):
             "vault.updated",
             "vault.tags.modified",
             "vault.event.created",
+            "address_watch.blockchain_event.transfer.confirmed",
+            "address_watch.blockchain_event.misc.confirmed",
             "payout.action.required",
         ]
     ]

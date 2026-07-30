@@ -43,62 +43,65 @@ class CreateVaultResponse(TypedDict, total=False):
 class CreateVaultAddressRequest(TypedDict, total=False):
     """createVaultAddress request body."""
 
-    network: Literal[
-        "ArbitrumOne",
-        "ArbitrumSepolia",
-        "ArcTestnet",
-        "AvalancheC",
-        "AvalancheCFuji",
-        "Base",
-        "BaseSepolia",
-        "Bob",
-        "BobSepolia",
-        "Bsc",
-        "BscTestnet",
-        "Berachain",
-        "BerachainBepolia",
-        "Celo",
-        "CeloAlfajores",
-        "Codex",
-        "CodexSepolia",
-        "Ethereum",
-        "EthereumClassic",
-        "EthereumClassicMordor",
-        "EthereumSepolia",
-        "EthereumHoodi",
-        "FlareC",
-        "FlareCCoston2",
-        "FlowEvm",
-        "FlowEvmTestnet",
-        "Ink",
-        "InkSepolia",
-        "Optimism",
-        "OptimismSepolia",
-        "Plasma",
-        "PlasmaTestnet",
-        "Plume",
-        "PlumeSepolia",
-        "Polygon",
-        "PolygonAmoy",
-        "Race",
-        "RaceSepolia",
-        "Rayls",
-        "RaylsTestnet",
-        "Robinhood",
-        "RobinhoodSepolia",
-        "SeiPacific1",
-        "SeiAtlantic2",
-        "Sonic",
-        "SonicTestnet",
-        "Tempo",
-        "TempoModerato",
-        "Tsc",
-        "TscTestnet1",
-        "Xdc",
-        "XdcApothem",
-        "XLayer",
-        "XLayerSepolia",
-    ]
+    network: (
+        Literal[
+            "ArbitrumOne",
+            "ArbitrumSepolia",
+            "ArcTestnet",
+            "AvalancheC",
+            "AvalancheCFuji",
+            "Base",
+            "BaseSepolia",
+            "Bob",
+            "BobSepolia",
+            "Bsc",
+            "BscTestnet",
+            "Berachain",
+            "BerachainBepolia",
+            "Celo",
+            "CeloAlfajores",
+            "Codex",
+            "CodexSepolia",
+            "Ethereum",
+            "EthereumClassic",
+            "EthereumClassicMordor",
+            "EthereumSepolia",
+            "EthereumHoodi",
+            "FlareC",
+            "FlareCCoston2",
+            "FlowEvm",
+            "FlowEvmTestnet",
+            "Ink",
+            "InkSepolia",
+            "Optimism",
+            "OptimismSepolia",
+            "Plasma",
+            "PlasmaTestnet",
+            "Plume",
+            "PlumeSepolia",
+            "Polygon",
+            "PolygonAmoy",
+            "Race",
+            "RaceSepolia",
+            "Rayls",
+            "RaylsTestnet",
+            "Robinhood",
+            "RobinhoodSepolia",
+            "SeiPacific1",
+            "SeiAtlantic2",
+            "Sonic",
+            "SonicTestnet",
+            "Tempo",
+            "TempoModerato",
+            "Tsc",
+            "TscTestnet1",
+            "Xdc",
+            "XdcApothem",
+            "XLayer",
+            "XLayerSepolia",
+        ]
+        | Literal["Bitcoin", "BitcoinSignet", "BitcoinTestnet4"]
+    )
 
 
 class CreateVaultAddressResponse(TypedDict, total=False):
@@ -112,62 +115,65 @@ class CreateVaultAddressResponse(TypedDict, total=False):
 class CreateVaultTransferRequest(TypedDict, total=False):
     """createVaultTransfer request body."""
 
-    network: Literal[
-        "ArbitrumOne",
-        "ArbitrumSepolia",
-        "ArcTestnet",
-        "AvalancheC",
-        "AvalancheCFuji",
-        "Base",
-        "BaseSepolia",
-        "Bob",
-        "BobSepolia",
-        "Bsc",
-        "BscTestnet",
-        "Berachain",
-        "BerachainBepolia",
-        "Celo",
-        "CeloAlfajores",
-        "Codex",
-        "CodexSepolia",
-        "Ethereum",
-        "EthereumClassic",
-        "EthereumClassicMordor",
-        "EthereumSepolia",
-        "EthereumHoodi",
-        "FlareC",
-        "FlareCCoston2",
-        "FlowEvm",
-        "FlowEvmTestnet",
-        "Ink",
-        "InkSepolia",
-        "Optimism",
-        "OptimismSepolia",
-        "Plasma",
-        "PlasmaTestnet",
-        "Plume",
-        "PlumeSepolia",
-        "Polygon",
-        "PolygonAmoy",
-        "Race",
-        "RaceSepolia",
-        "Rayls",
-        "RaylsTestnet",
-        "Robinhood",
-        "RobinhoodSepolia",
-        "SeiPacific1",
-        "SeiAtlantic2",
-        "Sonic",
-        "SonicTestnet",
-        "Tempo",
-        "TempoModerato",
-        "Tsc",
-        "TscTestnet1",
-        "Xdc",
-        "XdcApothem",
-        "XLayer",
-        "XLayerSepolia",
-    ]
+    network: (
+        Literal[
+            "ArbitrumOne",
+            "ArbitrumSepolia",
+            "ArcTestnet",
+            "AvalancheC",
+            "AvalancheCFuji",
+            "Base",
+            "BaseSepolia",
+            "Bob",
+            "BobSepolia",
+            "Bsc",
+            "BscTestnet",
+            "Berachain",
+            "BerachainBepolia",
+            "Celo",
+            "CeloAlfajores",
+            "Codex",
+            "CodexSepolia",
+            "Ethereum",
+            "EthereumClassic",
+            "EthereumClassicMordor",
+            "EthereumSepolia",
+            "EthereumHoodi",
+            "FlareC",
+            "FlareCCoston2",
+            "FlowEvm",
+            "FlowEvmTestnet",
+            "Ink",
+            "InkSepolia",
+            "Optimism",
+            "OptimismSepolia",
+            "Plasma",
+            "PlasmaTestnet",
+            "Plume",
+            "PlumeSepolia",
+            "Polygon",
+            "PolygonAmoy",
+            "Race",
+            "RaceSepolia",
+            "Rayls",
+            "RaylsTestnet",
+            "Robinhood",
+            "RobinhoodSepolia",
+            "SeiPacific1",
+            "SeiAtlantic2",
+            "Sonic",
+            "SonicTestnet",
+            "Tempo",
+            "TempoModerato",
+            "Tsc",
+            "TscTestnet1",
+            "Xdc",
+            "XdcApothem",
+            "XLayer",
+            "XLayerSepolia",
+        ]
+        | Literal["Bitcoin", "BitcoinSignet", "BitcoinTestnet4"]
+    )
     tid: str
     to: str
     amount: str
@@ -262,6 +268,18 @@ class ListVaultBalancesQuery(TypedDict, total=False):
     tid: NotRequired[str]
 
 
+class ReleaseQuarantineRequest(TypedDict, total=False):
+    """releaseQuarantine request body."""
+
+    reason: NotRequired[str]
+
+
+class ReleaseQuarantineResponse(TypedDict, total=False):
+    """releaseQuarantine response."""
+
+    status: Literal["OK"]
+
+
 class TagVaultRequest(TypedDict, total=False):
     """tagVault request body."""
 
@@ -284,15 +302,3 @@ class UntagVaultResponse(TypedDict, total=False):
     """untagVault response."""
 
     pass
-
-
-class UnquarantineRequest(TypedDict, total=False):
-    """unquarantine request body."""
-
-    reason: NotRequired[str]
-
-
-class UnquarantineResponse(TypedDict, total=False):
-    """unquarantine response."""
-
-    status: Literal["OK"]

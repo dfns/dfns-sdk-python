@@ -60,7 +60,7 @@ class VaultsClient:
         """
         Create Vault Address.
 
-        Creates a vault address (managed wallet) on an EVM network.
+        Creates a vault address (managed wallet) on an EVM or Bitcoin network.
 
         Args:
             vault_id: Vault id.
@@ -197,6 +197,32 @@ class VaultsClient:
         )
         return cast(T.ListVaultBalancesResponse, response)
 
+    def release_quarantine(
+        self, vault_id: str, quarantine_id: str, body: T.ReleaseQuarantineRequest
+    ) -> T.ReleaseQuarantineResponse:
+        """
+        Release Quarantine.
+
+        Releases quarantined funds into the available balance.
+
+        Args:
+            vault_id: Vault id.
+            quarantine_id: Vault quarantine id.
+            body: Request body.
+
+        Returns:
+            T.ReleaseQuarantineResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="POST",
+            path="/vaults/{vaultId}/quarantines/{quarantineId}/release",
+            path_params={"vaultId": vault_id, "quarantineId": quarantine_id},
+            query_params=None,
+            body=body,
+            requires_signature=True,
+        )
+        return cast(T.ReleaseQuarantineResponse, response)
+
     def tag_vault(self, vault_id: str, body: T.TagVaultRequest) -> T.TagVaultResponse:
         """
         Tag Vault.
@@ -242,27 +268,3 @@ class VaultsClient:
             requires_signature=True,
         )
         return cast(T.UntagVaultResponse, response)
-
-    def unquarantine(self, vault_id: str, quarantine_id: str, body: T.UnquarantineRequest) -> T.UnquarantineResponse:
-        """
-        Unquarantine.
-
-        Releases quarantined funds into the available balance.
-
-        Args:
-            vault_id: Vault id.
-            quarantine_id: Vault quarantine id.
-            body: Request body.
-
-        Returns:
-            T.UnquarantineResponse: The API response.
-        """  # noqa: E501
-        response = self._http.request(
-            method="DELETE",
-            path="/vaults/{vaultId}/quarantines/{quarantineId}",
-            path_params={"vaultId": vault_id, "quarantineId": quarantine_id},
-            query_params=None,
-            body=body,
-            requires_signature=True,
-        )
-        return cast(T.UnquarantineResponse, response)
