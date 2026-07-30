@@ -326,6 +326,68 @@ class DelegatedVaultsClient:
         )
         return cast(T.ListVaultBalancesResponse, response)
 
+    def release_quarantine_init(
+        self, vault_id: str, quarantine_id: str, body: T.ReleaseQuarantineRequest
+    ) -> UserActionChallengeResponse:
+        """
+        Initialize Release Quarantine.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+            vault_id: Vault id.
+            quarantine_id: Vault quarantine id.
+            body: Request body.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """  # noqa: E501
+        path = "/vaults/{vaultId}/quarantines/{quarantineId}/release"
+        path = path.replace("{vaultId}", str(vault_id))
+        path = path.replace("{quarantineId}", str(quarantine_id))
+        payload = json.dumps(body, separators=(",", ":")) if body else ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="POST",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def release_quarantine_complete(
+        self,
+        vault_id: str,
+        quarantine_id: str,
+        body: T.ReleaseQuarantineRequest,
+        signed_challenge: SignUserActionChallengeRequest,
+    ) -> T.ReleaseQuarantineResponse:
+        """
+        Complete Release Quarantine.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+            vault_id: Vault id.
+            quarantine_id: Vault quarantine id.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
+
+        Returns:
+            T.ReleaseQuarantineResponse: The API response.
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+        user_action_token = user_action_result["userAction"]
+
+        response = self._http.request_with_user_action(
+            method="POST",
+            path="/vaults/{vaultId}/quarantines/{quarantineId}/release",
+            path_params={"vaultId": vault_id, "quarantineId": quarantine_id},
+            query_params=None,
+            body=body,
+            user_action=user_action_token,
+        )
+        return cast(T.ReleaseQuarantineResponse, response)
+
     def tag_vault_init(self, vault_id: str, body: T.TagVaultRequest) -> UserActionChallengeResponse:
         """
         Initialize Tag Vault.
@@ -431,65 +493,3 @@ class DelegatedVaultsClient:
             user_action=user_action_token,
         )
         return cast(T.UntagVaultResponse, response)
-
-    def unquarantine_init(
-        self, vault_id: str, quarantine_id: str, body: T.UnquarantineRequest
-    ) -> UserActionChallengeResponse:
-        """
-        Initialize Unquarantine.
-
-        Creates a user action challenge for external signing.
-
-        Args:
-            vault_id: Vault id.
-            quarantine_id: Vault quarantine id.
-            body: Request body.
-
-        Returns:
-            UserActionChallengeResponse: The challenge to sign externally.
-        """  # noqa: E501
-        path = "/vaults/{vaultId}/quarantines/{quarantineId}"
-        path = path.replace("{vaultId}", str(vault_id))
-        path = path.replace("{quarantineId}", str(quarantine_id))
-        payload = json.dumps(body, separators=(",", ":")) if body else ""
-
-        return BaseAuthApi.create_user_action_challenge(
-            self._http,
-            user_action_http_method="DELETE",
-            user_action_http_path=path,
-            user_action_payload=payload,
-        )
-
-    def unquarantine_complete(
-        self,
-        vault_id: str,
-        quarantine_id: str,
-        body: T.UnquarantineRequest,
-        signed_challenge: SignUserActionChallengeRequest,
-    ) -> T.UnquarantineResponse:
-        """
-        Complete Unquarantine.
-
-        Submits the signed challenge and makes the API request.
-
-        Args:
-            vault_id: Vault id.
-            quarantine_id: Vault quarantine id.
-            body: Request body.
-            signed_challenge: The signed challenge from external signing.
-
-        Returns:
-            T.UnquarantineResponse: The API response.
-        """  # noqa: E501
-        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
-        user_action_token = user_action_result["userAction"]
-
-        response = self._http.request_with_user_action(
-            method="DELETE",
-            path="/vaults/{vaultId}/quarantines/{quarantineId}",
-            path_params={"vaultId": vault_id, "quarantineId": quarantine_id},
-            query_params=None,
-            body=body,
-            user_action=user_action_token,
-        )
-        return cast(T.UnquarantineResponse, response)

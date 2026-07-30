@@ -5,11 +5,45 @@ from typing import Any, Literal, TypedDict
 from typing_extensions import NotRequired
 
 
+class CancelFleetOperationRequest(TypedDict, total=False):
+    """cancelFleetOperation request body."""
+
+    group_id: str
+    reason: NotRequired[str]
+
+
+class CancelFleetOperationResponse(TypedDict, total=False):
+    """cancelFleetOperation response."""
+
+    group_id: str
+    store_id: str
+    org_id: str
+    status: Literal["Initialized", "InReview", "Rejected", "Approved", "Canceled"]
+    created_by: str
+    submitted_by: Any
+    date_submitted: Any
+    reviewed_by: Any
+    date_reviewed: Any
+    canceled_by: Any
+    date_canceled: Any
+    reason: Any
+    date_created: str
+    operations: list[dict[str, Any]]
+
+
 class CreateAddMacUserInputRequest(TypedDict, total=False):
     """createAddMacUserInput request body."""
 
     kind: Literal["AddMacUser"]
     mac_target_serial: str
+    hsm_target_serial: str
+
+
+class CreateAddProvisionerInputRequest(TypedDict, total=False):
+    """createAddProvisionerInput request body."""
+
+    kind: Literal["AddProvisioner"]
+    yubikey_serial: str
     hsm_target_serial: str
 
 
@@ -79,6 +113,19 @@ class SubmitAddMacUserOutputRequest(TypedDict, total=False):
 
 class SubmitAddMacUserOutputResponse(TypedDict, total=False):
     """submitAddMacUserOutput response."""
+
+    message: str
+
+
+class SubmitAddProvisionerOutputRequest(TypedDict, total=False):
+    """submitAddProvisionerOutput request body."""
+
+    file_checksum: str
+    output_json: dict[str, Any]
+
+
+class SubmitAddProvisionerOutputResponse(TypedDict, total=False):
+    """submitAddProvisionerOutput response."""
 
     message: str
 

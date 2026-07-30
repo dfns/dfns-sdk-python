@@ -1,5 +1,6 @@
 """Generated domain clients."""
 
+from .address_watches import AddressWatchesClient, DelegatedAddressWatchesClient
 from .agreements import AgreementsClient, DelegatedAgreementsClient
 from .allocations import AllocationsClient, DelegatedAllocationsClient
 from .auth import AuthClient, DelegatedAuthClient
@@ -19,6 +20,8 @@ from .wallets import DelegatedWalletsClient, WalletsClient
 from .webhooks import DelegatedWebhooksClient, WebhooksClient
 
 __all__ = [
+    "AddressWatchesClient",
+    "DelegatedAddressWatchesClient",
     "AgreementsClient",
     "DelegatedAgreementsClient",
     "AllocationsClient",
