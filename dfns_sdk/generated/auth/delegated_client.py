@@ -646,6 +646,50 @@ class DelegatedAuthClient:
         )
         return cast(T.LogoutResponse, response)
 
+    def complete_oidc_login(self, body: T.CompleteOidcLoginRequest) -> dict[str, Any]:
+        """
+        Complete OIDC Login.
+
+        Completes the OIDC login process by exchanging the authorization code obtained from the identity provider. If the verified user has no active first-factor credential yet, it returns a registration challenge to complete via [Complete User Registration](/api-reference/auth/complete-user-registration); otherwise it returns the user's authentication token.
+
+        Args:
+            body: Request body.
+
+        Returns:
+            dict[str, Any]: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="POST",
+            path="/auth/login/oidc",
+            path_params={},
+            query_params=None,
+            body=body,
+            requires_signature=False,
+        )
+        return cast(dict[str, Any], response)
+
+    def initiate_oidc_login(self, body: T.InitiateOidcLoginRequest) -> T.InitiateOidcLoginResponse:
+        """
+        Initiate OIDC Login.
+
+        Initialize the OIDC login process by returning the identity provider authorization URL to redirect the user to.
+
+        Args:
+            body: Request body.
+
+        Returns:
+            T.InitiateOidcLoginResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="POST",
+            path="/auth/login/oidc/init",
+            path_params={},
+            query_params=None,
+            body=body,
+            requires_signature=False,
+        )
+        return cast(T.InitiateOidcLoginResponse, response)
+
     def send_login_code(self, body: T.SendLoginCodeRequest) -> T.SendLoginCodeResponse:
         """
                 Send Login Code.
