@@ -112,6 +112,102 @@ class CreateVaultAddressResponse(TypedDict, total=False):
     address: str
 
 
+class ListVaultLocksResponse(TypedDict, total=False):
+    """listVaultLocks response."""
+
+    items: list[dict[str, Any]]
+    next_page_token: NotRequired[str]
+
+
+class ListVaultLocksQuery(TypedDict, total=False):
+    """listVaultLocks query parameters."""
+
+    limit: NotRequired[int]
+    pagination_token: NotRequired[str]
+    network: NotRequired[str]
+    tid: NotRequired[str]
+
+
+class CreateVaultLockRequest(TypedDict, total=False):
+    """createVaultLock request body."""
+
+    network: Literal[
+        "ArbitrumOne",
+        "ArbitrumSepolia",
+        "ArcTestnet",
+        "AvalancheC",
+        "AvalancheCFuji",
+        "Base",
+        "BaseSepolia",
+        "Bob",
+        "BobSepolia",
+        "Bsc",
+        "BscTestnet",
+        "Berachain",
+        "BerachainBepolia",
+        "Celo",
+        "CeloAlfajores",
+        "Codex",
+        "CodexSepolia",
+        "Ethereum",
+        "EthereumClassic",
+        "EthereumClassicMordor",
+        "EthereumSepolia",
+        "EthereumHoodi",
+        "FlareC",
+        "FlareCCoston2",
+        "FlowEvm",
+        "FlowEvmTestnet",
+        "Ink",
+        "InkSepolia",
+        "Optimism",
+        "OptimismSepolia",
+        "Plasma",
+        "PlasmaTestnet",
+        "Plume",
+        "PlumeSepolia",
+        "Polygon",
+        "PolygonAmoy",
+        "Race",
+        "RaceSepolia",
+        "Rayls",
+        "RaylsTestnet",
+        "Robinhood",
+        "RobinhoodSepolia",
+        "SeiPacific1",
+        "SeiAtlantic2",
+        "Sonic",
+        "SonicTestnet",
+        "Tempo",
+        "TempoModerato",
+        "Tsc",
+        "TscTestnet1",
+        "Xdc",
+        "XdcApothem",
+        "XLayer",
+        "XLayerSepolia",
+    ]
+    tid: str
+    amount: str
+    external_id: NotRequired[str]
+    reason: NotRequired[str]
+
+
+class CreateVaultLockResponse(TypedDict, total=False):
+    """createVaultLock response."""
+
+    id: str
+    vault_id: str
+    network: str
+    tid: str
+    amount: str
+    owner: str
+    external_id: NotRequired[str]
+    reason: NotRequired[str]
+    date_created: str
+    date_deleted: NotRequired[str]
+
+
 class CreateVaultTransferRequest(TypedDict, total=False):
     """createVaultTransfer request body."""
 
@@ -202,6 +298,36 @@ class CreateVaultTransferResponse(TypedDict, total=False):
     fee_sponsor_id: NotRequired[str]
     replacement_id: NotRequired[str]
     details: NotRequired[dict[str, dict[str, Any]]]
+
+
+class GetVaultLockResponse(TypedDict, total=False):
+    """getVaultLock response."""
+
+    id: str
+    vault_id: str
+    network: str
+    tid: str
+    amount: str
+    owner: str
+    external_id: NotRequired[str]
+    reason: NotRequired[str]
+    date_created: str
+    date_deleted: NotRequired[str]
+
+
+class DeleteVaultLockResponse(TypedDict, total=False):
+    """deleteVaultLock response."""
+
+    id: str
+    vault_id: str
+    network: str
+    tid: str
+    amount: str
+    owner: str
+    external_id: NotRequired[str]
+    reason: NotRequired[str]
+    date_created: str
+    date_deleted: NotRequired[str]
 
 
 class GetVaultResponse(TypedDict, total=False):

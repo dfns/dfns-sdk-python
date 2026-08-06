@@ -15,7 +15,7 @@ class DfnsClientConfig:
     """Authentication token (JWT)."""
 
     base_url: str = "https://api.dfns.io"
-    """Base URL for the Dfns API."""
+    """Complete transport base URL for the Dfns API, including any path prefix."""
 
     signer: "Signer | None" = None
     """Signer for user action requests."""
@@ -37,7 +37,7 @@ class DfnsDelegatedClientConfig:
     """Authentication token (JWT) for the service account."""
 
     base_url: str = "https://api.dfns.io"
-    """Base URL for the Dfns API."""
+    """Complete transport base URL for the Dfns API, including any path prefix."""
 
     headers: dict[str, str] = field(default_factory=dict)
     """Additional headers to include in requests."""

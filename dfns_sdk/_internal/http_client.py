@@ -4,11 +4,25 @@ import hashlib
 import json
 from collections.abc import Mapping
 from typing import Any, cast
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit, urlunsplit
 
 import httpx
 
 from dfns_sdk.types import DfnsClientConfig, DfnsDelegatedClientConfig, DfnsError
+
+
+def _normalize_base_url(base_url: str) -> str:
+    """Validate and normalize a complete API transport base URL."""
+    parsed = urlsplit(base_url)
+    if not parsed.scheme or not parsed.netloc:
+        raise ValueError("base_url must be an absolute URL")
+    if "?" in base_url:
+        raise ValueError("base_url must not include a query")
+    if "#" in base_url:
+        raise ValueError("base_url must not include a fragment")
+
+    normalized_path = parsed.path.rstrip("/")
+    return urlunsplit((parsed.scheme, parsed.netloc, normalized_path, "", ""))
 
 
 class HttpClient:
@@ -16,8 +30,9 @@ class HttpClient:
 
     def __init__(self, config: "DfnsClientConfig | DfnsDelegatedClientConfig"):
         self.config = config
+        self._base_url = _normalize_base_url(config.base_url)
         self._client = httpx.Client(
-            base_url=config.base_url,
+            base_url=self._base_url,
             timeout=30.0,
         )
 
@@ -41,7 +56,10 @@ class HttpClient:
         query_params: Mapping[str, Any] | None = None,
     ) -> str:
         """Build the full URL with path and query parameters."""
-        url = path
+        if not path.startswith("/") or path.startswith("//"):
+            raise ValueError("request path must be root-relative")
+
+        url = f"{self._base_url}/{path.removeprefix('/')}"
 
         if path_params:
             for key, value in path_params.items():
@@ -114,7 +132,7 @@ class HttpClient:
 
         challenge_response = self._client.request(
             method="POST",
-            url="/auth/action/init",
+            url=self._build_url("/auth/action/init"),
             headers=self._build_headers(),
             json=challenge_body,
         )
@@ -131,7 +149,7 @@ class HttpClient:
 
         signature_response = self._client.request(
             method="POST",
-            url="/auth/action",
+            url=self._build_url("/auth/action"),
             headers=self._build_headers(),
             json=signature_body,
         )
@@ -249,8 +267,9 @@ class AsyncHttpClient:
 
     def __init__(self, config: DfnsClientConfig):
         self.config = config
+        self._base_url = _normalize_base_url(config.base_url)
         self._client = httpx.AsyncClient(
-            base_url=config.base_url,
+            base_url=self._base_url,
             timeout=30.0,
         )
 
@@ -274,7 +293,10 @@ class AsyncHttpClient:
         query_params: Mapping[str, Any] | None = None,
     ) -> str:
         """Build the full URL with path and query parameters."""
-        url = path
+        if not path.startswith("/") or path.startswith("//"):
+            raise ValueError("request path must be root-relative")
+
+        url = f"{self._base_url}/{path.removeprefix('/')}"
 
         if path_params:
             for key, value in path_params.items():
@@ -347,7 +369,7 @@ class AsyncHttpClient:
 
         challenge_response = await self._client.request(
             method="POST",
-            url="/auth/action/init",
+            url=self._build_url("/auth/action/init"),
             headers=self._build_headers(),
             json=challenge_body,
         )
@@ -364,7 +386,7 @@ class AsyncHttpClient:
 
         signature_response = await self._client.request(
             method="POST",
-            url="/auth/action",
+            url=self._build_url("/auth/action"),
             headers=self._build_headers(),
             json=signature_body,
         )

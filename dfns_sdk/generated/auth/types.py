@@ -225,6 +225,27 @@ class LogoutResponse(TypedDict, total=False):
     message: str
 
 
+class CompleteOidcLoginRequest(TypedDict, total=False):
+    """completeOidcLogin request body."""
+
+    code: str
+    state: str
+
+
+class InitiateOidcLoginRequest(TypedDict, total=False):
+    """initiateOidcLogin request body."""
+
+    org_id: NotRequired[str]
+    tenant_id: NotRequired[str]
+    redirect_uri: str
+
+
+class InitiateOidcLoginResponse(TypedDict, total=False):
+    """initiateOidcLogin response."""
+
+    redirect_url: str
+
+
 class SendLoginCodeRequest(TypedDict, total=False):
     """sendLoginCode request body."""
 

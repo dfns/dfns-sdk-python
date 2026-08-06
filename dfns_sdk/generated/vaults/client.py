@@ -79,6 +79,52 @@ class VaultsClient:
         )
         return cast(T.CreateVaultAddressResponse, response)
 
+    def list_vault_locks(self, vault_id: str, query: T.ListVaultLocksQuery | None = None) -> T.ListVaultLocksResponse:
+        """
+        List Vault Locks.
+
+        Lists a vault's locks, active and released.
+
+        Args:
+            vault_id: Vault id.
+            query: Query parameters.
+
+        Returns:
+            T.ListVaultLocksResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="GET",
+            path="/vaults/{vaultId}/locks",
+            path_params={"vaultId": vault_id},
+            query_params=query,
+            body=None,
+            requires_signature=False,
+        )
+        return cast(T.ListVaultLocksResponse, response)
+
+    def create_vault_lock(self, vault_id: str, body: T.CreateVaultLockRequest) -> T.CreateVaultLockResponse:
+        """
+        Create Vault Lock.
+
+        Locks funds from the vault's available balance for off-chain settlement or escrow.
+
+        Args:
+            vault_id: Vault id.
+            body: Request body.
+
+        Returns:
+            T.CreateVaultLockResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="POST",
+            path="/vaults/{vaultId}/locks",
+            path_params={"vaultId": vault_id},
+            query_params=None,
+            body=body,
+            requires_signature=True,
+        )
+        return cast(T.CreateVaultLockResponse, response)
+
     def create_vault_transfer(self, vault_id: str, body: T.CreateVaultTransferRequest) -> T.CreateVaultTransferResponse:
         """
         Create Vault Transfer.
@@ -101,6 +147,52 @@ class VaultsClient:
             requires_signature=True,
         )
         return cast(T.CreateVaultTransferResponse, response)
+
+    def get_vault_lock(self, vault_id: str, lock_id: str) -> T.GetVaultLockResponse:
+        """
+        Get Vault Lock.
+
+        Retrieves a vault lock by its ID.
+
+        Args:
+            vault_id: Vault id.
+            lock_id: The lock to retrieve.
+
+        Returns:
+            T.GetVaultLockResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="GET",
+            path="/vaults/{vaultId}/locks/{lockId}",
+            path_params={"vaultId": vault_id, "lockId": lock_id},
+            query_params=None,
+            body=None,
+            requires_signature=False,
+        )
+        return cast(T.GetVaultLockResponse, response)
+
+    def delete_vault_lock(self, vault_id: str, lock_id: str) -> T.DeleteVaultLockResponse:
+        """
+        Delete Vault Lock.
+
+        Releases a lock, returning the locked funds to the vault's available balance. Owner only.
+
+        Args:
+            vault_id: Vault id.
+            lock_id: Vault lock id.
+
+        Returns:
+            T.DeleteVaultLockResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="DELETE",
+            path="/vaults/{vaultId}/locks/{lockId}",
+            path_params={"vaultId": vault_id, "lockId": lock_id},
+            query_params=None,
+            body=None,
+            requires_signature=True,
+        )
+        return cast(T.DeleteVaultLockResponse, response)
 
     def get_vault(self, vault_id: str) -> T.GetVaultResponse:
         """
