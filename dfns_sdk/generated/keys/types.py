@@ -314,7 +314,7 @@ class GenerateSignatureResponse(TypedDict, total=False):
     date_signed: NotRequired[str]
     date_confirmed: NotRequired[str]
     external_id: NotRequired[str]
-    details: NotRequired[dict[str, dict[str, Any]]]
+    details: NotRequired[dict[str, Any]]
 
 
 class GetSignatureResponse(TypedDict, total=False):
@@ -456,7 +456,7 @@ class GetSignatureResponse(TypedDict, total=False):
     date_signed: NotRequired[str]
     date_confirmed: NotRequired[str]
     external_id: NotRequired[str]
-    details: NotRequired[dict[str, dict[str, Any]]]
+    details: NotRequired[dict[str, Any]]
 
 
 class ImportKeyRequest(TypedDict, total=False):

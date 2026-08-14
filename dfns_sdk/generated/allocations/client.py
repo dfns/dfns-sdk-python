@@ -36,15 +36,36 @@ class AllocationsClient:
 
     def create_allocation(self, body: dict[str, Any]) -> T.CreateAllocationResponse:
         """
-        Create Allocation.
+                Create Allocation.
 
-        Create a new allocation.
+                Create a new allocation.
 
-        Args:
-            body: Request body.
+        An allocation deposits assets from one of your wallets into a rewards-earning protocol. Two providers are available:
 
-        Returns:
-            T.CreateAllocationResponse: The API response.
+        | Provider  | Description                                                                                                                   | Supported chains                   |
+        |-----------|---------------------------------------------------------------------------------------------------------------------------------|------------------------------------|
+        | M0        | Offers the `0fns` protocol, an extension to the M0 USD-based stablecoin $M. Trade USDC on Ethereum into 0fns to earn rewards. | Ethereum Mainnet, Ethereum Sepolia |
+        | Yield.xyz | Offers a set of DeFi vault strategies, each with its own APY. Deposit the vault's underlying token; withdraw it at any time.    | Ethereum Mainnet, Base             |
+
+        The `protocol` field selects the strategy:
+
+        | `protocol`              | Provider  | Strategy                          | Deposit asset | Network  |
+        |---------------------------|-----------|-----------------------------------|---------------|----------|
+        | `0fns`                  | M0        | 0fns                              | USDC          | Ethereum |
+        | `SkySusds`              | Yield.xyz | Sky Savings Rate (sUSDS)          | USDS          | Ethereum |
+        | `GauntletUsdcPrime`     | Yield.xyz | Gauntlet USDC Prime (gtUSDC)      | USDC          | Ethereum |
+        | `SteakhouseUsdt`        | Yield.xyz | Steakhouse USDT (steakUSDT)       | USDT          | Ethereum |
+        | `GauntletUsdcPrimeBase` | Yield.xyz | Gauntlet USDC Prime (gtUSDCp)     | USDC          | Base     |
+        | `SteakhouseUsdcBase`    | Yield.xyz | Steakhouse USDC (steakUSDC)       | USDC          | Base     |
+        | `SentoraPyusdMain`      | Yield.xyz | Sentora PYUSD Main (senPYUSDMain) | PYUSD         | Ethereum |
+
+        Yield.xyz vaults are available on mainnet networks only.
+
+                Args:
+                    body: Request body.
+
+                Returns:
+                    T.CreateAllocationResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
