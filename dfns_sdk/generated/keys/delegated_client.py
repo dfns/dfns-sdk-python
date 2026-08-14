@@ -98,7 +98,7 @@ class DelegatedKeysClient:
         Creates a user action challenge for external signing.
 
         Args:
-            key_id: Path parameter.
+            key_id: The key to delegate. Must have been created with `delayDelegation: true`.
             body: Request body.
 
         Returns:
@@ -124,7 +124,7 @@ class DelegatedKeysClient:
         Submits the signed challenge and makes the API request.
 
         Args:
-            key_id: Path parameter.
+            key_id: The key to delegate. Must have been created with `delayDelegation: true`.
             body: Request body.
             signed_challenge: The signed challenge from external signing.
 
@@ -173,7 +173,7 @@ class DelegatedKeysClient:
         Creates a user action challenge for external signing.
 
         Args:
-            key_id: Path parameter.
+            key_id: The key to update.
             body: Request body.
 
         Returns:
@@ -199,7 +199,7 @@ class DelegatedKeysClient:
         Submits the signed challenge and makes the API request.
 
         Args:
-            key_id: Path parameter.
+            key_id: The key to update.
             body: Request body.
             signed_challenge: The signed challenge from external signing.
 
@@ -226,7 +226,7 @@ class DelegatedKeysClient:
         Creates a user action challenge for external signing.
 
         Args:
-            key_id: Path parameter.
+            key_id: The key to delete.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
@@ -249,7 +249,7 @@ class DelegatedKeysClient:
         Submits the signed challenge and makes the API request.
 
         Args:
-            key_id: Path parameter.
+            key_id: The key to delete.
             signed_challenge: The signed challenge from external signing.
 
         Returns:
@@ -275,7 +275,7 @@ class DelegatedKeysClient:
         Creates a user action challenge for external signing.
 
         Args:
-            key_id: Path parameter.
+            key_id: The Diffie-Hellman key to derive from. Must be a key created with `scheme=DH`.
             body: Request body.
 
         Returns:
@@ -301,7 +301,7 @@ class DelegatedKeysClient:
         Submits the signed challenge and makes the API request.
 
         Args:
-            key_id: Path parameter.
+            key_id: The Diffie-Hellman key to derive from. Must be a key created with `scheme=DH`.
             body: Request body.
             signed_challenge: The signed challenge from external signing.
 
@@ -328,7 +328,7 @@ class DelegatedKeysClient:
         Creates a user action challenge for external signing.
 
         Args:
-            key_id: Path parameter.
+            key_id: The key to export.
             body: Request body.
 
         Returns:
@@ -354,7 +354,7 @@ class DelegatedKeysClient:
         Submits the signed challenge and makes the API request.
 
         Args:
-            key_id: Path parameter.
+            key_id: The key to export.
             body: Request body.
             signed_challenge: The signed challenge from external signing.
 

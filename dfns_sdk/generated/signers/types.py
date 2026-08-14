@@ -61,11 +61,12 @@ class CreateGenesisInputRequest(TypedDict, total=False):
 
     kind: Literal["Genesis"]
     num_provisioners: int
+    num_operational: int
     num_secp256k1: int
     num_ed25519: int
     hsm_genesis_serial: str
     mac_genesis_serial: NotRequired[str]
-    hsm_genesis_firmware_version: NotRequired[Literal["2.2", "2.4"]]
+    hsm_genesis_firmware_version: NotRequired[Literal["2.4"]]
     debug_options: NotRequired[dict[str, dict[str, Any]]]
 
 
