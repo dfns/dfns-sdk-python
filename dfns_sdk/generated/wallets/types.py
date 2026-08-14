@@ -140,7 +140,7 @@ class AbortTransactionResponse(TypedDict, total=False):
     date_confirmed: NotRequired[str]
     external_id: NotRequired[str]
     replacement_id: NotRequired[str]
-    details: NotRequired[dict[str, dict[str, Any]]]
+    details: NotRequired[dict[str, Any]]
 
 
 class AbortTransferResponse(TypedDict, total=False):
@@ -164,7 +164,7 @@ class AbortTransferResponse(TypedDict, total=False):
     external_id: NotRequired[str]
     fee_sponsor_id: NotRequired[str]
     replacement_id: NotRequired[str]
-    details: NotRequired[dict[str, dict[str, Any]]]
+    details: NotRequired[dict[str, Any]]
 
 
 class ActivateWalletResponse(TypedDict, total=False):
@@ -302,7 +302,7 @@ class ActivateWalletResponse(TypedDict, total=False):
     date_confirmed: NotRequired[str]
     external_id: NotRequired[str]
     replacement_id: NotRequired[str]
-    details: NotRequired[dict[str, dict[str, Any]]]
+    details: NotRequired[dict[str, Any]]
 
 
 class ListTransactionsResponse(TypedDict, total=False):
@@ -455,7 +455,7 @@ class SignAndBroadcastTransactionResponse(TypedDict, total=False):
     date_confirmed: NotRequired[str]
     external_id: NotRequired[str]
     replacement_id: NotRequired[str]
-    details: NotRequired[dict[str, dict[str, Any]]]
+    details: NotRequired[dict[str, Any]]
 
 
 class CancelTransactionResponse(TypedDict, total=False):
@@ -593,7 +593,7 @@ class CancelTransactionResponse(TypedDict, total=False):
     date_confirmed: NotRequired[str]
     external_id: NotRequired[str]
     replacement_id: NotRequired[str]
-    details: NotRequired[dict[str, dict[str, Any]]]
+    details: NotRequired[dict[str, Any]]
 
 
 class CancelTransferResponse(TypedDict, total=False):
@@ -731,7 +731,7 @@ class CancelTransferResponse(TypedDict, total=False):
     date_confirmed: NotRequired[str]
     external_id: NotRequired[str]
     replacement_id: NotRequired[str]
-    details: NotRequired[dict[str, dict[str, Any]]]
+    details: NotRequired[dict[str, Any]]
 
 
 class ProxyARequestToTheCantonLedgerApiRequest(TypedDict, total=False):
@@ -877,7 +877,7 @@ class SpeedUpTransactionResponse(TypedDict, total=False):
     date_confirmed: NotRequired[str]
     external_id: NotRequired[str]
     replacement_id: NotRequired[str]
-    details: NotRequired[dict[str, dict[str, Any]]]
+    details: NotRequired[dict[str, Any]]
 
 
 class SpeedUpTransferResponse(TypedDict, total=False):
@@ -1015,7 +1015,7 @@ class SpeedUpTransferResponse(TypedDict, total=False):
     date_confirmed: NotRequired[str]
     external_id: NotRequired[str]
     replacement_id: NotRequired[str]
-    details: NotRequired[dict[str, dict[str, Any]]]
+    details: NotRequired[dict[str, Any]]
 
 
 class ListWalletsResponse(TypedDict, total=False):
@@ -1431,7 +1431,7 @@ class GetTransactionResponse(TypedDict, total=False):
     date_confirmed: NotRequired[str]
     external_id: NotRequired[str]
     replacement_id: NotRequired[str]
-    details: NotRequired[dict[str, dict[str, Any]]]
+    details: NotRequired[dict[str, Any]]
 
 
 class GetTransferResponse(TypedDict, total=False):
@@ -1455,7 +1455,7 @@ class GetTransferResponse(TypedDict, total=False):
     external_id: NotRequired[str]
     fee_sponsor_id: NotRequired[str]
     replacement_id: NotRequired[str]
-    details: NotRequired[dict[str, dict[str, Any]]]
+    details: NotRequired[dict[str, Any]]
 
 
 class GetWalletResponse(TypedDict, total=False):
@@ -2449,7 +2449,7 @@ class TransferAssetResponse(TypedDict, total=False):
     external_id: NotRequired[str]
     fee_sponsor_id: NotRequired[str]
     replacement_id: NotRequired[str]
-    details: NotRequired[dict[str, dict[str, Any]]]
+    details: NotRequired[dict[str, Any]]
 
 
 class TagWalletRequest(TypedDict, total=False):

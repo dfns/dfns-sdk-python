@@ -356,7 +356,7 @@ class GetWebhookEventResponse(TypedDict, total=False):
         "address_watch.blockchain_event.misc.confirmed",
         "payout.action.required",
     ]
-    data: dict[str, dict[str, Any]]
+    data: dict[str, Any]
     status: str
     error: NotRequired[str]
     timestamp_sent: int

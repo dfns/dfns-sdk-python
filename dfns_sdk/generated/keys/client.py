@@ -75,7 +75,7 @@ class KeysClient:
         In most cases, when you want to implement [Wallet Delegation](https://docs.dfns.co/guides/developers/delegated-wallets), simply create the wallet by directly delegating it to an end user, in which case it will the non-custodial from the start.  There are some rare cases, however, where the key or wallet must be created before the user has accessed to the system.  To accommodate this, we've added the ability to create a key or wallet in delay delegation mode, and then later delegate it (i.e.: transfer ownership of it) to an end user via this endpoint.
 
                 Args:
-                    key_id: Path parameter.
+                    key_id: The key to delegate. Must have been created with `delayDelegation: true`.
                     body: Request body.
 
                 Returns:
@@ -120,7 +120,7 @@ class KeysClient:
         Updates the name of an existing key.
 
         Args:
-            key_id: Path parameter.
+            key_id: The key to update.
             body: Request body.
 
         Returns:
@@ -143,7 +143,7 @@ class KeysClient:
         Deletes the key and all wallets using this key. Once deleted, keys (and wallets) are not usable anymore, and won't count in your overall organisation wallet count.
 
         Args:
-            key_id: Path parameter.
+            key_id: The key to delete.
 
         Returns:
             T.DeleteKeyResponse: The API response.
@@ -171,7 +171,7 @@ class KeysClient:
         This endpoint only supports Diffie-Hellman keys. Regular threshold signature keys, like `ECDSA` or `EdDSA`, will not work. You can create a Diffie-Hellman key with the [Create Key](https://docs.dfns.co/api-reference/keys/create-key) endpoint using `scheme=DH` and `curve=secp256k1`.
 
                 Args:
-                    key_id: Path parameter.
+                    key_id: The Diffie-Hellman key to derive from. Must be a key created with `scheme=DH`.
                     body: Request body.
 
                 Returns:
@@ -193,14 +193,14 @@ class KeysClient:
 
                 Dfns secures private keys by generating them as MPC key shares in our decentralized key management network.  Our goal is to eliminate all single points of failure (SPOFs) associated with blockchain private keys.
 
-        In certain circumstances, however, customers require Dfns to export a private key. In this case, Dfns exposes the following endpoint which can be used in conjunction with our [export SDK](https://github.com/dfns/dfns-sdk-ts/tree/m/examples/sdk/export-wallet).
+        In certain circumstances, however, customers require Dfns to export a private key. In this case, Dfns exposes the following endpoint which can be used in conjunction with our [export SDK](https://github.com/dfns/dfns-sdk-ts/tree/m/examples/sdk/export-wallet). Each signer returns its key share encrypted to an encryption key you provide; the full private key is reconstituted client-side and is never assembled on Dfns servers.
 
         <Danger>
-        Dfns can not guarantee the security of exported keys as we have no way to control blockchain transactions once the single point of failure has been reconstituted.  For this reason, this feature is restricted to customers who have signed a contractual addendum limiting our liability for exported keys.  Additionally, by default exported keys can no longer be used to sign within the Dfns platform. Please contact your sales representative for more information.
+        Once a key is exported and reconstituted, it becomes a single point of failure that Dfns can no longer protect: anyone who obtains it controls the wallet and its assets, and Dfns can not guarantee the security of transactions signed with it. You are solely responsible for the exported key's security — its storage, encryption, access controls, and protection against theft or misuse. Key export is not enabled by default; contact our support team to have it activated for your organization.
         </Danger>
 
                 Args:
-                    key_id: Path parameter.
+                    key_id: The key to export.
                     body: Request body.
 
                 Returns:

@@ -60,7 +60,7 @@ class VaultsClient:
         """
         Create Vault Address.
 
-        Creates a vault address (managed wallet) on an EVM or Bitcoin network.
+        Creates a vault address (managed wallet) on a network that supports vaults.
 
         Args:
             vault_id: Vault id.
