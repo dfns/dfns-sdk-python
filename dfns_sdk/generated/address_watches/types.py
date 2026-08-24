@@ -26,7 +26,6 @@ class CreateAddressWatchRequest(TypedDict, total=False):
     address: str
     name: NotRequired[str]
     external_id: NotRequired[str]
-    tags: NotRequired[list[str]]
 
 
 class CreateAddressWatchResponse(TypedDict, total=False):
@@ -94,7 +93,6 @@ class CreateAddressWatchResponse(TypedDict, total=False):
     address: str
     name: NotRequired[str]
     external_id: NotRequired[str]
-    tags: list[str]
     status: Literal["Active", "Archived"]
     date_created: str
     date_deleted: NotRequired[str]
@@ -165,7 +163,76 @@ class GetAddressWatchResponse(TypedDict, total=False):
     address: str
     name: NotRequired[str]
     external_id: NotRequired[str]
-    tags: list[str]
+    status: Literal["Active", "Archived"]
+    date_created: str
+    date_deleted: NotRequired[str]
+
+
+class DeleteAddressWatchResponse(TypedDict, total=False):
+    """deleteAddressWatch response."""
+
+    id: str
+    network: Literal[
+        "ArbitrumOne",
+        "ArbitrumSepolia",
+        "ArcTestnet",
+        "AvalancheC",
+        "AvalancheCFuji",
+        "Base",
+        "BaseSepolia",
+        "Berachain",
+        "BerachainBepolia",
+        "Bob",
+        "BobSepolia",
+        "Bsc",
+        "BscTestnet",
+        "Celo",
+        "CeloAlfajores",
+        "Codex",
+        "CodexSepolia",
+        "Ethereum",
+        "EthereumClassic",
+        "EthereumClassicMordor",
+        "EthereumSepolia",
+        "EthereumHoodi",
+        "FlareC",
+        "FlareCCoston2",
+        "FlowEvm",
+        "FlowEvmTestnet",
+        "Ink",
+        "InkSepolia",
+        "Optimism",
+        "OptimismSepolia",
+        "Plasma",
+        "PlasmaTestnet",
+        "Plume",
+        "PlumeSepolia",
+        "Polygon",
+        "PolygonAmoy",
+        "Race",
+        "RaceSepolia",
+        "Rayls",
+        "RaylsTestnet",
+        "Robinhood",
+        "RobinhoodSepolia",
+        "SeiAtlantic2",
+        "SeiPacific1",
+        "Solana",
+        "SolanaDevnet",
+        "Sonic",
+        "SonicTestnet",
+        "Tempo",
+        "TempoModerato",
+        "Tsc",
+        "TscTestnet1",
+        "Xdc",
+        "XdcApothem",
+        "XLayer",
+        "XLayerSepolia",
+    ]
+    address: str
+    name: NotRequired[str]
+    external_id: NotRequired[str]
     status: Literal["Active", "Archived"]
     date_created: str
     date_deleted: NotRequired[str]
