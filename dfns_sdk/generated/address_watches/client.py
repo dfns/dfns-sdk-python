@@ -42,6 +42,8 @@ class AddressWatchesClient:
 
         The address must already exist on chain and is normalized to the form the indexer matches on (lowercase for EVM networks). Only networks that support address watches are accepted. A given address can only be watched once per network within an organization while the watch is Active.
 
+        Watching an address that was previously deleted re-activates the deleted watch, with the ID, the nickname and the externalId it had before: the request body is only used to find it.
+
                 Args:
                     body: Request body.
 
@@ -79,6 +81,28 @@ class AddressWatchesClient:
             requires_signature=False,
         )
         return cast(T.GetAddressWatchResponse, response)
+
+    def delete_address_watch(self, address_watch_id: str) -> T.DeleteAddressWatchResponse:
+        """
+        Delete Address Watch.
+
+        Deletes an address watch. Once deleted, the address is not watched anymore, no webhook is sent for it, and it won't count in your overall organisation wallet count. Watching the same address again on the same network re-activates this watch, with the same ID and the same history.
+
+        Args:
+            address_watch_id: The address watch to delete.
+
+        Returns:
+            T.DeleteAddressWatchResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="DELETE",
+            path="/address-watches/{addressWatchId}",
+            path_params={"addressWatchId": address_watch_id},
+            query_params=None,
+            body=None,
+            requires_signature=True,
+        )
+        return cast(T.DeleteAddressWatchResponse, response)
 
     def get_address_watch_assets(
         self, address_watch_id: str, query: T.GetAddressWatchAssetsQuery | None = None

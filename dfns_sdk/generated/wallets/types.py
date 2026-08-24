@@ -1294,6 +1294,7 @@ class CreateWalletResponse(TypedDict, total=False):
     external_id: NotRequired[str]
     tags: list[str]
     validator_id: NotRequired[str]
+    vault_id: NotRequired[str]
 
 
 class GetTransactionResponse(TypedDict, total=False):
@@ -1589,6 +1590,7 @@ class GetWalletResponse(TypedDict, total=False):
     external_id: NotRequired[str]
     tags: list[str]
     validator_id: NotRequired[str]
+    vault_id: NotRequired[str]
 
 
 class UpdateWalletRequest(TypedDict, total=False):
@@ -1729,6 +1731,7 @@ class UpdateWalletResponse(TypedDict, total=False):
     external_id: NotRequired[str]
     tags: list[str]
     validator_id: NotRequired[str]
+    vault_id: NotRequired[str]
 
 
 class GetWalletAssetsResponse(TypedDict, total=False):
@@ -2411,6 +2414,7 @@ class ImportWalletResponse(TypedDict, total=False):
     external_id: NotRequired[str]
     tags: list[str]
     validator_id: NotRequired[str]
+    vault_id: NotRequired[str]
 
 
 class ListTransfersResponse(TypedDict, total=False):

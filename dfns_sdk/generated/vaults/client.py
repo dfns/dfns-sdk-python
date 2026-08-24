@@ -106,7 +106,7 @@ class VaultsClient:
         """
         Create Vault Lock.
 
-        Locks funds from the vault's available balance for off-chain settlement or escrow.
+        Requests locking funds from the vault's available balance for off-chain settlement or escrow. Executed immediately unless a policy requires approval.
 
         Args:
             vault_id: Vault id.

@@ -113,6 +113,57 @@ class DelegatedAddressWatchesClient:
         )
         return cast(T.GetAddressWatchResponse, response)
 
+    def delete_address_watch_init(self, address_watch_id: str) -> UserActionChallengeResponse:
+        """
+        Initialize Delete Address Watch.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+            address_watch_id: The address watch to delete.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """  # noqa: E501
+        path = "/address-watches/{addressWatchId}"
+        path = path.replace("{addressWatchId}", str(address_watch_id))
+        payload = ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="DELETE",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def delete_address_watch_complete(
+        self, address_watch_id: str, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.DeleteAddressWatchResponse:
+        """
+        Complete Delete Address Watch.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+            address_watch_id: The address watch to delete.
+            signed_challenge: The signed challenge from external signing.
+
+        Returns:
+            T.DeleteAddressWatchResponse: The API response.
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+        user_action_token = user_action_result["userAction"]
+
+        response = self._http.request_with_user_action(
+            method="DELETE",
+            path="/address-watches/{addressWatchId}",
+            path_params={"addressWatchId": address_watch_id},
+            query_params=None,
+            body=None,
+            user_action=user_action_token,
+        )
+        return cast(T.DeleteAddressWatchResponse, response)
+
     def get_address_watch_assets(
         self, address_watch_id: str, query: T.GetAddressWatchAssetsQuery | None = None
     ) -> T.GetAddressWatchAssetsResponse:

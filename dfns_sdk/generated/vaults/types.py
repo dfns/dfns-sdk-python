@@ -203,11 +203,14 @@ class CreateVaultLockResponse(TypedDict, total=False):
     network: str
     tid: str
     amount: str
-    owner: str
     external_id: NotRequired[str]
     reason: NotRequired[str]
+    requester: dict[str, Any]
+    rejection_reason: NotRequired[str]
+    status: Literal["Pending", "Executed", "Rejected"]
+    approval_id: NotRequired[str]
+    lock_id: NotRequired[str]
     date_created: str
-    date_deleted: NotRequired[str]
 
 
 class CreateVaultTransferRequest(TypedDict, total=False):
