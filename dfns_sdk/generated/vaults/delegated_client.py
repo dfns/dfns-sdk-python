@@ -277,83 +277,6 @@ class DelegatedVaultsClient:
         )
         return cast(T.CreateVaultTransferResponse, response)
 
-    def get_vault_lock(self, vault_id: str, lock_id: str) -> T.GetVaultLockResponse:
-        """
-        Get Vault Lock.
-
-        Retrieves a vault lock by its ID.
-
-        Args:
-            vault_id: Vault id.
-            lock_id: The lock to retrieve.
-
-        Returns:
-            T.GetVaultLockResponse: The API response.
-        """  # noqa: E501
-        response = self._http.request(
-            method="GET",
-            path="/vaults/{vaultId}/locks/{lockId}",
-            path_params={"vaultId": vault_id, "lockId": lock_id},
-            query_params=None,
-            body=None,
-            requires_signature=False,
-        )
-        return cast(T.GetVaultLockResponse, response)
-
-    def delete_vault_lock_init(self, vault_id: str, lock_id: str) -> UserActionChallengeResponse:
-        """
-        Initialize Delete Vault Lock.
-
-        Creates a user action challenge for external signing.
-
-        Args:
-            vault_id: Vault id.
-            lock_id: Vault lock id.
-
-        Returns:
-            UserActionChallengeResponse: The challenge to sign externally.
-        """  # noqa: E501
-        path = "/vaults/{vaultId}/locks/{lockId}"
-        path = path.replace("{vaultId}", str(vault_id))
-        path = path.replace("{lockId}", str(lock_id))
-        payload = ""
-
-        return BaseAuthApi.create_user_action_challenge(
-            self._http,
-            user_action_http_method="DELETE",
-            user_action_http_path=path,
-            user_action_payload=payload,
-        )
-
-    def delete_vault_lock_complete(
-        self, vault_id: str, lock_id: str, signed_challenge: SignUserActionChallengeRequest
-    ) -> T.DeleteVaultLockResponse:
-        """
-        Complete Delete Vault Lock.
-
-        Submits the signed challenge and makes the API request.
-
-        Args:
-            vault_id: Vault id.
-            lock_id: Vault lock id.
-            signed_challenge: The signed challenge from external signing.
-
-        Returns:
-            T.DeleteVaultLockResponse: The API response.
-        """  # noqa: E501
-        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
-        user_action_token = user_action_result["userAction"]
-
-        response = self._http.request_with_user_action(
-            method="DELETE",
-            path="/vaults/{vaultId}/locks/{lockId}",
-            path_params={"vaultId": vault_id, "lockId": lock_id},
-            query_params=None,
-            body=None,
-            user_action=user_action_token,
-        )
-        return cast(T.DeleteVaultLockResponse, response)
-
     def get_vault(self, vault_id: str) -> T.GetVaultResponse:
         """
         Get Vault.
@@ -428,6 +351,29 @@ class DelegatedVaultsClient:
             user_action=user_action_token,
         )
         return cast(T.UpdateVaultResponse, response)
+
+    def get_vault_lock(self, vault_id: str, lock_id: str) -> T.GetVaultLockResponse:
+        """
+        Get Vault Lock.
+
+        Retrieves a vault lock by its ID.
+
+        Args:
+            vault_id: Vault id.
+            lock_id: The lock to retrieve.
+
+        Returns:
+            T.GetVaultLockResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="GET",
+            path="/vaults/{vaultId}/locks/{lockId}",
+            path_params={"vaultId": vault_id, "lockId": lock_id},
+            query_params=None,
+            body=None,
+            requires_signature=False,
+        )
+        return cast(T.GetVaultLockResponse, response)
 
     def list_vault_assets(
         self, vault_id: str, query: T.ListVaultAssetsQuery | None = None
@@ -540,6 +486,60 @@ class DelegatedVaultsClient:
             user_action=user_action_token,
         )
         return cast(T.ReleaseQuarantineResponse, response)
+
+    def release_vault_lock_init(self, vault_id: str, lock_id: str) -> UserActionChallengeResponse:
+        """
+        Initialize Release Vault Lock.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+            vault_id: Vault id.
+            lock_id: Vault lock id.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """  # noqa: E501
+        path = "/vaults/{vaultId}/locks/{lockId}/release"
+        path = path.replace("{vaultId}", str(vault_id))
+        path = path.replace("{lockId}", str(lock_id))
+        payload = ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="POST",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def release_vault_lock_complete(
+        self, vault_id: str, lock_id: str, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.ReleaseVaultLockResponse:
+        """
+        Complete Release Vault Lock.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+            vault_id: Vault id.
+            lock_id: Vault lock id.
+            signed_challenge: The signed challenge from external signing.
+
+        Returns:
+            T.ReleaseVaultLockResponse: The API response.
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+        user_action_token = user_action_result["userAction"]
+
+        response = self._http.request_with_user_action(
+            method="POST",
+            path="/vaults/{vaultId}/locks/{lockId}/release",
+            path_params={"vaultId": vault_id, "lockId": lock_id},
+            query_params=None,
+            body=None,
+            user_action=user_action_token,
+        )
+        return cast(T.ReleaseVaultLockResponse, response)
 
     def tag_vault_init(self, vault_id: str, body: T.TagVaultRequest) -> UserActionChallengeResponse:
         """

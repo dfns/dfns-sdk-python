@@ -106,7 +106,7 @@ class VaultsClient:
         """
         Create Vault Lock.
 
-        Requests locking funds from the vault's available balance for off-chain settlement or escrow. Executed immediately unless a policy requires approval.
+        Requests locking funds from the vault's available balance for off-chain settlement or escrow. Returns the created lock (200), or the pending lock request (202) when a policy requires approval.
 
         Args:
             vault_id: Vault id.
@@ -147,52 +147,6 @@ class VaultsClient:
             requires_signature=True,
         )
         return cast(T.CreateVaultTransferResponse, response)
-
-    def get_vault_lock(self, vault_id: str, lock_id: str) -> T.GetVaultLockResponse:
-        """
-        Get Vault Lock.
-
-        Retrieves a vault lock by its ID.
-
-        Args:
-            vault_id: Vault id.
-            lock_id: The lock to retrieve.
-
-        Returns:
-            T.GetVaultLockResponse: The API response.
-        """  # noqa: E501
-        response = self._http.request(
-            method="GET",
-            path="/vaults/{vaultId}/locks/{lockId}",
-            path_params={"vaultId": vault_id, "lockId": lock_id},
-            query_params=None,
-            body=None,
-            requires_signature=False,
-        )
-        return cast(T.GetVaultLockResponse, response)
-
-    def delete_vault_lock(self, vault_id: str, lock_id: str) -> T.DeleteVaultLockResponse:
-        """
-        Delete Vault Lock.
-
-        Releases a lock, returning the locked funds to the vault's available balance. Owner only.
-
-        Args:
-            vault_id: Vault id.
-            lock_id: Vault lock id.
-
-        Returns:
-            T.DeleteVaultLockResponse: The API response.
-        """  # noqa: E501
-        response = self._http.request(
-            method="DELETE",
-            path="/vaults/{vaultId}/locks/{lockId}",
-            path_params={"vaultId": vault_id, "lockId": lock_id},
-            query_params=None,
-            body=None,
-            requires_signature=True,
-        )
-        return cast(T.DeleteVaultLockResponse, response)
 
     def get_vault(self, vault_id: str) -> T.GetVaultResponse:
         """
@@ -238,6 +192,29 @@ class VaultsClient:
             requires_signature=True,
         )
         return cast(T.UpdateVaultResponse, response)
+
+    def get_vault_lock(self, vault_id: str, lock_id: str) -> T.GetVaultLockResponse:
+        """
+        Get Vault Lock.
+
+        Retrieves a vault lock by its ID.
+
+        Args:
+            vault_id: Vault id.
+            lock_id: The lock to retrieve.
+
+        Returns:
+            T.GetVaultLockResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="GET",
+            path="/vaults/{vaultId}/locks/{lockId}",
+            path_params={"vaultId": vault_id, "lockId": lock_id},
+            query_params=None,
+            body=None,
+            requires_signature=False,
+        )
+        return cast(T.GetVaultLockResponse, response)
 
     def list_vault_assets(
         self, vault_id: str, query: T.ListVaultAssetsQuery | None = None
@@ -314,6 +291,29 @@ class VaultsClient:
             requires_signature=True,
         )
         return cast(T.ReleaseQuarantineResponse, response)
+
+    def release_vault_lock(self, vault_id: str, lock_id: str) -> T.ReleaseVaultLockResponse:
+        """
+        Release Vault Lock.
+
+        Releases a lock, returning the locked funds to the vault's available balance. Owner only.
+
+        Args:
+            vault_id: Vault id.
+            lock_id: Vault lock id.
+
+        Returns:
+            T.ReleaseVaultLockResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="POST",
+            path="/vaults/{vaultId}/locks/{lockId}/release",
+            path_params={"vaultId": vault_id, "lockId": lock_id},
+            query_params=None,
+            body=None,
+            requires_signature=True,
+        )
+        return cast(T.ReleaseVaultLockResponse, response)
 
     def tag_vault(self, vault_id: str, body: T.TagVaultRequest) -> T.TagVaultResponse:
         """
