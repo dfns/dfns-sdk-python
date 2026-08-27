@@ -203,14 +203,11 @@ class CreateVaultLockResponse(TypedDict, total=False):
     network: str
     tid: str
     amount: str
+    owner: str
     external_id: NotRequired[str]
     reason: NotRequired[str]
-    requester: dict[str, Any]
-    rejection_reason: NotRequired[str]
-    status: Literal["Pending", "Executed", "Rejected"]
-    approval_id: NotRequired[str]
-    lock_id: NotRequired[str]
     date_created: str
+    date_deleted: NotRequired[str]
 
 
 class CreateVaultTransferRequest(TypedDict, total=False):
@@ -307,36 +304,6 @@ class CreateVaultTransferResponse(TypedDict, total=False):
     details: NotRequired[dict[str, Any]]
 
 
-class GetVaultLockResponse(TypedDict, total=False):
-    """getVaultLock response."""
-
-    id: str
-    vault_id: str
-    network: str
-    tid: str
-    amount: str
-    owner: str
-    external_id: NotRequired[str]
-    reason: NotRequired[str]
-    date_created: str
-    date_deleted: NotRequired[str]
-
-
-class DeleteVaultLockResponse(TypedDict, total=False):
-    """deleteVaultLock response."""
-
-    id: str
-    vault_id: str
-    network: str
-    tid: str
-    amount: str
-    owner: str
-    external_id: NotRequired[str]
-    reason: NotRequired[str]
-    date_created: str
-    date_deleted: NotRequired[str]
-
-
 class GetVaultResponse(TypedDict, total=False):
     """getVault response."""
 
@@ -368,6 +335,21 @@ class UpdateVaultResponse(TypedDict, total=False):
     date_created: str
     date_updated: str
     addresses: NotRequired[list[dict[str, Any]]]
+
+
+class GetVaultLockResponse(TypedDict, total=False):
+    """getVaultLock response."""
+
+    id: str
+    vault_id: str
+    network: str
+    tid: str
+    amount: str
+    owner: str
+    external_id: NotRequired[str]
+    reason: NotRequired[str]
+    date_created: str
+    date_deleted: NotRequired[str]
 
 
 class ListVaultAssetsResponse(TypedDict, total=False):
@@ -422,6 +404,21 @@ class ReleaseQuarantineResponse(TypedDict, total=False):
     status: Literal["Pending", "Executed", "Rejected"]
     approval_id: NotRequired[str]
     date_created: str
+
+
+class ReleaseVaultLockResponse(TypedDict, total=False):
+    """releaseVaultLock response."""
+
+    id: str
+    vault_id: str
+    network: str
+    tid: str
+    amount: str
+    owner: str
+    external_id: NotRequired[str]
+    reason: NotRequired[str]
+    date_created: str
+    date_deleted: NotRequired[str]
 
 
 class TagVaultRequest(TypedDict, total=False):
