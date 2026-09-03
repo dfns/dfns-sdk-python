@@ -305,6 +305,90 @@ class ActivateWalletResponse(TypedDict, total=False):
     details: NotRequired[dict[str, Any]]
 
 
+class ListBulkWalletJobsResponse(TypedDict, total=False):
+    """listBulkWalletJobs response."""
+
+    items: list[dict[str, Any]]
+    next_page_token: NotRequired[str]
+
+
+class ListBulkWalletJobsQuery(TypedDict, total=False):
+    """listBulkWalletJobs query parameters."""
+
+    limit: NotRequired[int]
+    pagination_token: NotRequired[str]
+    status: NotRequired[Literal["Pending", "InProgress", "Completed", "PartiallyCompleted", "Failed"]]
+
+
+class BulkCreateWalletsRequest(TypedDict, total=False):
+    """bulkCreateWallets request body."""
+
+    network: Literal[
+        "Ethereum",
+        "EthereumSepolia",
+        "EthereumHolesky",
+        "EthereumHoodi",
+        "Bsc",
+        "BscTestnet",
+        "Base",
+        "BaseSepolia",
+        "ArbitrumOne",
+        "ArbitrumSepolia",
+        "Optimism",
+        "OptimismSepolia",
+        "Tron",
+        "TronNile",
+        "Solana",
+        "SolanaDevnet",
+    ]
+    count: int
+    name: str
+    tags: NotRequired[list[str]]
+    keystore_id: NotRequired[str]
+
+
+class BulkCreateWalletsResponse(TypedDict, total=False):
+    """bulkCreateWallets response."""
+
+    id: str
+    status: Literal["Pending", "InProgress", "Completed", "PartiallyCompleted", "Failed"]
+
+
+class GetBulkWalletJobResponse(TypedDict, total=False):
+    """getBulkWalletJob response."""
+
+    id: str
+    org_id: str
+    status: Literal["Pending", "InProgress", "Completed", "PartiallyCompleted", "Failed"]
+    network: dict[str, Any]
+    name_prefix: str
+    tags: list[str]
+    total_count: int
+    completed_count: int
+    keystore_id: str
+    master_key_id: NotRequired[str]
+    reason: NotRequired[str]
+    next_retry_date: NotRequired[str]
+    next_retry_attempt: NotRequired[int]
+    date_created: str
+    date_updated: str
+    date_completed: NotRequired[str]
+
+
+class ListBulkWalletJobWalletsResponse(TypedDict, total=False):
+    """listBulkWalletJobWallets response."""
+
+    items: list[dict[str, Any]]
+    next_page_token: NotRequired[str]
+
+
+class ListBulkWalletJobWalletsQuery(TypedDict, total=False):
+    """listBulkWalletJobWallets query parameters."""
+
+    limit: NotRequired[int]
+    pagination_token: NotRequired[str]
+
+
 class ListTransactionsResponse(TypedDict, total=False):
     """listTransactions response."""
 

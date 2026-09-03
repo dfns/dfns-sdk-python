@@ -58,6 +58,10 @@ class GetAuditLogResponse(TypedDict, total=False):
     user_id: Any
     username: Any
     date_performed: str
+    date_signed: str
+    date_resolved: str
+    response_status: Any
+    response_error: Any
     first_factor_credential: dict[str, Any]
 
 
