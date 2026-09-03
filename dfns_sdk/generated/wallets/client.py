@@ -96,6 +96,97 @@ class WalletsClient:
         )
         return cast(T.ActivateWalletResponse, response)
 
+    def list_bulk_wallet_jobs(self, query: T.ListBulkWalletJobsQuery | None = None) -> T.ListBulkWalletJobsResponse:
+        """
+        List Bulk Wallet Jobs.
+
+        List the org bulk wallet creation jobs, most recent first, with progress and status.
+
+        Args:
+            query: Query parameters.
+
+        Returns:
+            T.ListBulkWalletJobsResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="GET",
+            path="/wallets/bulk-create",
+            path_params={},
+            query_params=query,
+            body=None,
+            requires_signature=False,
+        )
+        return cast(T.ListBulkWalletJobsResponse, response)
+
+    def bulk_create_wallets(self, body: T.BulkCreateWalletsRequest) -> T.BulkCreateWalletsResponse:
+        """
+        Bulk Create Wallets.
+
+        Creates a batch of custodial wallets asynchronously via HD key derivation. Returns a job handle immediately; poll the bulk-create job endpoints for progress.
+
+        Args:
+            body: Request body.
+
+        Returns:
+            T.BulkCreateWalletsResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="POST",
+            path="/wallets/bulk-create",
+            path_params={},
+            query_params=None,
+            body=body,
+            requires_signature=True,
+        )
+        return cast(T.BulkCreateWalletsResponse, response)
+
+    def get_bulk_wallet_job(self, job_id: str) -> T.GetBulkWalletJobResponse:
+        """
+        Get Bulk Wallet Job.
+
+        Retrieve a single bulk wallet creation job by its ID, with progress and status.
+
+        Args:
+            job_id: The bulk wallet creation job to retrieve.
+
+        Returns:
+            T.GetBulkWalletJobResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="GET",
+            path="/wallets/bulk-create/{jobId}",
+            path_params={"jobId": job_id},
+            query_params=None,
+            body=None,
+            requires_signature=False,
+        )
+        return cast(T.GetBulkWalletJobResponse, response)
+
+    def list_bulk_wallet_job_wallets(
+        self, job_id: str, query: T.ListBulkWalletJobWalletsQuery | None = None
+    ) -> T.ListBulkWalletJobWalletsResponse:
+        """
+        List Bulk Wallet Job Wallets.
+
+        List every wallet created by a bulk wallet creation job, ordered by wallet ID and paginated. Only available once the job has completed.
+
+        Args:
+            job_id: The bulk wallet creation job whose wallets to list.
+            query: Query parameters.
+
+        Returns:
+            T.ListBulkWalletJobWalletsResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="GET",
+            path="/wallets/bulk-create/{jobId}/wallets",
+            path_params={"jobId": job_id},
+            query_params=query,
+            body=None,
+            requires_signature=False,
+        )
+        return cast(T.ListBulkWalletJobWalletsResponse, response)
+
     def list_transactions(
         self, wallet_id: str, query: T.ListTransactionsQuery | None = None
     ) -> T.ListTransactionsResponse:
