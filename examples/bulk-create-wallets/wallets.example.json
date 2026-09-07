@@ -1,0 +1,13 @@
+{
+  "network": "EthereumSepolia",
+  "name": "deposit",
+  "signingKey": {
+    "deriveFrom": {
+      "keyId": "key-xxxxx-xxxxx-xxxxxxxxxxxxxxxx",
+      "pathPrefix": "m/44/60/0/0/",
+      "pathStartIndex": 0,
+      "pathEndIndex": 4
+    }
+  },
+  "tags": ["deposit", "hot"]
+}
