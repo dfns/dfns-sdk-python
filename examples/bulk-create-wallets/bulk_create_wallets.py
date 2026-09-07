@@ -60,7 +60,11 @@ import time
 
 from dotenv import load_dotenv
 
-# Automatic retry on HTTP 429 (rate limited) — handled by the script, no tuning.
+# Cap wallets created per run. This is a sequential single-create loop, not a
+# bulk job — for more, run again with a later pathStartIndex.
+MAX_WALLETS_PER_RUN = 10_000
+
+# Automatic retry on HTTP 429 (rate limited)
 MAX_RETRIES = 6
 BASE_DELAY_SECONDS = 1.0
 MAX_BACKOFF_SECONDS = 30.0
@@ -128,6 +132,12 @@ def _validate_spec(spec):
         sys.exit(f"pathStartIndex ({start}) must be >= 0.")
     if start > end:
         sys.exit(f"pathStartIndex ({start}) must be <= pathEndIndex ({end}).")
+    count = end - start + 1
+    if count > MAX_WALLETS_PER_RUN:
+        sys.exit(
+            f"range is {count} wallets; keep it to {MAX_WALLETS_PER_RUN} per run "
+            "(run again with a later pathStartIndex to continue)."
+        )
 
     # Checking the two endpoints covers the whole range (prefix is constant and
     # every index in between is >= start and <= end).

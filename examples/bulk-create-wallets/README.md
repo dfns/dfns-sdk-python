@@ -64,7 +64,7 @@ inclusive index range; the script expands it into one wallet per index at
 | `signingKey.deriveFrom.keyId` | yes | The shared master key to derive from |
 | `signingKey.deriveFrom.pathPrefix` | yes | Path prefix; a trailing `/` is optional |
 | `signingKey.deriveFrom.pathStartIndex` | yes | First index, **inclusive** |
-| `signingKey.deriveFrom.pathEndIndex` | yes | Last index, **inclusive** |
+| `signingKey.deriveFrom.pathEndIndex` | yes | Last index, **inclusive** (≤ 10,000 wallets per run) |
 | `name` | no | Name prefix; the index is appended per wallet (e.g. `deposit-10000`) |
 | `tags` | no | Applied to every wallet in the range |
 
@@ -138,9 +138,8 @@ The process exits non-zero if any wallet failed.
   that still fails after its retries is reported as an error and the run
   continues. (The SDK's error doesn't surface the `Retry-After` header, so the
   backoff is exponential rather than server-directed.)
-- **Large ranges are slow.** Each wallet is one signed creation = three sequential
-  API round trips (challenge, sign, create), and this script does them one at a
-  time. Throughput is bound by latency, so expect very roughly a few wallets per
-  second — on the order of hours for tens of thousands. Run it somewhere it can
-  keep going uninterrupted (and `-o out.json` so you keep the results). For
-  millions of wallets this single-threaded loop isn't the right tool.
+- **Capped at 10,000 wallets per run.** This is a sequential single-create loop,
+  not a bulk job: each wallet is one signed creation (three round trips —
+  challenge, sign, create) done one at a time, so throughput is latency-bound at
+  very roughly a few wallets per second. To create more, run again with a later
+  `pathStartIndex` (and `-o out.json` so you keep the results of each run).
