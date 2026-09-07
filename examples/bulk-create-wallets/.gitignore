@@ -1,0 +1,6 @@
+# Never commit real credentials or run artifacts
+.env
+*.pem
+out.json
+__pycache__/
+*.pyc
