@@ -1,11 +1,12 @@
+import argparse
 import base64
 import hashlib
 import sys
-import argparse
-from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import ec
+
 from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import ec
 
 # --- Helper Functions ---
 
@@ -70,7 +71,10 @@ def verify_assertion_signature(
 def main():
     """Main function to run the tool."""
     parser = argparse.ArgumentParser(
-        description="Verify a WebAuthn assertion signature. \nIf no flags are provided, the script will run in interactive mode.",
+        description=(
+            "Verify a WebAuthn assertion signature. \n"
+            "If no flags are provided, the script will run in interactive mode."
+        ),
         formatter_class=argparse.RawTextHelpFormatter # Allows for newlines in help text
     )
     parser.add_argument(
@@ -104,7 +108,10 @@ def main():
         # Check that all required arguments were provided via flags
         if not all([args.signature, args.publicKey, args.clientData, args.authenticatorData]):
             parser.print_help()
-            print("\n❌ Error: All four arguments (--signature, --publicKey, --clientData, --authenticatorData) are required when using flags.")
+            print(
+                "\n❌ Error: All four arguments (--signature, --publicKey, "
+                "--clientData, --authenticatorData) are required when using flags."
+            )
             sys.exit(1)
         
         signature = args.signature

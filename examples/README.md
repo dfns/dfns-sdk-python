@@ -8,3 +8,6 @@ Examples illustrating how to use the Dfns Python SDK.
 - [verify-webauthn-signature](./verify-webauthn-signature): Command-line tool to
   verify a WebAuthn/FIDO2 credential assertion signature from its signature,
   public key, client data, and authenticator data.
+- [get-fido2-public-key](./get-fido2-public-key): Command-line tool to enumerate
+  the resident FIDO2 credentials on a YubiKey and print each one's public key in
+  PEM format.
