@@ -76,18 +76,23 @@ class HttpClient:
         """Handle API response and raise errors if needed."""
         if response.status_code >= 400:
             try:
-                error_data = response.json()
-                raise DfnsError(
-                    message=error_data.get("message", "Unknown error"),
-                    status_code=response.status_code,
-                    error_code=error_data.get("error"),
-                    details=error_data.get("details"),
-                )
+                payload = response.json()
             except json.JSONDecodeError:
                 raise DfnsError(
                     message=response.text or "Unknown error",
                     status_code=response.status_code,
                 ) from None
+            # Dfns errors are shaped {"error": {"message", "details", ...}}; fall
+            # back to the top-level object if that envelope is absent.
+            error = payload.get("error") if isinstance(payload, dict) else None
+            if not isinstance(error, dict):
+                error = payload if isinstance(payload, dict) else {}
+            raise DfnsError(
+                message=error.get("message", "Unknown error"),
+                status_code=response.status_code,
+                error_code=error.get("code"),
+                details=error.get("details"),
+            )
 
         if response.status_code == 204 or not response.content:
             return None
@@ -313,18 +318,23 @@ class AsyncHttpClient:
         """Handle API response and raise errors if needed."""
         if response.status_code >= 400:
             try:
-                error_data = response.json()
-                raise DfnsError(
-                    message=error_data.get("message", "Unknown error"),
-                    status_code=response.status_code,
-                    error_code=error_data.get("error"),
-                    details=error_data.get("details"),
-                )
+                payload = response.json()
             except json.JSONDecodeError:
                 raise DfnsError(
                     message=response.text or "Unknown error",
                     status_code=response.status_code,
                 ) from None
+            # Dfns errors are shaped {"error": {"message", "details", ...}}; fall
+            # back to the top-level object if that envelope is absent.
+            error = payload.get("error") if isinstance(payload, dict) else None
+            if not isinstance(error, dict):
+                error = payload if isinstance(payload, dict) else {}
+            raise DfnsError(
+                message=error.get("message", "Unknown error"),
+                status_code=response.status_code,
+                error_code=error.get("code"),
+                details=error.get("details"),
+            )
 
         if response.status_code == 204 or not response.content:
             return None
