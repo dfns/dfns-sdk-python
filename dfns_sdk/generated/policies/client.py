@@ -38,7 +38,7 @@ class PoliciesClient:
         """
         Update Policy.
 
-        Update an existing policy.
+        Update an existing policy. The policy status is not editable through this endpoint — the update body has no `status` field. To deactivate a policy, use the Archive Policy endpoint instead.
 
         Args:
             policy_id: Path parameter.

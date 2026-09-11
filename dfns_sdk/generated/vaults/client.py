@@ -60,7 +60,7 @@ class VaultsClient:
         """
         Create Vault Address.
 
-        Creates a vault address (managed wallet) on a network that supports vaults.
+        Creates a vault address (managed wallet) on a network that supports vaults — EVM networks, Bitcoin, and Solana (native SOL and SPL/Token-2022 tokens). Add one network per call.
 
         Args:
             vault_id: Vault id.
@@ -360,3 +360,29 @@ class VaultsClient:
             requires_signature=True,
         )
         return cast(T.UntagVaultResponse, response)
+
+    def replace_vault_lock(
+        self, vault_id: str, lock_id: str, body: T.ReplaceVaultLockRequest
+    ) -> T.ReplaceVaultLockResponse:
+        """
+        Replace Vault Lock.
+
+        Requests replacing a lock with a new lock at a new total amount. Owner only. Executed immediately unless a policy requires approval. On execution the lock is released, a new lock is created at the new amount (carrying over the owner, externalId and reason), and the new lock is returned. If a policy requires approval, responds 202 with the pending replace request instead.
+
+        Args:
+            vault_id: Vault id.
+            lock_id: Vault lock id.
+            body: Request body.
+
+        Returns:
+            T.ReplaceVaultLockResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="POST",
+            path="/vaults/{vaultId}/locks/{lockId}/replace",
+            path_params={"vaultId": vault_id, "lockId": lock_id},
+            query_params=None,
+            body=body,
+            requires_signature=True,
+        )
+        return cast(T.ReplaceVaultLockResponse, response)
