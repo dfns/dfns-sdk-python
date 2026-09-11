@@ -646,3 +646,65 @@ class DelegatedVaultsClient:
             user_action=user_action_token,
         )
         return cast(T.UntagVaultResponse, response)
+
+    def replace_vault_lock_init(
+        self, vault_id: str, lock_id: str, body: T.ReplaceVaultLockRequest
+    ) -> UserActionChallengeResponse:
+        """
+        Initialize Replace Vault Lock.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+            vault_id: Vault id.
+            lock_id: Vault lock id.
+            body: Request body.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """  # noqa: E501
+        path = "/vaults/{vaultId}/locks/{lockId}/replace"
+        path = path.replace("{vaultId}", str(vault_id))
+        path = path.replace("{lockId}", str(lock_id))
+        payload = json.dumps(body, separators=(",", ":")) if body else ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="POST",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def replace_vault_lock_complete(
+        self,
+        vault_id: str,
+        lock_id: str,
+        body: T.ReplaceVaultLockRequest,
+        signed_challenge: SignUserActionChallengeRequest,
+    ) -> T.ReplaceVaultLockResponse:
+        """
+        Complete Replace Vault Lock.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+            vault_id: Vault id.
+            lock_id: Vault lock id.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
+
+        Returns:
+            T.ReplaceVaultLockResponse: The API response.
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+        user_action_token = user_action_result["userAction"]
+
+        response = self._http.request_with_user_action(
+            method="POST",
+            path="/vaults/{vaultId}/locks/{lockId}/replace",
+            path_params={"vaultId": vault_id, "lockId": lock_id},
+            query_params=None,
+            body=body,
+            user_action=user_action_token,
+        )
+        return cast(T.ReplaceVaultLockResponse, response)

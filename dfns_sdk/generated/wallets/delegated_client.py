@@ -622,7 +622,7 @@ class DelegatedWalletsClient:
         """
         List Wallets.
 
-        Retrieves the list of Wallets in your organization. You can filter the results by owner (either by owner id or owner username). Pagination is supported via limit and paginationToken parameters.
+        Retrieves the list of Wallets in your organization. You can filter the results by owner (either by owner id or owner username). The list cannot be filtered by tags or externalId — those are set at wallet creation only; to segment wallets by tag or externalId, list them and filter client-side, or maintain the mapping in your own system. Pagination is supported via limit and paginationToken parameters.
 
         Args:
             query: Query parameters.
@@ -817,7 +817,7 @@ class DelegatedWalletsClient:
         """
         Get Wallet Assets.
 
-        Retrieves a list of assets owned by the specified wallet.  Return values vary by chain as shown below.
+        Retrieves a list of assets owned by the specified wallet.  Return values vary by chain as shown below. Each asset includes its current USD market price (`quotes`); pass `netWorth=true` to also return the wallet's total USD value (net worth).
 
         Args:
             wallet_id: Path parameter.

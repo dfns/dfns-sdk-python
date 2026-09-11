@@ -14,15 +14,17 @@ class NetworksClient:
 
     def estimate_fees(self, query: T.EstimateFeesQuery) -> dict[str, Any]:
         """
-        Estimate Fees.
+                Estimate Fees.
 
-        Gets real-time fee details for a given network, allowing users to make decisions based on their preferences for transaction speed/priority. Three levels of priority will be displayed: `slow`, `standard`, `fast`.
+                Gets real-time fee details for a given network, allowing users to make decisions based on their preferences for transaction speed/priority. Three levels of priority will be displayed: `slow`, `standard`, `fast`.
 
-        Args:
-            query: Query parameters.
+        Legacy (pre-London) EVM networks such as Ethereum Classic do not support EIP-1559 fee estimation and are not listed here. When broadcasting on those networks, omit `priority` and a legacy `gasPrice` is filled automatically.
 
-        Returns:
-            dict[str, Any]: The API response.
+                Args:
+                    query: Query parameters.
+
+                Returns:
+                    dict[str, Any]: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="GET",

@@ -47,6 +47,7 @@ class CreateVaultAddressRequest(TypedDict, total=False):
         "ArbitrumOne",
         "ArbitrumSepolia",
         "ArcTestnet",
+        "Areum",
         "AvalancheC",
         "AvalancheCFuji",
         "Base",
@@ -83,8 +84,6 @@ class CreateVaultAddressRequest(TypedDict, total=False):
         "PlumeSepolia",
         "Polygon",
         "PolygonAmoy",
-        "Race",
-        "RaceSepolia",
         "Rayls",
         "RaylsTestnet",
         "Robinhood",
@@ -137,6 +136,7 @@ class CreateVaultLockRequest(TypedDict, total=False):
         "ArbitrumOne",
         "ArbitrumSepolia",
         "ArcTestnet",
+        "Areum",
         "AvalancheC",
         "AvalancheCFuji",
         "Base",
@@ -170,8 +170,6 @@ class CreateVaultLockRequest(TypedDict, total=False):
         "PlumeSepolia",
         "Polygon",
         "PolygonAmoy",
-        "Race",
-        "RaceSepolia",
         "Rayls",
         "RaylsTestnet",
         "Robinhood",
@@ -206,6 +204,8 @@ class CreateVaultLockResponse(TypedDict, total=False):
     owner: str
     external_id: NotRequired[str]
     reason: NotRequired[str]
+    replaces_lock_id: NotRequired[str]
+    replaced_by_lock_id: NotRequired[str]
     date_created: str
     date_deleted: NotRequired[str]
 
@@ -217,6 +217,7 @@ class CreateVaultTransferRequest(TypedDict, total=False):
         "ArbitrumOne",
         "ArbitrumSepolia",
         "ArcTestnet",
+        "Areum",
         "AvalancheC",
         "AvalancheCFuji",
         "Base",
@@ -253,8 +254,6 @@ class CreateVaultTransferRequest(TypedDict, total=False):
         "PlumeSepolia",
         "Polygon",
         "PolygonAmoy",
-        "Race",
-        "RaceSepolia",
         "Rayls",
         "RaylsTestnet",
         "Robinhood",
@@ -348,6 +347,8 @@ class GetVaultLockResponse(TypedDict, total=False):
     owner: str
     external_id: NotRequired[str]
     reason: NotRequired[str]
+    replaces_lock_id: NotRequired[str]
+    replaced_by_lock_id: NotRequired[str]
     date_created: str
     date_deleted: NotRequired[str]
 
@@ -417,6 +418,8 @@ class ReleaseVaultLockResponse(TypedDict, total=False):
     owner: str
     external_id: NotRequired[str]
     reason: NotRequired[str]
+    replaces_lock_id: NotRequired[str]
+    replaced_by_lock_id: NotRequired[str]
     date_created: str
     date_deleted: NotRequired[str]
 
@@ -443,3 +446,27 @@ class UntagVaultResponse(TypedDict, total=False):
     """untagVault response."""
 
     pass
+
+
+class ReplaceVaultLockRequest(TypedDict, total=False):
+    """replaceVaultLock request body."""
+
+    amount: str
+    reason: NotRequired[str]
+
+
+class ReplaceVaultLockResponse(TypedDict, total=False):
+    """replaceVaultLock response."""
+
+    id: str
+    vault_id: str
+    network: str
+    tid: str
+    amount: str
+    owner: str
+    external_id: NotRequired[str]
+    reason: NotRequired[str]
+    replaces_lock_id: NotRequired[str]
+    replaced_by_lock_id: NotRequired[str]
+    date_created: str
+    date_deleted: NotRequired[str]
