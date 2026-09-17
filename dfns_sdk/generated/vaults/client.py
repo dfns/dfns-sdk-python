@@ -361,6 +361,32 @@ class VaultsClient:
         )
         return cast(T.UntagVaultResponse, response)
 
+    def transfer_vault_lock(
+        self, vault_id: str, lock_id: str, body: T.TransferVaultLockRequest
+    ) -> T.TransferVaultLockResponse:
+        """
+        Transfer Vault Lock.
+
+        Sends part or all of the locked amount to the lock's beneficiary, paying the network fee from the vault's available balance. Owner only, not subject to policies. Returns the outgoing transfer. The funds stay locked while it is in flight; once confirmed the lock is deleted and any unsent remainder returns to the available balance. If the transfer fails the lock stays in place and can be transferred again.
+
+        Args:
+            vault_id: Vault id.
+            lock_id: Vault lock id.
+            body: Request body.
+
+        Returns:
+            T.TransferVaultLockResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="POST",
+            path="/vaults/{vaultId}/locks/{lockId}/transfer",
+            path_params={"vaultId": vault_id, "lockId": lock_id},
+            query_params=None,
+            body=body,
+            requires_signature=True,
+        )
+        return cast(T.TransferVaultLockResponse, response)
+
     def replace_vault_lock(
         self, vault_id: str, lock_id: str, body: T.ReplaceVaultLockRequest
     ) -> T.ReplaceVaultLockResponse:

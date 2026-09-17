@@ -35,6 +35,7 @@ class CreateAddressWatchResponse(TypedDict, total=False):
     network: Literal[
         "ArbitrumOne",
         "ArbitrumSepolia",
+        "Arc",
         "ArcTestnet",
         "Areum",
         "AvalancheC",
@@ -104,6 +105,7 @@ class GetAddressWatchResponse(TypedDict, total=False):
     network: Literal[
         "ArbitrumOne",
         "ArbitrumSepolia",
+        "Arc",
         "ArcTestnet",
         "Areum",
         "AvalancheC",
@@ -173,6 +175,7 @@ class DeleteAddressWatchResponse(TypedDict, total=False):
     network: Literal[
         "ArbitrumOne",
         "ArbitrumSepolia",
+        "Arc",
         "ArcTestnet",
         "Areum",
         "AvalancheC",
@@ -242,6 +245,7 @@ class GetAddressWatchAssetsResponse(TypedDict, total=False):
     network: Literal[
         "ArbitrumOne",
         "ArbitrumSepolia",
+        "Arc",
         "ArcTestnet",
         "Areum",
         "AvalancheC",
@@ -315,6 +319,7 @@ class GetAddressWatchBlockchainEventsResponse(TypedDict, total=False):
     network: Literal[
         "ArbitrumOne",
         "ArbitrumSepolia",
+        "Arc",
         "ArcTestnet",
         "Areum",
         "AvalancheC",
@@ -390,6 +395,7 @@ class GetAddressWatchHistoryResponse(TypedDict, total=False):
     network: Literal[
         "ArbitrumOne",
         "ArbitrumSepolia",
+        "Arc",
         "ArcTestnet",
         "Areum",
         "AvalancheC",
