@@ -46,6 +46,7 @@ class CreateVaultAddressRequest(TypedDict, total=False):
     network: Literal[
         "ArbitrumOne",
         "ArbitrumSepolia",
+        "Arc",
         "ArcTestnet",
         "Areum",
         "AvalancheC",
@@ -135,6 +136,7 @@ class CreateVaultLockRequest(TypedDict, total=False):
     network: Literal[
         "ArbitrumOne",
         "ArbitrumSepolia",
+        "Arc",
         "ArcTestnet",
         "Areum",
         "AvalancheC",
@@ -191,6 +193,7 @@ class CreateVaultLockRequest(TypedDict, total=False):
     amount: str
     external_id: NotRequired[str]
     reason: NotRequired[str]
+    beneficiary: NotRequired[str]
 
 
 class CreateVaultLockResponse(TypedDict, total=False):
@@ -204,6 +207,9 @@ class CreateVaultLockResponse(TypedDict, total=False):
     owner: str
     external_id: NotRequired[str]
     reason: NotRequired[str]
+    beneficiary: NotRequired[str]
+    transfer_id: NotRequired[str]
+    transfer_amount: NotRequired[str]
     replaces_lock_id: NotRequired[str]
     replaced_by_lock_id: NotRequired[str]
     date_created: str
@@ -216,6 +222,7 @@ class CreateVaultTransferRequest(TypedDict, total=False):
     network: Literal[
         "ArbitrumOne",
         "ArbitrumSepolia",
+        "Arc",
         "ArcTestnet",
         "Areum",
         "AvalancheC",
@@ -347,6 +354,9 @@ class GetVaultLockResponse(TypedDict, total=False):
     owner: str
     external_id: NotRequired[str]
     reason: NotRequired[str]
+    beneficiary: NotRequired[str]
+    transfer_id: NotRequired[str]
+    transfer_amount: NotRequired[str]
     replaces_lock_id: NotRequired[str]
     replaced_by_lock_id: NotRequired[str]
     date_created: str
@@ -418,6 +428,9 @@ class ReleaseVaultLockResponse(TypedDict, total=False):
     owner: str
     external_id: NotRequired[str]
     reason: NotRequired[str]
+    beneficiary: NotRequired[str]
+    transfer_id: NotRequired[str]
+    transfer_amount: NotRequired[str]
     replaces_lock_id: NotRequired[str]
     replaced_by_lock_id: NotRequired[str]
     date_created: str
@@ -448,6 +461,36 @@ class UntagVaultResponse(TypedDict, total=False):
     pass
 
 
+class TransferVaultLockRequest(TypedDict, total=False):
+    """transferVaultLock request body."""
+
+    amount: str
+
+
+class TransferVaultLockResponse(TypedDict, total=False):
+    """transferVaultLock response."""
+
+    id: str
+    wallet_id: str
+    network: dict[str, Any]
+    requester: dict[str, Any]
+    request_body: dict[str, Any]
+    metadata: dict[str, Any]
+    status: Literal["Pending", "Executing", "Broadcasted", "Confirmed", "Failed", "Rejected"]
+    reason: NotRequired[str]
+    tx_hash: NotRequired[str]
+    fee: NotRequired[str]
+    date_requested: str
+    date_policy_resolved: NotRequired[str]
+    date_broadcasted: NotRequired[str]
+    date_confirmed: NotRequired[str]
+    approval_id: NotRequired[str]
+    external_id: NotRequired[str]
+    fee_sponsor_id: NotRequired[str]
+    replacement_id: NotRequired[str]
+    details: NotRequired[dict[str, Any]]
+
+
 class ReplaceVaultLockRequest(TypedDict, total=False):
     """replaceVaultLock request body."""
 
@@ -466,6 +509,9 @@ class ReplaceVaultLockResponse(TypedDict, total=False):
     owner: str
     external_id: NotRequired[str]
     reason: NotRequired[str]
+    beneficiary: NotRequired[str]
+    transfer_id: NotRequired[str]
+    transfer_amount: NotRequired[str]
     replaces_lock_id: NotRequired[str]
     replaced_by_lock_id: NotRequired[str]
     date_created: str

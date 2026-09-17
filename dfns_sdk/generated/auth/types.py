@@ -823,7 +823,10 @@ class ListUsersQuery(TypedDict, total=False):
 
     limit: NotRequired[int]
     pagination_token: NotRequired[str]
-    kind: NotRequired[Literal["CustomerEmployee", "EndUser"]]
+    kind: NotRequired[
+        Literal["TenantUser", "CustomerEmployee", "EndUser"]
+        | list[Literal["TenantUser", "CustomerEmployee", "EndUser"]]
+    ]
 
 
 class CreateUserRequest(TypedDict, total=False):

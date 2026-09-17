@@ -18,6 +18,7 @@ class EstimateFeesQuery(TypedDict, total=False):
         "DogecoinTestnet",
         "ArbitrumOne",
         "ArbitrumSepolia",
+        "Arc",
         "ArcTestnet",
         "Areum",
         "AvalancheC",
