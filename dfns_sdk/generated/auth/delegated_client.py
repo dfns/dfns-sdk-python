@@ -597,7 +597,7 @@ class DelegatedAuthClient:
         )
         return cast(T.DelegatedLoginResponse, response)
 
-    def complete_user_login(self, body: T.CompleteUserLoginRequest) -> dict[str, Any]:
+    def login(self, body: T.LoginRequest) -> dict[str, Any]:
         """
                 Complete User Login.
 
@@ -624,6 +624,11 @@ class DelegatedAuthClient:
         )
         return cast(dict[str, Any], response)
 
+    @deprecated("Use login instead.")
+    def complete_user_login(self, body: T.LoginRequest) -> dict[str, Any]:
+        """Deprecated: use login instead."""
+        return self.login(body=body)
+
     def logout(self, body: T.LogoutRequest) -> T.LogoutResponse:
         """
         Logout.
@@ -646,7 +651,7 @@ class DelegatedAuthClient:
         )
         return cast(T.LogoutResponse, response)
 
-    def complete_oidc_login(self, body: T.CompleteOidcLoginRequest) -> dict[str, Any]:
+    def oidc_login(self, body: T.OidcLoginRequest) -> dict[str, Any]:
         """
         Complete OIDC Login.
 
@@ -668,7 +673,12 @@ class DelegatedAuthClient:
         )
         return cast(dict[str, Any], response)
 
-    def initiate_oidc_login(self, body: T.InitiateOidcLoginRequest) -> T.InitiateOidcLoginResponse:
+    @deprecated("Use oidc_login instead.")
+    def complete_oidc_login(self, body: T.OidcLoginRequest) -> dict[str, Any]:
+        """Deprecated: use oidc_login instead."""
+        return self.oidc_login(body=body)
+
+    def oidc_login_init(self, body: T.OidcLoginInitRequest) -> T.OidcLoginInitResponse:
         """
         Initiate OIDC Login.
 
@@ -678,7 +688,7 @@ class DelegatedAuthClient:
             body: Request body.
 
         Returns:
-            T.InitiateOidcLoginResponse: The API response.
+            T.OidcLoginInitResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -688,7 +698,12 @@ class DelegatedAuthClient:
             body=body,
             requires_signature=False,
         )
-        return cast(T.InitiateOidcLoginResponse, response)
+        return cast(T.OidcLoginInitResponse, response)
+
+    @deprecated("Use oidc_login_init instead.")
+    def initiate_oidc_login(self, body: T.OidcLoginInitRequest) -> T.OidcLoginInitResponse:
+        """Deprecated: use oidc_login_init instead."""
+        return self.oidc_login_init(body=body)
 
     def send_login_code(self, body: T.SendLoginCodeRequest) -> T.SendLoginCodeResponse:
         """
@@ -736,7 +751,7 @@ class DelegatedAuthClient:
         )
         return cast(T.SocialLoginResponse, response)
 
-    def complete_sso_login(self, body: T.CompleteSsoLoginRequest) -> T.CompleteSsoLoginResponse:
+    def sso_login(self, body: T.SsoLoginRequest) -> T.SsoLoginResponse:
         """
         Complete SSO Login.
 
@@ -746,7 +761,7 @@ class DelegatedAuthClient:
             body: Request body.
 
         Returns:
-            T.CompleteSsoLoginResponse: The API response.
+            T.SsoLoginResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -756,9 +771,14 @@ class DelegatedAuthClient:
             body=body,
             requires_signature=False,
         )
-        return cast(T.CompleteSsoLoginResponse, response)
+        return cast(T.SsoLoginResponse, response)
 
-    def initiate_sso_login(self, body: T.InitiateSsoLoginRequest) -> T.InitiateSsoLoginResponse:
+    @deprecated("Use sso_login instead.")
+    def complete_sso_login(self, body: T.SsoLoginRequest) -> T.SsoLoginResponse:
+        """Deprecated: use sso_login instead."""
+        return self.sso_login(body=body)
+
+    def sso_login_init(self, body: T.SsoLoginInitRequest) -> T.SsoLoginInitResponse:
         """
         Initiate SSO Login.
 
@@ -768,7 +788,7 @@ class DelegatedAuthClient:
             body: Request body.
 
         Returns:
-            T.InitiateSsoLoginResponse: The API response.
+            T.SsoLoginInitResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -778,7 +798,12 @@ class DelegatedAuthClient:
             body=body,
             requires_signature=False,
         )
-        return cast(T.InitiateSsoLoginResponse, response)
+        return cast(T.SsoLoginInitResponse, response)
+
+    @deprecated("Use sso_login_init instead.")
+    def initiate_sso_login(self, body: T.SsoLoginInitRequest) -> T.SsoLoginInitResponse:
+        """Deprecated: use sso_login_init instead."""
+        return self.sso_login_init(body=body)
 
     def exchange_access_token(self, body: T.ExchangeAccessTokenRequest) -> T.ExchangeAccessTokenResponse:
         """
@@ -1155,7 +1180,7 @@ class DelegatedAuthClient:
         )
         return cast(T.CreateDelegatedRecoveryChallengeResponse, response)
 
-    def recover_user(self, body: T.RecoverUserRequest) -> T.RecoverUserResponse:
+    def recover(self, body: T.RecoverRequest) -> T.RecoverResponse:
         """
                 Recover User.
 
@@ -1173,7 +1198,7 @@ class DelegatedAuthClient:
                     body: Request body.
 
                 Returns:
-                    T.RecoverUserResponse: The API response.
+                    T.RecoverResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -1183,7 +1208,12 @@ class DelegatedAuthClient:
             body=body,
             requires_signature=False,
         )
-        return cast(T.RecoverUserResponse, response)
+        return cast(T.RecoverResponse, response)
+
+    @deprecated("Use recover instead.")
+    def recover_user(self, body: T.RecoverRequest) -> T.RecoverResponse:
+        """Deprecated: use recover instead."""
+        return self.recover(body=body)
 
     def create_recovery_challenge(self, body: T.CreateRecoveryChallengeRequest) -> T.CreateRecoveryChallengeResponse:
         """
@@ -1207,7 +1237,7 @@ class DelegatedAuthClient:
         )
         return cast(T.CreateRecoveryChallengeResponse, response)
 
-    def send_recovery_code_email(self, body: T.SendRecoveryCodeEmailRequest) -> T.SendRecoveryCodeEmailResponse:
+    def send_recovery_code(self, body: T.SendRecoveryCodeRequest) -> T.SendRecoveryCodeResponse:
         """
         Send Recovery Code Email.
 
@@ -1217,7 +1247,7 @@ class DelegatedAuthClient:
             body: Request body.
 
         Returns:
-            T.SendRecoveryCodeEmailResponse: The API response.
+            T.SendRecoveryCodeResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -1227,7 +1257,12 @@ class DelegatedAuthClient:
             body=body,
             requires_signature=False,
         )
-        return cast(T.SendRecoveryCodeEmailResponse, response)
+        return cast(T.SendRecoveryCodeResponse, response)
+
+    @deprecated("Use send_recovery_code instead.")
+    def send_recovery_code_email(self, body: T.SendRecoveryCodeRequest) -> T.SendRecoveryCodeResponse:
+        """Deprecated: use send_recovery_code instead."""
+        return self.send_recovery_code(body=body)
 
     def create_delegated_registration_challenge_init(
         self, body: T.CreateDelegatedRegistrationChallengeRequest
@@ -1329,7 +1364,7 @@ class DelegatedAuthClient:
         )
         return cast(T.CreateSocialRegistrationChallengeResponse, response)
 
-    def complete_user_registration(self, body: T.CompleteUserRegistrationRequest) -> T.CompleteUserRegistrationResponse:
+    def register(self, body: T.RegisterRequest) -> T.RegisterResponse:
         """
                 Complete User Registration.
 
@@ -1349,7 +1384,7 @@ class DelegatedAuthClient:
                     body: Request body.
 
                 Returns:
-                    T.CompleteUserRegistrationResponse: The API response.
+                    T.RegisterResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -1359,11 +1394,14 @@ class DelegatedAuthClient:
             body=body,
             requires_signature=False,
         )
-        return cast(T.CompleteUserRegistrationResponse, response)
+        return cast(T.RegisterResponse, response)
 
-    def complete_end_user_registration_with_wallets(
-        self, body: T.CompleteEndUserRegistrationWithWalletsRequest
-    ) -> T.CompleteEndUserRegistrationWithWalletsResponse:
+    @deprecated("Use register instead.")
+    def complete_user_registration(self, body: T.RegisterRequest) -> T.RegisterResponse:
+        """Deprecated: use register instead."""
+        return self.register(body=body)
+
+    def register_end_user(self, body: T.RegisterEndUserRequest) -> T.RegisterEndUserResponse:
         """
                 Complete End User Registration with Wallets.
 
@@ -1385,7 +1423,7 @@ class DelegatedAuthClient:
                     body: Request body.
 
                 Returns:
-                    T.CompleteEndUserRegistrationWithWalletsResponse: The API response.
+                    T.RegisterEndUserResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -1395,7 +1433,12 @@ class DelegatedAuthClient:
             body=body,
             requires_signature=False,
         )
-        return cast(T.CompleteEndUserRegistrationWithWalletsResponse, response)
+        return cast(T.RegisterEndUserResponse, response)
+
+    @deprecated("Use register_end_user instead.")
+    def complete_end_user_registration_with_wallets(self, body: T.RegisterEndUserRequest) -> T.RegisterEndUserResponse:
+        """Deprecated: use register_end_user instead."""
+        return self.register_end_user(body=body)
 
     def resend_registration_code(self, body: T.ResendRegistrationCodeRequest) -> T.ResendRegistrationCodeResponse:
         """

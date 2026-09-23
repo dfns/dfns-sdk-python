@@ -3,6 +3,8 @@
 import json
 from typing import Any, cast
 
+from typing_extensions import deprecated
+
 from ..._internal import HttpClient
 from ...base_auth_api import BaseAuthApi, SignUserActionChallengeRequest, UserActionChallengeResponse
 from . import types as T
@@ -237,7 +239,7 @@ class DelegatedExchangesClient:
         )
         return cast(list[dict[str, Any]], response)
 
-    def create_exchange_deposit_init(
+    def create_deposit_init(
         self, exchange_id: str, account_id: str, body: dict[str, Any]
     ) -> UserActionChallengeResponse:
         """
@@ -265,9 +267,16 @@ class DelegatedExchangesClient:
             user_action_payload=payload,
         )
 
-    def create_exchange_deposit_complete(
+    @deprecated("Use create_deposit_init instead.")
+    def create_exchange_deposit_init(
+        self, exchange_id: str, account_id: str, body: dict[str, Any]
+    ) -> UserActionChallengeResponse:
+        """Deprecated: use create_deposit_init instead."""
+        return self.create_deposit_init(exchange_id=exchange_id, account_id=account_id, body=body)
+
+    def create_deposit_complete(
         self, exchange_id: str, account_id: str, body: dict[str, Any], signed_challenge: SignUserActionChallengeRequest
-    ) -> T.CreateExchangeDepositResponse:
+    ) -> T.CreateDepositResponse:
         """
         Complete Create Exchange Deposit.
 
@@ -280,7 +289,7 @@ class DelegatedExchangesClient:
             signed_challenge: The signed challenge from external signing.
 
         Returns:
-            T.CreateExchangeDepositResponse: The API response.
+            T.CreateDepositResponse: The API response.
         """  # noqa: E501
         user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
@@ -293,9 +302,18 @@ class DelegatedExchangesClient:
             body=body,
             user_action=user_action_token,
         )
-        return cast(T.CreateExchangeDepositResponse, response)
+        return cast(T.CreateDepositResponse, response)
 
-    def create_exchange_withdrawal_init(
+    @deprecated("Use create_deposit_complete instead.")
+    def create_exchange_deposit_complete(
+        self, exchange_id: str, account_id: str, body: dict[str, Any], signed_challenge: SignUserActionChallengeRequest
+    ) -> T.CreateDepositResponse:
+        """Deprecated: use create_deposit_complete instead."""
+        return self.create_deposit_complete(
+            exchange_id=exchange_id, account_id=account_id, body=body, signed_challenge=signed_challenge
+        )
+
+    def create_withdrawal_init(
         self, exchange_id: str, account_id: str, body: dict[str, Any]
     ) -> UserActionChallengeResponse:
         """
@@ -323,9 +341,16 @@ class DelegatedExchangesClient:
             user_action_payload=payload,
         )
 
-    def create_exchange_withdrawal_complete(
+    @deprecated("Use create_withdrawal_init instead.")
+    def create_exchange_withdrawal_init(
+        self, exchange_id: str, account_id: str, body: dict[str, Any]
+    ) -> UserActionChallengeResponse:
+        """Deprecated: use create_withdrawal_init instead."""
+        return self.create_withdrawal_init(exchange_id=exchange_id, account_id=account_id, body=body)
+
+    def create_withdrawal_complete(
         self, exchange_id: str, account_id: str, body: dict[str, Any], signed_challenge: SignUserActionChallengeRequest
-    ) -> T.CreateExchangeWithdrawalResponse:
+    ) -> T.CreateWithdrawalResponse:
         """
         Complete Create Exchange Withdrawal.
 
@@ -338,7 +363,7 @@ class DelegatedExchangesClient:
             signed_challenge: The signed challenge from external signing.
 
         Returns:
-            T.CreateExchangeWithdrawalResponse: The API response.
+            T.CreateWithdrawalResponse: The API response.
         """  # noqa: E501
         user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
@@ -351,4 +376,13 @@ class DelegatedExchangesClient:
             body=body,
             user_action=user_action_token,
         )
-        return cast(T.CreateExchangeWithdrawalResponse, response)
+        return cast(T.CreateWithdrawalResponse, response)
+
+    @deprecated("Use create_withdrawal_complete instead.")
+    def create_exchange_withdrawal_complete(
+        self, exchange_id: str, account_id: str, body: dict[str, Any], signed_challenge: SignUserActionChallengeRequest
+    ) -> T.CreateWithdrawalResponse:
+        """Deprecated: use create_withdrawal_complete instead."""
+        return self.create_withdrawal_complete(
+            exchange_id=exchange_id, account_id=account_id, body=body, signed_challenge=signed_challenge
+        )

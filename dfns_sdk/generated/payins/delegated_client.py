@@ -3,6 +3,8 @@
 import json
 from typing import Any, cast
 
+from typing_extensions import deprecated
+
 from ..._internal import HttpClient
 from ...base_auth_api import BaseAuthApi, SignUserActionChallengeRequest, UserActionChallengeResponse
 from . import types as T
@@ -91,7 +93,7 @@ class DelegatedPayinsClient:
         )
         return cast(dict[str, Any], response)
 
-    def request_payin_quote(self, body: dict[str, Any]) -> T.RequestPayinQuoteResponse:
+    def create_payin_quote(self, body: dict[str, Any]) -> T.CreatePayinQuoteResponse:
         """
         Request Payin Quote.
 
@@ -101,7 +103,7 @@ class DelegatedPayinsClient:
             body: Request body.
 
         Returns:
-            T.RequestPayinQuoteResponse: The API response.
+            T.CreatePayinQuoteResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -111,7 +113,12 @@ class DelegatedPayinsClient:
             body=body,
             requires_signature=False,
         )
-        return cast(T.RequestPayinQuoteResponse, response)
+        return cast(T.CreatePayinQuoteResponse, response)
+
+    @deprecated("Use create_payin_quote instead.")
+    def request_payin_quote(self, body: dict[str, Any]) -> T.CreatePayinQuoteResponse:
+        """Deprecated: use create_payin_quote instead."""
+        return self.create_payin_quote(body=body)
 
     def get_payin_recipient(self, query: T.GetPayinRecipientQuery) -> T.GetPayinRecipientResponse:
         """
@@ -135,7 +142,7 @@ class DelegatedPayinsClient:
         )
         return cast(T.GetPayinRecipientResponse, response)
 
-    def register_payin_recipient_init(self, body: dict[str, Any]) -> UserActionChallengeResponse:
+    def create_payin_recipient_init(self, body: dict[str, Any]) -> UserActionChallengeResponse:
         """
         Initialize Register Payin Recipient.
 
@@ -157,9 +164,14 @@ class DelegatedPayinsClient:
             user_action_payload=payload,
         )
 
-    def register_payin_recipient_complete(
+    @deprecated("Use create_payin_recipient_init instead.")
+    def register_payin_recipient_init(self, body: dict[str, Any]) -> UserActionChallengeResponse:
+        """Deprecated: use create_payin_recipient_init instead."""
+        return self.create_payin_recipient_init(body=body)
+
+    def create_payin_recipient_complete(
         self, body: dict[str, Any], signed_challenge: SignUserActionChallengeRequest
-    ) -> T.RegisterPayinRecipientResponse:
+    ) -> T.CreatePayinRecipientResponse:
         """
         Complete Register Payin Recipient.
 
@@ -170,7 +182,7 @@ class DelegatedPayinsClient:
             signed_challenge: The signed challenge from external signing.
 
         Returns:
-            T.RegisterPayinRecipientResponse: The API response.
+            T.CreatePayinRecipientResponse: The API response.
         """  # noqa: E501
         user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
@@ -183,9 +195,16 @@ class DelegatedPayinsClient:
             body=body,
             user_action=user_action_token,
         )
-        return cast(T.RegisterPayinRecipientResponse, response)
+        return cast(T.CreatePayinRecipientResponse, response)
 
-    def get_payin_status(self, payin_id: str) -> dict[str, Any]:
+    @deprecated("Use create_payin_recipient_complete instead.")
+    def register_payin_recipient_complete(
+        self, body: dict[str, Any], signed_challenge: SignUserActionChallengeRequest
+    ) -> T.CreatePayinRecipientResponse:
+        """Deprecated: use create_payin_recipient_complete instead."""
+        return self.create_payin_recipient_complete(body=body, signed_challenge=signed_challenge)
+
+    def get_payin(self, payin_id: str) -> dict[str, Any]:
         """
         Get Payin Status.
 
@@ -206,6 +225,11 @@ class DelegatedPayinsClient:
             requires_signature=False,
         )
         return cast(dict[str, Any], response)
+
+    @deprecated("Use get_payin instead.")
+    def get_payin_status(self, payin_id: str) -> dict[str, Any]:
+        """Deprecated: use get_payin instead."""
+        return self.get_payin(payin_id=payin_id)
 
     def list_payin_accounts(self, query: T.ListPayinAccountsQuery) -> T.ListPayinAccountsResponse:
         """

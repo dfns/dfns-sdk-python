@@ -3,6 +3,8 @@
 import json
 from typing import cast
 
+from typing_extensions import deprecated
+
 from ..._internal import HttpClient
 from ...base_auth_api import BaseAuthApi, SignUserActionChallengeRequest, UserActionChallengeResponse
 from . import types as T
@@ -74,9 +76,9 @@ class DelegatedPermissionsClient:
         )
         return cast(T.ArchivePermissionResponse, response)
 
-    def list_permission_assignments(
-        self, permission_id: str, query: T.ListPermissionAssignmentsQuery | None = None
-    ) -> T.ListPermissionAssignmentsResponse:
+    def list_assignments(
+        self, permission_id: str, query: T.ListAssignmentsQuery | None = None
+    ) -> T.ListAssignmentsResponse:
         """
         List Permission Assignments.
 
@@ -87,7 +89,7 @@ class DelegatedPermissionsClient:
             query: Query parameters.
 
         Returns:
-            T.ListPermissionAssignmentsResponse: The API response.
+            T.ListAssignmentsResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="GET",
@@ -97,7 +99,14 @@ class DelegatedPermissionsClient:
             body=None,
             requires_signature=False,
         )
-        return cast(T.ListPermissionAssignmentsResponse, response)
+        return cast(T.ListAssignmentsResponse, response)
+
+    @deprecated("Use list_assignments instead.")
+    def list_permission_assignments(
+        self, permission_id: str, query: T.ListAssignmentsQuery | None = None
+    ) -> T.ListAssignmentsResponse:
+        """Deprecated: use list_assignments instead."""
+        return self.list_assignments(permission_id=permission_id, query=query)
 
     def assign_permission_init(
         self, permission_id: str, body: T.AssignPermissionRequest
