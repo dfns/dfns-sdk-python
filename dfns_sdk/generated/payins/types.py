@@ -22,8 +22,8 @@ class ListPayinsQuery(TypedDict, total=False):
     provider: NotRequired[list[Literal["CircleMint", "Borderless"]]]
 
 
-class RequestPayinQuoteResponse(TypedDict, total=False):
-    """requestPayinQuote response."""
+class CreatePayinQuoteResponse(TypedDict, total=False):
+    """createPayinQuote response."""
 
     provider: Literal["CircleMint", "Borderless"]
     currency: Literal["USD", "EUR"]
@@ -51,8 +51,8 @@ class GetPayinRecipientQuery(TypedDict, total=False):
     currency: Literal["USD", "EUR"]
 
 
-class RegisterPayinRecipientResponse(TypedDict, total=False):
-    """registerPayinRecipient response."""
+class CreatePayinRecipientResponse(TypedDict, total=False):
+    """createPayinRecipient response."""
 
     provider: Literal["CircleMint", "Borderless"]
     wallet_id: str
@@ -104,3 +104,10 @@ class RegisterPayinAccountAssetResponse(TypedDict, total=False):
     account_id: str
     name: NotRequired[str]
     assets: list[dict[str, Any]]
+
+
+# Deprecated: use CreatePayinQuoteResponse instead.
+RequestPayinQuoteResponse = CreatePayinQuoteResponse
+
+# Deprecated: use CreatePayinRecipientResponse instead.
+RegisterPayinRecipientResponse = CreatePayinRecipientResponse

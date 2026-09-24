@@ -63,7 +63,7 @@ class CreateVaultAddressRequest(TypedDict, total=False):
         "Bsc",
         "BscTestnet",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "Ethereum",
@@ -150,7 +150,7 @@ class CreateVaultLockRequest(TypedDict, total=False):
         "Berachain",
         "BerachainBepolia",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "Ethereum",
@@ -239,7 +239,7 @@ class CreateVaultTransferRequest(TypedDict, total=False):
         "Bsc",
         "BscTestnet",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "Ethereum",
@@ -363,6 +363,18 @@ class GetVaultLockResponse(TypedDict, total=False):
     date_deleted: NotRequired[str]
 
 
+class GetVaultQuarantineResponse(TypedDict, total=False):
+    """getVaultQuarantine response."""
+
+    id: str
+    vault_id: str
+    network: str
+    transaction_hash: str
+    kyt_result: NotRequired[dict[str, Any]]
+    date_released: NotRequired[str]
+    date_created: str
+
+
 class ListVaultAssetsResponse(TypedDict, total=False):
     """listVaultAssets response."""
 
@@ -392,6 +404,21 @@ class ListVaultBalancesQuery(TypedDict, total=False):
     kind: NotRequired[Literal["Available", "Outgoing", "Fee", "Incoming", "Locked", "Quarantined"]]
     network: NotRequired[str]
     tid: NotRequired[str]
+
+
+class ListVaultQuarantinesResponse(TypedDict, total=False):
+    """listVaultQuarantines response."""
+
+    items: list[dict[str, Any]]
+    next_page_token: NotRequired[str]
+
+
+class ListVaultQuarantinesQuery(TypedDict, total=False):
+    """listVaultQuarantines query parameters."""
+
+    limit: NotRequired[int]
+    pagination_token: NotRequired[str]
+    network: NotRequired[str]
 
 
 class ReleaseQuarantineRequest(TypedDict, total=False):
