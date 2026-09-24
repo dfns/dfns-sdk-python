@@ -2,6 +2,8 @@
 
 from typing import Any, cast
 
+from typing_extensions import deprecated
+
 from ..._internal import HttpClient
 from . import types as T
 
@@ -56,7 +58,7 @@ class PayinsClient:
         )
         return cast(dict[str, Any], response)
 
-    def request_payin_quote(self, body: dict[str, Any]) -> T.RequestPayinQuoteResponse:
+    def create_payin_quote(self, body: dict[str, Any]) -> T.CreatePayinQuoteResponse:
         """
         Request Payin Quote.
 
@@ -66,7 +68,7 @@ class PayinsClient:
             body: Request body.
 
         Returns:
-            T.RequestPayinQuoteResponse: The API response.
+            T.CreatePayinQuoteResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -76,7 +78,12 @@ class PayinsClient:
             body=body,
             requires_signature=False,
         )
-        return cast(T.RequestPayinQuoteResponse, response)
+        return cast(T.CreatePayinQuoteResponse, response)
+
+    @deprecated("Use create_payin_quote instead.")
+    def request_payin_quote(self, body: dict[str, Any]) -> T.CreatePayinQuoteResponse:
+        """Deprecated: use create_payin_quote instead."""
+        return self.create_payin_quote(body=body)
 
     def get_payin_recipient(self, query: T.GetPayinRecipientQuery) -> T.GetPayinRecipientResponse:
         """
@@ -100,7 +107,7 @@ class PayinsClient:
         )
         return cast(T.GetPayinRecipientResponse, response)
 
-    def register_payin_recipient(self, body: dict[str, Any]) -> T.RegisterPayinRecipientResponse:
+    def create_payin_recipient(self, body: dict[str, Any]) -> T.CreatePayinRecipientResponse:
         """
             Register Payin Recipient.
 
@@ -112,7 +119,7 @@ class PayinsClient:
                 body: Request body.
 
             Returns:
-                T.RegisterPayinRecipientResponse: The API response.
+                T.CreatePayinRecipientResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -122,9 +129,14 @@ class PayinsClient:
             body=body,
             requires_signature=True,
         )
-        return cast(T.RegisterPayinRecipientResponse, response)
+        return cast(T.CreatePayinRecipientResponse, response)
 
-    def get_payin_status(self, payin_id: str) -> dict[str, Any]:
+    @deprecated("Use create_payin_recipient instead.")
+    def register_payin_recipient(self, body: dict[str, Any]) -> T.CreatePayinRecipientResponse:
+        """Deprecated: use create_payin_recipient instead."""
+        return self.create_payin_recipient(body=body)
+
+    def get_payin(self, payin_id: str) -> dict[str, Any]:
         """
         Get Payin Status.
 
@@ -145,6 +157,11 @@ class PayinsClient:
             requires_signature=False,
         )
         return cast(dict[str, Any], response)
+
+    @deprecated("Use get_payin instead.")
+    def get_payin_status(self, payin_id: str) -> dict[str, Any]:
+        """Deprecated: use get_payin instead."""
+        return self.get_payin(payin_id=payin_id)
 
     def list_payin_accounts(self, query: T.ListPayinAccountsQuery) -> T.ListPayinAccountsResponse:
         """

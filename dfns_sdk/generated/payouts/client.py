@@ -2,6 +2,8 @@
 
 from typing import Any, cast
 
+from typing_extensions import deprecated
+
 from ..._internal import HttpClient
 from . import types as T
 
@@ -78,7 +80,7 @@ class PayoutsClient:
         )
         return cast(T.RequestPayoutQuoteResponse, response)
 
-    def get_payout_status(self, payout_id: str) -> dict[str, Any]:
+    def get_payout(self, payout_id: str) -> dict[str, Any]:
         """
         Get Payout Status.
 
@@ -99,6 +101,11 @@ class PayoutsClient:
             requires_signature=False,
         )
         return cast(dict[str, Any], response)
+
+    @deprecated("Use get_payout instead.")
+    def get_payout_status(self, payout_id: str) -> dict[str, Any]:
+        """Deprecated: use get_payout instead."""
+        return self.get_payout(payout_id=payout_id)
 
     def create_payout_action(self, payout_id: str, body: dict[str, Any]) -> T.CreatePayoutActionResponse:
         """

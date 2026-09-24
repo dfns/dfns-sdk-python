@@ -24,15 +24,15 @@ class ArchivePermissionResponse(TypedDict, total=False):
     date_updated: str
 
 
-class ListPermissionAssignmentsResponse(TypedDict, total=False):
-    """listPermissionAssignments response."""
+class ListAssignmentsResponse(TypedDict, total=False):
+    """listAssignments response."""
 
     items: list[dict[str, Any]]
     next_page_token: NotRequired[str]
 
 
-class ListPermissionAssignmentsQuery(TypedDict, total=False):
-    """listPermissionAssignments query parameters."""
+class ListAssignmentsQuery(TypedDict, total=False):
+    """listAssignments query parameters."""
 
     limit: NotRequired[int]
     pagination_token: NotRequired[str]
@@ -471,3 +471,10 @@ class UpdatePermissionResponse(TypedDict, total=False):
     is_archived: bool
     date_created: str
     date_updated: str
+
+
+# Deprecated: use ListAssignmentsResponse instead.
+ListPermissionAssignmentsResponse = ListAssignmentsResponse
+
+# Deprecated: use ListAssignmentsQuery instead.
+ListPermissionAssignmentsQuery = ListAssignmentsQuery
