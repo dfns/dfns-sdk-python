@@ -216,6 +216,29 @@ class VaultsClient:
         )
         return cast(T.GetVaultLockResponse, response)
 
+    def get_vault_quarantine(self, vault_id: str, quarantine_id: str) -> T.GetVaultQuarantineResponse:
+        """
+        Get Vault Quarantine.
+
+        Retrieves a vault quarantine by its ID.
+
+        Args:
+            vault_id: Vault id.
+            quarantine_id: The quarantine to retrieve.
+
+        Returns:
+            T.GetVaultQuarantineResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="GET",
+            path="/vaults/{vaultId}/quarantines/{quarantineId}",
+            path_params={"vaultId": vault_id, "quarantineId": quarantine_id},
+            query_params=None,
+            body=None,
+            requires_signature=False,
+        )
+        return cast(T.GetVaultQuarantineResponse, response)
+
     def list_vault_assets(
         self, vault_id: str, query: T.ListVaultAssetsQuery | None = None
     ) -> T.ListVaultAssetsResponse:
@@ -265,6 +288,31 @@ class VaultsClient:
             requires_signature=False,
         )
         return cast(T.ListVaultBalancesResponse, response)
+
+    def list_vault_quarantines(
+        self, vault_id: str, query: T.ListVaultQuarantinesQuery | None = None
+    ) -> T.ListVaultQuarantinesResponse:
+        """
+        List Vault Quarantines.
+
+        Lists a vault's quarantines, active and released.
+
+        Args:
+            vault_id: Vault id.
+            query: Query parameters.
+
+        Returns:
+            T.ListVaultQuarantinesResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="GET",
+            path="/vaults/{vaultId}/quarantines",
+            path_params={"vaultId": vault_id},
+            query_params=query,
+            body=None,
+            requires_signature=False,
+        )
+        return cast(T.ListVaultQuarantinesResponse, response)
 
     def release_quarantine(
         self, vault_id: str, quarantine_id: str, body: T.ReleaseQuarantineRequest

@@ -80,8 +80,8 @@ class ListAccountAssetsQuery(TypedDict, total=False):
     pagination_token: NotRequired[str]
 
 
-class CreateExchangeDepositResponse(TypedDict, total=False):
-    """createExchangeDeposit response."""
+class CreateDepositResponse(TypedDict, total=False):
+    """createDeposit response."""
 
     id: str
     exchange_id: str
@@ -95,8 +95,8 @@ class CreateExchangeDepositResponse(TypedDict, total=False):
     date_created: str
 
 
-class CreateExchangeWithdrawalResponse(TypedDict, total=False):
-    """createExchangeWithdrawal response."""
+class CreateWithdrawalResponse(TypedDict, total=False):
+    """createWithdrawal response."""
 
     id: str
     exchange_id: str
@@ -108,3 +108,10 @@ class CreateExchangeWithdrawalResponse(TypedDict, total=False):
     requester: dict[str, Any]
     request_body: dict[str, Any]
     date_created: str
+
+
+# Deprecated: use CreateDepositResponse instead.
+CreateExchangeDepositResponse = CreateDepositResponse
+
+# Deprecated: use CreateWithdrawalResponse instead.
+CreateExchangeWithdrawalResponse = CreateWithdrawalResponse

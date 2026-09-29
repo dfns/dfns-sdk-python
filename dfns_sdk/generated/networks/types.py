@@ -32,7 +32,7 @@ class EstimateFeesQuery(TypedDict, total=False):
         "Berachain",
         "BerachainBepolia",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "Ethereum",

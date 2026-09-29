@@ -41,7 +41,7 @@ class AbortTransactionResponse(TypedDict, total=False):
         "Concordium",
         "ConcordiumTestnet",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "CosmosHub4",
@@ -200,7 +200,7 @@ class ActivateWalletResponse(TypedDict, total=False):
         "Concordium",
         "ConcordiumTestnet",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "CosmosHub4",
@@ -434,7 +434,7 @@ class SignAndBroadcastTransactionResponse(TypedDict, total=False):
         "Concordium",
         "ConcordiumTestnet",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "CosmosHub4",
@@ -569,7 +569,7 @@ class CancelTransactionResponse(TypedDict, total=False):
         "Concordium",
         "ConcordiumTestnet",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "CosmosHub4",
@@ -704,7 +704,7 @@ class CancelTransferResponse(TypedDict, total=False):
         "Concordium",
         "ConcordiumTestnet",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "CosmosHub4",
@@ -803,8 +803,8 @@ class CancelTransferResponse(TypedDict, total=False):
     details: NotRequired[dict[str, Any]]
 
 
-class ProxyARequestToTheCantonLedgerApiRequest(TypedDict, total=False):
-    """proxyARequestToTheCantonLedgerApi request body."""
+class CantonLedgerApiProxyRequest(TypedDict, total=False):
+    """cantonLedgerApiProxy request body."""
 
     request_method: Literal["GET", "POST"]
     resource: str
@@ -847,7 +847,7 @@ class SpeedUpTransactionResponse(TypedDict, total=False):
         "Concordium",
         "ConcordiumTestnet",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "CosmosHub4",
@@ -982,7 +982,7 @@ class SpeedUpTransferResponse(TypedDict, total=False):
         "Concordium",
         "ConcordiumTestnet",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "CosmosHub4",
@@ -1132,7 +1132,7 @@ class CreateWalletRequest(TypedDict, total=False):
         "Concordium",
         "ConcordiumTestnet",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "CosmosHub4",
@@ -1258,7 +1258,7 @@ class CreateWalletResponse(TypedDict, total=False):
         "Concordium",
         "ConcordiumTestnet",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "CosmosHub4",
@@ -1390,7 +1390,7 @@ class GetTransactionResponse(TypedDict, total=False):
         "Concordium",
         "ConcordiumTestnet",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "CosmosHub4",
@@ -1548,7 +1548,7 @@ class GetWalletResponse(TypedDict, total=False):
         "Concordium",
         "ConcordiumTestnet",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "CosmosHub4",
@@ -1686,7 +1686,7 @@ class UpdateWalletResponse(TypedDict, total=False):
         "Concordium",
         "ConcordiumTestnet",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "CosmosHub4",
@@ -1817,7 +1817,7 @@ class GetWalletAssetsResponse(TypedDict, total=False):
         "Concordium",
         "ConcordiumTestnet",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "CosmosHub4",
@@ -1947,7 +1947,7 @@ class GetWalletHistoryResponse(TypedDict, total=False):
         "Concordium",
         "ConcordiumTestnet",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "CosmosHub4",
@@ -2108,7 +2108,7 @@ class GetWalletNftsResponse(TypedDict, total=False):
         "Concordium",
         "ConcordiumTestnet",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "CosmosHub4",
@@ -2233,7 +2233,7 @@ class ImportWalletRequest(TypedDict, total=False):
         "Concordium",
         "ConcordiumTestnet",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "CosmosHub4",
@@ -2354,7 +2354,7 @@ class ImportWalletResponse(TypedDict, total=False):
         "Concordium",
         "ConcordiumTestnet",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "CosmosHub4",
@@ -2550,7 +2550,7 @@ class GetOfferResponse(TypedDict, total=False):
         "Concordium",
         "ConcordiumTestnet",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "CosmosHub4",
@@ -2723,7 +2723,7 @@ class AcceptOfferResponse(TypedDict, total=False):
         "Concordium",
         "ConcordiumTestnet",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "CosmosHub4",
@@ -2882,7 +2882,7 @@ class RejectOfferResponse(TypedDict, total=False):
         "Concordium",
         "ConcordiumTestnet",
         "Celo",
-        "CeloAlfajores",
+        "CeloSepolia",
         "Codex",
         "CodexSepolia",
         "CosmosHub4",
@@ -3011,3 +3011,7 @@ class ListOrgWalletHistoryQuery(TypedDict, total=False):
     pagination_token: NotRequired[str]
     start_time: str
     end_time: str
+
+
+# Deprecated: use CantonLedgerApiProxyRequest instead.
+ProxyARequestToTheCantonLedgerApiRequest = CantonLedgerApiProxyRequest

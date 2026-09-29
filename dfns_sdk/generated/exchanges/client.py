@@ -2,6 +2,8 @@
 
 from typing import Any, cast
 
+from typing_extensions import deprecated
+
 from ..._internal import HttpClient
 from . import types as T
 
@@ -173,9 +175,7 @@ class ExchangesClient:
         )
         return cast(list[dict[str, Any]], response)
 
-    def create_exchange_deposit(
-        self, exchange_id: str, account_id: str, body: dict[str, Any]
-    ) -> T.CreateExchangeDepositResponse:
+    def create_deposit(self, exchange_id: str, account_id: str, body: dict[str, Any]) -> T.CreateDepositResponse:
         """
         Create Exchange Deposit.
 
@@ -187,7 +187,7 @@ class ExchangesClient:
             body: Request body.
 
         Returns:
-            T.CreateExchangeDepositResponse: The API response.
+            T.CreateDepositResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -197,11 +197,16 @@ class ExchangesClient:
             body=body,
             requires_signature=True,
         )
-        return cast(T.CreateExchangeDepositResponse, response)
+        return cast(T.CreateDepositResponse, response)
 
-    def create_exchange_withdrawal(
+    @deprecated("Use create_deposit instead.")
+    def create_exchange_deposit(
         self, exchange_id: str, account_id: str, body: dict[str, Any]
-    ) -> T.CreateExchangeWithdrawalResponse:
+    ) -> T.CreateDepositResponse:
+        """Deprecated: use create_deposit instead."""
+        return self.create_deposit(exchange_id=exchange_id, account_id=account_id, body=body)
+
+    def create_withdrawal(self, exchange_id: str, account_id: str, body: dict[str, Any]) -> T.CreateWithdrawalResponse:
         """
         Create Exchange Withdrawal.
 
@@ -213,7 +218,7 @@ class ExchangesClient:
             body: Request body.
 
         Returns:
-            T.CreateExchangeWithdrawalResponse: The API response.
+            T.CreateWithdrawalResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -223,4 +228,11 @@ class ExchangesClient:
             body=body,
             requires_signature=True,
         )
-        return cast(T.CreateExchangeWithdrawalResponse, response)
+        return cast(T.CreateWithdrawalResponse, response)
+
+    @deprecated("Use create_withdrawal instead.")
+    def create_exchange_withdrawal(
+        self, exchange_id: str, account_id: str, body: dict[str, Any]
+    ) -> T.CreateWithdrawalResponse:
+        """Deprecated: use create_withdrawal instead."""
+        return self.create_withdrawal(exchange_id=exchange_id, account_id=account_id, body=body)

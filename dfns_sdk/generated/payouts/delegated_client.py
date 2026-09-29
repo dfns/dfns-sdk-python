@@ -3,6 +3,8 @@
 import json
 from typing import Any, cast
 
+from typing_extensions import deprecated
+
 from ..._internal import HttpClient
 from ...base_auth_api import BaseAuthApi, SignUserActionChallengeRequest, UserActionChallengeResponse
 from . import types as T
@@ -113,7 +115,7 @@ class DelegatedPayoutsClient:
         )
         return cast(T.RequestPayoutQuoteResponse, response)
 
-    def get_payout_status(self, payout_id: str) -> dict[str, Any]:
+    def get_payout(self, payout_id: str) -> dict[str, Any]:
         """
         Get Payout Status.
 
@@ -134,6 +136,11 @@ class DelegatedPayoutsClient:
             requires_signature=False,
         )
         return cast(dict[str, Any], response)
+
+    @deprecated("Use get_payout instead.")
+    def get_payout_status(self, payout_id: str) -> dict[str, Any]:
+        """Deprecated: use get_payout instead."""
+        return self.get_payout(payout_id=payout_id)
 
     def create_payout_action_init(self, payout_id: str, body: dict[str, Any]) -> UserActionChallengeResponse:
         """

@@ -209,8 +209,8 @@ class DelegatedLoginResponse(TypedDict, total=False):
     token: str
 
 
-class CompleteUserLoginRequest(TypedDict, total=False):
-    """completeUserLogin request body."""
+class LoginRequest(TypedDict, total=False):
+    """login request body."""
 
     challenge_identifier: str
     first_factor: dict[str, Any]
@@ -229,23 +229,23 @@ class LogoutResponse(TypedDict, total=False):
     message: str
 
 
-class CompleteOidcLoginRequest(TypedDict, total=False):
-    """completeOidcLogin request body."""
+class OidcLoginRequest(TypedDict, total=False):
+    """oidcLogin request body."""
 
     code: str
     state: str
 
 
-class InitiateOidcLoginRequest(TypedDict, total=False):
-    """initiateOidcLogin request body."""
+class OidcLoginInitRequest(TypedDict, total=False):
+    """oidcLoginInit request body."""
 
     org_id: NotRequired[str]
     tenant_id: NotRequired[str]
     redirect_uri: str
 
 
-class InitiateOidcLoginResponse(TypedDict, total=False):
-    """initiateOidcLogin response."""
+class OidcLoginInitResponse(TypedDict, total=False):
+    """oidcLoginInit response."""
 
     redirect_url: str
 
@@ -278,21 +278,21 @@ class SocialLoginResponse(TypedDict, total=False):
     token: str
 
 
-class CompleteSsoLoginRequest(TypedDict, total=False):
-    """completeSsoLogin request body."""
+class SsoLoginRequest(TypedDict, total=False):
+    """ssoLogin request body."""
 
     code: str
     state: str
 
 
-class CompleteSsoLoginResponse(TypedDict, total=False):
-    """completeSsoLogin response."""
+class SsoLoginResponse(TypedDict, total=False):
+    """ssoLogin response."""
 
     token: str
 
 
-class InitiateSsoLoginRequest(TypedDict, total=False):
-    """initiateSsoLogin request body."""
+class SsoLoginInitRequest(TypedDict, total=False):
+    """ssoLoginInit request body."""
 
     org_id: NotRequired[str]
     tenant_id: NotRequired[str]
@@ -300,8 +300,8 @@ class InitiateSsoLoginRequest(TypedDict, total=False):
     redirect_uri: str
 
 
-class InitiateSsoLoginResponse(TypedDict, total=False):
-    """initiateSsoLogin response."""
+class SsoLoginInitResponse(TypedDict, total=False):
+    """ssoLoginInit response."""
 
     sso_redirect_url: str
 
@@ -467,15 +467,15 @@ class CreateDelegatedRecoveryChallengeResponse(TypedDict, total=False):
     allowed_recovery_credentials: list[dict[str, Any]]
 
 
-class RecoverUserRequest(TypedDict, total=False):
-    """recoverUser request body."""
+class RecoverRequest(TypedDict, total=False):
+    """recover request body."""
 
     recovery: dict[str, Any]
     new_credentials: dict[str, Any]
 
 
-class RecoverUserResponse(TypedDict, total=False):
-    """recoverUser response."""
+class RecoverResponse(TypedDict, total=False):
+    """recover response."""
 
     credential: dict[str, Any]
     user: dict[str, Any]
@@ -507,16 +507,16 @@ class CreateRecoveryChallengeResponse(TypedDict, total=False):
     allowed_recovery_credentials: list[dict[str, Any]]
 
 
-class SendRecoveryCodeEmailRequest(TypedDict, total=False):
-    """sendRecoveryCodeEmail request body."""
+class SendRecoveryCodeRequest(TypedDict, total=False):
+    """sendRecoveryCode request body."""
 
     username: str
     org_id: NotRequired[str]
     tenant_id: NotRequired[str]
 
 
-class SendRecoveryCodeEmailResponse(TypedDict, total=False):
-    """sendRecoveryCodeEmail response."""
+class SendRecoveryCodeResponse(TypedDict, total=False):
+    """sendRecoveryCode response."""
 
     message: str
 
@@ -591,23 +591,23 @@ class CreateSocialRegistrationChallengeResponse(TypedDict, total=False):
     otp_url: str
 
 
-class CompleteUserRegistrationRequest(TypedDict, total=False):
-    """completeUserRegistration request body."""
+class RegisterRequest(TypedDict, total=False):
+    """register request body."""
 
     first_factor_credential: dict[str, Any]
     second_factor_credential: NotRequired[dict[str, Any]]
     recovery_credential: NotRequired[dict[str, Any]]
 
 
-class CompleteUserRegistrationResponse(TypedDict, total=False):
-    """completeUserRegistration response."""
+class RegisterResponse(TypedDict, total=False):
+    """register response."""
 
     credential: dict[str, Any]
     user: dict[str, Any]
 
 
-class CompleteEndUserRegistrationWithWalletsRequest(TypedDict, total=False):
-    """completeEndUserRegistrationWithWallets request body."""
+class RegisterEndUserRequest(TypedDict, total=False):
+    """registerEndUser request body."""
 
     first_factor_credential: dict[str, Any]
     second_factor_credential: NotRequired[dict[str, Any]]
@@ -615,8 +615,8 @@ class CompleteEndUserRegistrationWithWalletsRequest(TypedDict, total=False):
     wallets: list[dict[str, Any]]
 
 
-class CompleteEndUserRegistrationWithWalletsResponse(TypedDict, total=False):
-    """completeEndUserRegistrationWithWallets response."""
+class RegisterEndUserResponse(TypedDict, total=False):
+    """registerEndUser response."""
 
     credential: dict[str, Any]
     user: dict[str, Any]
@@ -868,3 +868,52 @@ class InviteTenantUserResponse(TypedDict, total=False):
     """inviteTenantUser response."""
 
     pass
+
+
+# Deprecated: use LoginRequest instead.
+CompleteUserLoginRequest = LoginRequest
+
+# Deprecated: use OidcLoginRequest instead.
+CompleteOidcLoginRequest = OidcLoginRequest
+
+# Deprecated: use OidcLoginInitRequest instead.
+InitiateOidcLoginRequest = OidcLoginInitRequest
+
+# Deprecated: use OidcLoginInitResponse instead.
+InitiateOidcLoginResponse = OidcLoginInitResponse
+
+# Deprecated: use SsoLoginRequest instead.
+CompleteSsoLoginRequest = SsoLoginRequest
+
+# Deprecated: use SsoLoginResponse instead.
+CompleteSsoLoginResponse = SsoLoginResponse
+
+# Deprecated: use SsoLoginInitRequest instead.
+InitiateSsoLoginRequest = SsoLoginInitRequest
+
+# Deprecated: use SsoLoginInitResponse instead.
+InitiateSsoLoginResponse = SsoLoginInitResponse
+
+# Deprecated: use RecoverRequest instead.
+RecoverUserRequest = RecoverRequest
+
+# Deprecated: use RecoverResponse instead.
+RecoverUserResponse = RecoverResponse
+
+# Deprecated: use SendRecoveryCodeRequest instead.
+SendRecoveryCodeEmailRequest = SendRecoveryCodeRequest
+
+# Deprecated: use SendRecoveryCodeResponse instead.
+SendRecoveryCodeEmailResponse = SendRecoveryCodeResponse
+
+# Deprecated: use RegisterRequest instead.
+CompleteUserRegistrationRequest = RegisterRequest
+
+# Deprecated: use RegisterResponse instead.
+CompleteUserRegistrationResponse = RegisterResponse
+
+# Deprecated: use RegisterEndUserRequest instead.
+CompleteEndUserRegistrationWithWalletsRequest = RegisterEndUserRequest
+
+# Deprecated: use RegisterEndUserResponse instead.
+CompleteEndUserRegistrationWithWalletsResponse = RegisterEndUserResponse

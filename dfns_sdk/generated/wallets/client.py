@@ -2,6 +2,8 @@
 
 from typing import Any, cast
 
+from typing_extensions import deprecated
+
 from ..._internal import HttpClient
 from . import types as T
 
@@ -325,9 +327,7 @@ class WalletsClient:
         )
         return cast(T.CancelTransferResponse, response)
 
-    def proxy_a_request_to_the_canton_ledger_api(
-        self, wallet_id: str, body: T.ProxyARequestToTheCantonLedgerApiRequest
-    ) -> dict[str, Any]:
+    def canton_ledger_api_proxy(self, wallet_id: str, body: T.CantonLedgerApiProxyRequest) -> dict[str, Any]:
         """
         Proxy a request to the Canton Ledger API.
 
@@ -349,6 +349,13 @@ class WalletsClient:
             requires_signature=False,
         )
         return cast(dict[str, Any], response)
+
+    @deprecated("Use canton_ledger_api_proxy instead.")
+    def proxy_a_request_to_the_canton_ledger_api(
+        self, wallet_id: str, body: T.CantonLedgerApiProxyRequest
+    ) -> dict[str, Any]:
+        """Deprecated: use canton_ledger_api_proxy instead."""
+        return self.canton_ledger_api_proxy(wallet_id=wallet_id, body=body)
 
     def speed_up_transaction(self, wallet_id: str, transaction_id: str) -> T.SpeedUpTransactionResponse:
         """
