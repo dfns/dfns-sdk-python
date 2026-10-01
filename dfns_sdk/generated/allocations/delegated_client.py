@@ -19,6 +19,28 @@ class DelegatedAllocationsClient:
     def __init__(self, http_client: HttpClient):
         self._http = http_client
 
+    def create_allocation_quote(self, body: T.CreateAllocationQuoteRequest) -> T.CreateAllocationQuoteResponse:
+        """
+        Request 0fns Allocation Quote.
+
+        Get a price quote for a 0fns deposit or withdrawal at the current market rate.
+
+        Args:
+            body: Request body.
+
+        Returns:
+            T.CreateAllocationQuoteResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="POST",
+            path="/allocations/get-0fns-quote",
+            path_params={},
+            query_params=None,
+            body=body,
+            requires_signature=False,
+        )
+        return cast(T.CreateAllocationQuoteResponse, response)
+
     def list_allocations(self, query: T.ListAllocationsQuery | None = None) -> T.ListAllocationsResponse:
         """
         List Allocations.
@@ -209,3 +231,53 @@ class DelegatedAllocationsClient:
             requires_signature=False,
         )
         return cast(T.GetAllocationsInfoResponse, response)
+
+    def cancel0fns_order_placement_init(self, body: T.Cancel0fnsOrderPlacementRequest) -> UserActionChallengeResponse:
+        """
+        Initialize Cancel an unfilled 0fns order placement.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+            body: Request body.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """  # noqa: E501
+        path = "/allocations/cancel-0fns-order-placement"
+        payload = json.dumps(body, separators=(",", ":")) if body else ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="POST",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def cancel0fns_order_placement_complete(
+        self, body: T.Cancel0fnsOrderPlacementRequest, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.Cancel0fnsOrderPlacementResponse:
+        """
+        Complete Cancel an unfilled 0fns order placement.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
+
+        Returns:
+            T.Cancel0fnsOrderPlacementResponse: The API response.
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+        user_action_token = user_action_result["userAction"]
+
+        response = self._http.request_with_user_action(
+            method="POST",
+            path="/allocations/cancel-0fns-order-placement",
+            path_params={},
+            query_params=None,
+            body=body,
+            user_action=user_action_token,
+        )
+        return cast(T.Cancel0fnsOrderPlacementResponse, response)

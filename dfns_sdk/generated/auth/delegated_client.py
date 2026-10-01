@@ -113,6 +113,8 @@ class DelegatedAuthClient:
 
         Dfns maintains a script which can be used for audit log signature validation: [WebAuthn Signature Verifier](https://github.com/dfns/dfns-sdk-python/tree/main/examples/verify-webauthn-signature)
 
+        Because the response includes the full signed action (request body and path), details are only returned for actions on routes that Dfns has marked as safe to expose (the same set forwarded to SIEM exports). Requesting details for any other event returns `403 Forbidden`.
+
                 Args:
                     id: Log id you need information about.
 
