@@ -12,6 +12,28 @@ class AllocationsClient:
     def __init__(self, http_client: HttpClient):
         self._http = http_client
 
+    def create_allocation_quote(self, body: T.CreateAllocationQuoteRequest) -> T.CreateAllocationQuoteResponse:
+        """
+        Request 0fns Allocation Quote.
+
+        Get a price quote for a 0fns deposit or withdrawal at the current market rate.
+
+        Args:
+            body: Request body.
+
+        Returns:
+            T.CreateAllocationQuoteResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="POST",
+            path="/allocations/get-0fns-quote",
+            path_params={},
+            query_params=None,
+            body=body,
+            requires_signature=False,
+        )
+        return cast(T.CreateAllocationQuoteResponse, response)
+
     def list_allocations(self, query: T.ListAllocationsQuery | None = None) -> T.ListAllocationsResponse:
         """
         List Allocations.
@@ -165,3 +187,25 @@ class AllocationsClient:
             requires_signature=False,
         )
         return cast(T.GetAllocationsInfoResponse, response)
+
+    def cancel0fns_order_placement(self, body: T.Cancel0fnsOrderPlacementRequest) -> T.Cancel0fnsOrderPlacementResponse:
+        """
+        Cancel an unfilled 0fns order placement.
+
+        Craft and broadcast an on-chain cancelOrder to cancel a 0fns OrderBook order placement that was not filled, reclaiming its escrow. The escrowed input token is returned to the wallet that funded the order.
+
+        Args:
+            body: Request body.
+
+        Returns:
+            T.Cancel0fnsOrderPlacementResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="POST",
+            path="/allocations/cancel-0fns-order-placement",
+            path_params={},
+            query_params=None,
+            body=body,
+            requires_signature=True,
+        )
+        return cast(T.Cancel0fnsOrderPlacementResponse, response)

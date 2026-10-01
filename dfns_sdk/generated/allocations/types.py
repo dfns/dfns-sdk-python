@@ -5,6 +5,36 @@ from typing import Any, Literal, TypedDict
 from typing_extensions import NotRequired
 
 
+class CreateAllocationQuoteRequest(TypedDict, total=False):
+    """createAllocationQuote request body."""
+
+    wallet_id: str
+    protocol: Literal["0fns"]
+    kind: Literal["Deposit", "Withdraw"]
+    source_asset: dict[str, Any]
+    target_asset: dict[str, Any]
+
+
+class CreateAllocationQuoteResponse(TypedDict, total=False):
+    """createAllocationQuote response."""
+
+    wallet_id: str
+    protocol: Literal[
+        "0fns",
+        "SkySusds",
+        "GauntletUsdcPrime",
+        "SteakhouseUsdt",
+        "GauntletUsdcPrimeBase",
+        "SteakhouseUsdcBase",
+        "SentoraPyusdMain",
+    ]
+    kind: Literal["Deposit", "Withdraw"]
+    source_asset: dict[str, Any]
+    target_asset: dict[str, Any]
+    est_fill_time: int
+    date_created: str
+
+
 class ListAllocationsResponse(TypedDict, total=False):
     """listAllocations response."""
 
@@ -106,3 +136,17 @@ class GetAllocationsInfoResponse(TypedDict, total=False):
     gauntlet_usdc_prime_base: NotRequired[dict[str, Any]]
     steakhouse_usdc_base: NotRequired[dict[str, Any]]
     sentora_pyusd_main: NotRequired[dict[str, Any]]
+
+
+class Cancel0fnsOrderPlacementRequest(TypedDict, total=False):
+    """cancel0fnsOrderPlacement request body."""
+
+    allocation_action_id: str
+    external_id: NotRequired[str]
+    fee_sponsor_id: NotRequired[str]
+
+
+class Cancel0fnsOrderPlacementResponse(TypedDict, total=False):
+    """cancel0fnsOrderPlacement response."""
+
+    transaction_id: str
