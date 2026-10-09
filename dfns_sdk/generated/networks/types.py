@@ -44,6 +44,8 @@ class EstimateFeesQuery(TypedDict, total=False):
         "FlowEvmTestnet",
         "Ink",
         "InkSepolia",
+        "Monad",
+        "MonadTestnet",
         "Optimism",
         "OptimismSepolia",
         "Plasma",
@@ -149,3 +151,15 @@ class CreateCantonValidatorResponse(TypedDict, total=False):
     kind: Literal["Shared", "Custom"]
     date_created: str
     party_hint: str
+
+
+class ReindexTransactionRequest(TypedDict, total=False):
+    """reindexTransaction request body."""
+
+    tx_hash: str
+
+
+class ReindexTransactionResponse(TypedDict, total=False):
+    """reindexTransaction response."""
+
+    success: Literal[True]

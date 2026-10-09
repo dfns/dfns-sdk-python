@@ -77,6 +77,8 @@ class CreateVaultAddressRequest(TypedDict, total=False):
         "FlowEvmTestnet",
         "Ink",
         "InkSepolia",
+        "Monad",
+        "MonadTestnet",
         "Optimism",
         "OptimismSepolia",
         "Plasma",
@@ -164,6 +166,8 @@ class CreateVaultLockRequest(TypedDict, total=False):
         "FlowEvmTestnet",
         "Ink",
         "InkSepolia",
+        "Monad",
+        "MonadTestnet",
         "Optimism",
         "OptimismSepolia",
         "Plasma",
@@ -253,6 +257,8 @@ class CreateVaultTransferRequest(TypedDict, total=False):
         "FlowEvmTestnet",
         "Ink",
         "InkSepolia",
+        "Monad",
+        "MonadTestnet",
         "Optimism",
         "OptimismSepolia",
         "Plasma",
@@ -404,6 +410,155 @@ class ListVaultBalancesQuery(TypedDict, total=False):
     kind: NotRequired[Literal["Available", "Outgoing", "Fee", "Incoming", "Locked", "Quarantined"]]
     network: NotRequired[str]
     tid: NotRequired[str]
+
+
+class ListVaultHistoryResponse(TypedDict, total=False):
+    """listVaultHistory response."""
+
+    items: list[dict[str, Any]]
+    next_page_token: NotRequired[str]
+
+
+class ListVaultHistoryQuery(TypedDict, total=False):
+    """listVaultHistory query parameters."""
+
+    limit: NotRequired[int]
+    pagination_token: NotRequired[str]
+    network: NotRequired[
+        Literal[
+            "ArbitrumOne",
+            "ArbitrumSepolia",
+            "Arc",
+            "ArcTestnet",
+            "Areum",
+            "AvalancheC",
+            "AvalancheCFuji",
+            "Base",
+            "BaseSepolia",
+            "Berachain",
+            "BerachainBepolia",
+            "Bitcoin",
+            "BitcoinSignet",
+            "BitcoinTestnet4",
+            "Bob",
+            "BobSepolia",
+            "Bsc",
+            "BscTestnet",
+            "Celo",
+            "CeloSepolia",
+            "Codex",
+            "CodexSepolia",
+            "Ethereum",
+            "EthereumClassic",
+            "EthereumClassicMordor",
+            "EthereumSepolia",
+            "EthereumHoodi",
+            "FlareC",
+            "FlareCCoston2",
+            "FlowEvm",
+            "FlowEvmTestnet",
+            "Ink",
+            "InkSepolia",
+            "Monad",
+            "MonadTestnet",
+            "Optimism",
+            "OptimismSepolia",
+            "Plasma",
+            "PlasmaTestnet",
+            "Plume",
+            "PlumeSepolia",
+            "Polygon",
+            "PolygonAmoy",
+            "Rayls",
+            "RaylsTestnet",
+            "Robinhood",
+            "RobinhoodSepolia",
+            "SeiAtlantic2",
+            "SeiPacific1",
+            "Solana",
+            "SolanaDevnet",
+            "Sonic",
+            "SonicTestnet",
+            "Tempo",
+            "TempoModerato",
+            "Tsc",
+            "TscTestnet1",
+            "Xdc",
+            "XdcApothem",
+            "XLayer",
+            "XLayerSepolia",
+        ]
+        | list[
+            Literal[
+                "ArbitrumOne",
+                "ArbitrumSepolia",
+                "Arc",
+                "ArcTestnet",
+                "Areum",
+                "AvalancheC",
+                "AvalancheCFuji",
+                "Base",
+                "BaseSepolia",
+                "Berachain",
+                "BerachainBepolia",
+                "Bitcoin",
+                "BitcoinSignet",
+                "BitcoinTestnet4",
+                "Bob",
+                "BobSepolia",
+                "Bsc",
+                "BscTestnet",
+                "Celo",
+                "CeloSepolia",
+                "Codex",
+                "CodexSepolia",
+                "Ethereum",
+                "EthereumClassic",
+                "EthereumClassicMordor",
+                "EthereumSepolia",
+                "EthereumHoodi",
+                "FlareC",
+                "FlareCCoston2",
+                "FlowEvm",
+                "FlowEvmTestnet",
+                "Ink",
+                "InkSepolia",
+                "Monad",
+                "MonadTestnet",
+                "Optimism",
+                "OptimismSepolia",
+                "Plasma",
+                "PlasmaTestnet",
+                "Plume",
+                "PlumeSepolia",
+                "Polygon",
+                "PolygonAmoy",
+                "Rayls",
+                "RaylsTestnet",
+                "Robinhood",
+                "RobinhoodSepolia",
+                "SeiAtlantic2",
+                "SeiPacific1",
+                "Solana",
+                "SolanaDevnet",
+                "Sonic",
+                "SonicTestnet",
+                "Tempo",
+                "TempoModerato",
+                "Tsc",
+                "TscTestnet1",
+                "Xdc",
+                "XdcApothem",
+                "XLayer",
+                "XLayerSepolia",
+            ]
+        ]
+    ]
+    tid: NotRequired[str | list[str]]
+    kind: NotRequired[
+        Literal["IncomingTransfer", "OutgoingTransfer", "LockCreated", "LockDeleted"]
+        | list[Literal["IncomingTransfer", "OutgoingTransfer", "LockCreated", "LockDeleted"]]
+    ]
 
 
 class ListVaultQuarantinesResponse(TypedDict, total=False):

@@ -48,6 +48,16 @@ class ListPoliciesQuery(TypedDict, total=False):
     status: NotRequired[Literal["Active", "Archived"]]
 
 
+class GetSumsubTravelRulePublicKeyResponse(TypedDict, total=False):
+    """getSumsubTravelRulePublicKey response."""
+
+    kty: Literal["RSA"]
+    kid: str
+    n: str
+    e: str
+    use: NotRequired[str]
+
+
 class GetApprovalResponse(TypedDict, total=False):
     """getApproval response."""
 

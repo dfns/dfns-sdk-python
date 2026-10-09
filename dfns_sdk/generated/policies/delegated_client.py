@@ -272,6 +272,25 @@ class DelegatedPoliciesClient:
         )
         return cast(dict[str, Any], response)
 
+    def get_sumsub_travel_rule_public_key(self) -> T.GetSumsubTravelRulePublicKeyResponse:
+        """
+        Get Sumsub Travel Rule public key.
+
+        Retrieve the RSA public key (JWK, RFC 7517) of the org's Sumsub Travel Rule integration. Use it to JWE-encrypt (RSA-OAEP-256 / A256GCM) the IVMS101 payload client-side before submitting a transfer screened by a Sumsub Travel Rule policy. Requires Travel Rule to be enabled for the tenant and an activated Sumsub integration on the org.
+
+        Returns:
+            T.GetSumsubTravelRulePublicKeyResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="GET",
+            path="/v2/policies/travel-rule/sumsub/public-key",
+            path_params={},
+            query_params=None,
+            body=None,
+            requires_signature=False,
+        )
+        return cast(T.GetSumsubTravelRulePublicKeyResponse, response)
+
     def get_approval(self, approval_id: str) -> T.GetApprovalResponse:
         """
         Get Approval.

@@ -448,6 +448,31 @@ class DelegatedVaultsClient:
         )
         return cast(T.ListVaultBalancesResponse, response)
 
+    def list_vault_history(
+        self, vault_id: str, query: T.ListVaultHistoryQuery | None = None
+    ) -> T.ListVaultHistoryResponse:
+        """
+        List Vault History.
+
+        Lists a vault's history, most recent first: one item per incoming or outgoing transfer, carrying its current status, and one per lock creation or deletion.
+
+        Args:
+            vault_id: Vault id.
+            query: Query parameters.
+
+        Returns:
+            T.ListVaultHistoryResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="GET",
+            path="/vaults/{vaultId}/history",
+            path_params={"vaultId": vault_id},
+            query_params=query,
+            body=None,
+            requires_signature=False,
+        )
+        return cast(T.ListVaultHistoryResponse, response)
+
     def list_vault_quarantines(
         self, vault_id: str, query: T.ListVaultQuarantinesQuery | None = None
     ) -> T.ListVaultQuarantinesResponse:
