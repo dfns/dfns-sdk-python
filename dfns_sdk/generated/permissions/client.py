@@ -16,16 +16,17 @@ class PermissionsClient:
 
     def archive_permission(self, permission_id: str, body: T.ArchivePermissionRequest) -> T.ArchivePermissionResponse:
         """
-        Archive Permission.
+                Archive Permission.
 
-        Archives or unarchives a permission (role). Archived permissions are effectively soft-deleted.
+                @deprecated in favor of "deletePermission".
+        Deletes a permission (aka "Role").
 
-        Args:
-            permission_id: ID of the permission (also referred to as "role" in the dashboard).
-            body: Request body.
+                Args:
+                    permission_id: ID of the permission (also referred to as "role" in the dashboard).
+                    body: Request body.
 
-        Returns:
-            T.ArchivePermissionResponse: The API response.
+                Returns:
+                    T.ArchivePermissionResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="PUT",
@@ -36,6 +37,73 @@ class PermissionsClient:
             requires_signature=True,
         )
         return cast(T.ArchivePermissionResponse, response)
+
+    def get_permission(self, permission_id: str) -> T.GetPermissionResponse:
+        """
+        Get Permission.
+
+        Retrieves a permission (role) by ID, including any pending change request.
+
+        Args:
+            permission_id: ID of the permission (also referred to as "role" in the dashboard).
+
+        Returns:
+            T.GetPermissionResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="GET",
+            path="/permissions/{permissionId}",
+            path_params={"permissionId": permission_id},
+            query_params=None,
+            body=None,
+            requires_signature=False,
+        )
+        return cast(T.GetPermissionResponse, response)
+
+    def update_permission(self, permission_id: str, body: T.UpdatePermissionRequest) -> T.UpdatePermissionResponse:
+        """
+        Update Permission.
+
+        Updates the name or operations of an existing permission (role).
+
+        Args:
+            permission_id: ID of the permission (also referred to as "role" in the dashboard).
+            body: Request body.
+
+        Returns:
+            T.UpdatePermissionResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="PUT",
+            path="/permissions/{permissionId}",
+            path_params={"permissionId": permission_id},
+            query_params=None,
+            body=body,
+            requires_signature=True,
+        )
+        return cast(T.UpdatePermissionResponse, response)
+
+    def delete_permission(self, permission_id: str) -> T.DeletePermissionResponse:
+        """
+        Delete Permission.
+
+        Deletes a permission (aka "Role").
+
+        Args:
+            permission_id: ID of the permission (also referred to as "role" in the dashboard).
+
+        Returns:
+            T.DeletePermissionResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="DELETE",
+            path="/permissions/{permissionId}",
+            path_params={"permissionId": permission_id},
+            query_params=None,
+            body=None,
+            requires_signature=True,
+        )
+        return cast(T.DeletePermissionResponse, response)
 
     def list_assignments(
         self, permission_id: str, query: T.ListAssignmentsQuery | None = None
@@ -157,48 +225,3 @@ class PermissionsClient:
             body=None,
             requires_signature=True,
         )
-
-    def get_permission(self, permission_id: str) -> T.GetPermissionResponse:
-        """
-        Get Permission.
-
-        Retrieves a permission (role) by ID, including any pending change request.
-
-        Args:
-            permission_id: ID of the permission (also referred to as "role" in the dashboard).
-
-        Returns:
-            T.GetPermissionResponse: The API response.
-        """  # noqa: E501
-        response = self._http.request(
-            method="GET",
-            path="/permissions/{permissionId}",
-            path_params={"permissionId": permission_id},
-            query_params=None,
-            body=None,
-            requires_signature=False,
-        )
-        return cast(T.GetPermissionResponse, response)
-
-    def update_permission(self, permission_id: str, body: T.UpdatePermissionRequest) -> T.UpdatePermissionResponse:
-        """
-        Update Permission.
-
-        Updates the name or operations of an existing permission (role).
-
-        Args:
-            permission_id: ID of the permission (also referred to as "role" in the dashboard).
-            body: Request body.
-
-        Returns:
-            T.UpdatePermissionResponse: The API response.
-        """  # noqa: E501
-        response = self._http.request(
-            method="PUT",
-            path="/permissions/{permissionId}",
-            path_params={"permissionId": permission_id},
-            query_params=None,
-            body=body,
-            requires_signature=True,
-        )
-        return cast(T.UpdatePermissionResponse, response)

@@ -199,3 +199,30 @@ class NetworksClient:
             requires_signature=True,
         )
         return cast(T.CreateCantonValidatorResponse, response)
+
+    def reindex_transaction(self, network: str, body: T.ReindexTransactionRequest) -> T.ReindexTransactionResponse:
+        """
+              Reindex Transaction.
+
+              Re-index a finalized transaction that is missing from your wallets' history. A transaction that is already indexed is not processed again.
+
+        <Note>
+        Limited to 10 requests per organization per 10 minutes.
+        </Note>
+
+              Args:
+                  network: Network name formatted in kebab case
+                  body: Request body.
+
+              Returns:
+                  T.ReindexTransactionResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="POST",
+            path="/networks/{network}/transactions/reindex",
+            path_params={"network": network},
+            query_params=None,
+            body=body,
+            requires_signature=True,
+        )
+        return cast(T.ReindexTransactionResponse, response)

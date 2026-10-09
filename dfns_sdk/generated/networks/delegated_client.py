@@ -303,3 +303,56 @@ class DelegatedNetworksClient:
             user_action=user_action_token,
         )
         return cast(T.CreateCantonValidatorResponse, response)
+
+    def reindex_transaction_init(self, network: str, body: T.ReindexTransactionRequest) -> UserActionChallengeResponse:
+        """
+        Initialize Reindex Transaction.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+            network: Network name formatted in kebab case
+            body: Request body.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """  # noqa: E501
+        path = "/networks/{network}/transactions/reindex"
+        path = path.replace("{network}", str(network))
+        payload = json.dumps(body, separators=(",", ":")) if body else ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="POST",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def reindex_transaction_complete(
+        self, network: str, body: T.ReindexTransactionRequest, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.ReindexTransactionResponse:
+        """
+        Complete Reindex Transaction.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+            network: Network name formatted in kebab case
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
+
+        Returns:
+            T.ReindexTransactionResponse: The API response.
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+        user_action_token = user_action_result["userAction"]
+
+        response = self._http.request_with_user_action(
+            method="POST",
+            path="/networks/{network}/transactions/reindex",
+            path_params={"network": network},
+            query_params=None,
+            body=body,
+            user_action=user_action_token,
+        )
+        return cast(T.ReindexTransactionResponse, response)

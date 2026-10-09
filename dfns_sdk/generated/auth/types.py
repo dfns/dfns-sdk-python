@@ -207,6 +207,8 @@ class DelegatedLoginResponse(TypedDict, total=False):
     """delegatedLogin response."""
 
     token: str
+    expiry: NotRequired[float]
+    identity: NotRequired[dict[str, Any]]
 
 
 class LoginRequest(TypedDict, total=False):
@@ -276,6 +278,8 @@ class SocialLoginResponse(TypedDict, total=False):
     """socialLogin response."""
 
     token: str
+    expiry: NotRequired[float]
+    identity: NotRequired[dict[str, Any]]
 
 
 class SsoLoginRequest(TypedDict, total=False):
@@ -289,6 +293,8 @@ class SsoLoginResponse(TypedDict, total=False):
     """ssoLogin response."""
 
     token: str
+    expiry: NotRequired[float]
+    identity: NotRequired[dict[str, Any]]
 
 
 class SsoLoginInitRequest(TypedDict, total=False):
