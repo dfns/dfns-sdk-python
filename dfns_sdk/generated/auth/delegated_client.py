@@ -653,17 +653,39 @@ class DelegatedAuthClient:
         )
         return cast(T.LogoutResponse, response)
 
-    def oidc_login(self, body: T.OidcLoginRequest) -> dict[str, Any]:
+    def oidc_login_credentials(self, body: dict[str, Any]) -> T.OidcLoginCredentialsResponse:
         """
-        Complete OIDC Login.
+        Oidc Login Credentials.
 
-        Completes the OIDC login process by exchanging the authorization code obtained from the identity provider. If the verified user has no active first-factor credential yet, it returns a registration challenge to complete via [Complete User Registration](/api-reference/auth/complete-user-registration); otherwise it returns the user's authentication token.
+        Registers the first credential for an OIDC-authenticated user, bootstrapping from the credential challenge issued by [OIDC Login](/api-reference/auth/oidc-login). Rejected if the user already has an active first-factor credential; use [Create Credential](/api-reference/auth/create-credential) in that case.
 
         Args:
             body: Request body.
 
         Returns:
-            dict[str, Any]: The API response.
+            T.OidcLoginCredentialsResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="POST",
+            path="/auth/login/oidc/credentials",
+            path_params={},
+            query_params=None,
+            body=body,
+            requires_signature=False,
+        )
+        return cast(T.OidcLoginCredentialsResponse, response)
+
+    def oidc_login(self, body: T.OidcLoginRequest) -> T.OidcLoginResponse:
+        """
+        Complete OIDC Login.
+
+        Completes the OIDC login process by exchanging the authorization code obtained from the identity provider. Returns the user's authentication token; when the verified user has no active first-factor credential yet, the response also includes a credential challenge so the client can register one before performing any user-action-signed operation.
+
+        Args:
+            body: Request body.
+
+        Returns:
+            T.OidcLoginResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -673,10 +695,10 @@ class DelegatedAuthClient:
             body=body,
             requires_signature=False,
         )
-        return cast(dict[str, Any], response)
+        return cast(T.OidcLoginResponse, response)
 
     @deprecated("Use oidc_login instead.")
-    def complete_oidc_login(self, body: T.OidcLoginRequest) -> dict[str, Any]:
+    def complete_oidc_login(self, body: T.OidcLoginRequest) -> T.OidcLoginResponse:
         """Deprecated: use oidc_login instead."""
         return self.oidc_login(body=body)
 
@@ -1779,6 +1801,109 @@ class DelegatedAuthClient:
             user_action=user_action_token,
         )
         return cast(T.DeactivateServiceAccountResponse, response)
+
+    def create_service_account_credential_init(
+        self, body: T.CreateServiceAccountCredentialRequest
+    ) -> UserActionChallengeResponse:
+        """
+        Initialize Create Service Account Credential.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+            body: Request body.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """  # noqa: E501
+        path = "/auth/service-accounts/credentials"
+        payload = json.dumps(body, separators=(",", ":")) if body else ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="POST",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def create_service_account_credential_complete(
+        self, body: T.CreateServiceAccountCredentialRequest, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.CreateServiceAccountCredentialResponse:
+        """
+        Complete Create Service Account Credential.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
+
+        Returns:
+            T.CreateServiceAccountCredentialResponse: The API response.
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+        user_action_token = user_action_result["userAction"]
+
+        response = self._http.request_with_user_action(
+            method="POST",
+            path="/auth/service-accounts/credentials",
+            path_params={},
+            query_params=None,
+            body=body,
+            user_action=user_action_token,
+        )
+        return cast(T.CreateServiceAccountCredentialResponse, response)
+
+    def delete_service_account_credential_init(self, credential_uuid: str) -> UserActionChallengeResponse:
+        """
+        Initialize Delete Service Account Credential.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+            credential_uuid: Path parameter.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """  # noqa: E501
+        path = "/auth/service-accounts/credentials/{credentialUuid}"
+        path = path.replace("{credentialUuid}", str(credential_uuid))
+        payload = ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="DELETE",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def delete_service_account_credential_complete(
+        self, credential_uuid: str, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.DeleteServiceAccountCredentialResponse:
+        """
+        Complete Delete Service Account Credential.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+            credential_uuid: Path parameter.
+            signed_challenge: The signed challenge from external signing.
+
+        Returns:
+            T.DeleteServiceAccountCredentialResponse: The API response.
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+        user_action_token = user_action_result["userAction"]
+
+        response = self._http.request_with_user_action(
+            method="DELETE",
+            path="/auth/service-accounts/credentials/{credentialUuid}",
+            path_params={"credentialUuid": credential_uuid},
+            query_params=None,
+            body=None,
+            user_action=user_action_token,
+        )
+        return cast(T.DeleteServiceAccountCredentialResponse, response)
 
     def activate_user_init(self, user_id: str) -> UserActionChallengeResponse:
         """

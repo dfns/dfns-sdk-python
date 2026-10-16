@@ -94,7 +94,7 @@ class ListCredentialsResponse(TypedDict, total=False):
 class CreateCredentialResponse(TypedDict, total=False):
     """createCredential response."""
 
-    kind: Literal["Fido2", "Key", "Password", "Totp", "RecoveryKey", "PasswordProtectedKey"]
+    kind: Literal["Fido2", "Key", "Password", "PasswordProtectedKey", "RecoveryKey", "SessionKey", "Totp"]
     credential_id: str
     credential_uuid: str
     date_created: str
@@ -108,7 +108,7 @@ class CreateCredentialResponse(TypedDict, total=False):
 class CreateCredentialChallengeRequest(TypedDict, total=False):
     """createCredentialChallenge request body."""
 
-    kind: Literal["Fido2", "Key", "RecoveryKey", "PasswordProtectedKey"]
+    kind: Literal["Fido2", "Key", "Password", "PasswordProtectedKey", "RecoveryKey", "Totp"]
 
 
 class ActivateCredentialRequest(TypedDict, total=False):
@@ -157,14 +157,14 @@ class CreateCredentialCodeResponse(TypedDict, total=False):
 class CreateCredentialChallengeWithCodeRequest(TypedDict, total=False):
     """createCredentialChallengeWithCode request body."""
 
-    credential_kind: Literal["Fido2", "Key", "Password", "Totp", "RecoveryKey", "PasswordProtectedKey"]
+    credential_kind: Literal["Fido2", "Key", "Password", "PasswordProtectedKey", "RecoveryKey", "Totp"]
     code: str
 
 
 class CreateCredentialWithCodeResponse(TypedDict, total=False):
     """createCredentialWithCode response."""
 
-    kind: Literal["Fido2", "Key", "Password", "Totp", "RecoveryKey", "PasswordProtectedKey"]
+    kind: Literal["Fido2", "Key", "Password", "PasswordProtectedKey", "RecoveryKey", "SessionKey", "Totp"]
     credential_id: str
     credential_uuid: str
     date_created: str
@@ -231,11 +231,34 @@ class LogoutResponse(TypedDict, total=False):
     message: str
 
 
+class OidcLoginCredentialsResponse(TypedDict, total=False):
+    """oidcLoginCredentials response."""
+
+    kind: Literal["Fido2", "Key", "Password", "PasswordProtectedKey", "RecoveryKey", "SessionKey", "Totp"]
+    credential_id: str
+    credential_uuid: str
+    date_created: str
+    is_active: bool
+    name: str
+    public_key: str
+    relying_party_id: str
+    origin: str
+
+
 class OidcLoginRequest(TypedDict, total=False):
     """oidcLogin request body."""
 
     code: str
     state: str
+
+
+class OidcLoginResponse(TypedDict, total=False):
+    """oidcLogin response."""
+
+    token: str
+    expiry: NotRequired[float]
+    identity: NotRequired[dict[str, Any]]
+    credential_challenge: NotRequired[dict[str, Any]]
 
 
 class OidcLoginInitRequest(TypedDict, total=False):
@@ -244,6 +267,7 @@ class OidcLoginInitRequest(TypedDict, total=False):
     org_id: NotRequired[str]
     tenant_id: NotRequired[str]
     redirect_uri: str
+    nonce: NotRequired[str]
 
 
 class OidcLoginInitResponse(TypedDict, total=False):
@@ -658,6 +682,7 @@ class CreateServiceAccountRequest(TypedDict, total=False):
     permission_id: NotRequired[str]
     external_id: NotRequired[str]
     days_valid: NotRequired[int]
+    federated_identity: NotRequired[dict[str, Any]]
 
 
 class CreateServiceAccountResponse(TypedDict, total=False):
@@ -721,6 +746,33 @@ class DeactivateServiceAccountResponse(TypedDict, total=False):
     access_tokens: list[dict[str, Any]]
 
 
+class CreateServiceAccountCredentialRequest(TypedDict, total=False):
+    """createServiceAccountCredential request body."""
+
+    public_key: str
+    name: NotRequired[str]
+
+
+class CreateServiceAccountCredentialResponse(TypedDict, total=False):
+    """createServiceAccountCredential response."""
+
+    kind: Literal["Fido2", "Key", "Password", "PasswordProtectedKey", "RecoveryKey", "SessionKey", "Totp"]
+    credential_id: str
+    credential_uuid: str
+    date_created: str
+    is_active: bool
+    name: str
+    public_key: str
+    relying_party_id: str
+    origin: str
+
+
+class DeleteServiceAccountCredentialResponse(TypedDict, total=False):
+    """deleteServiceAccountCredential response."""
+
+    pass
+
+
 class ActivateUserResponse(TypedDict, total=False):
     """activateUser response."""
 
@@ -729,6 +781,7 @@ class ActivateUserResponse(TypedDict, total=False):
     user_id: str
     kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
+    credential_id: NotRequired[str]
     org_id: NotRequired[str]
     tenant_id: NotRequired[str]
     permissions: NotRequired[list[str]]
@@ -747,6 +800,7 @@ class DeactivateUserResponse(TypedDict, total=False):
     user_id: str
     kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
+    credential_id: NotRequired[str]
     org_id: NotRequired[str]
     tenant_id: NotRequired[str]
     permissions: NotRequired[list[str]]
@@ -765,6 +819,7 @@ class GetUserResponse(TypedDict, total=False):
     user_id: str
     kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
+    credential_id: NotRequired[str]
     org_id: NotRequired[str]
     tenant_id: NotRequired[str]
     permissions: NotRequired[list[str]]
@@ -789,6 +844,7 @@ class UpdateUserResponse(TypedDict, total=False):
     user_id: str
     kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
+    credential_id: NotRequired[str]
     org_id: NotRequired[str]
     tenant_id: NotRequired[str]
     permissions: NotRequired[list[str]]
@@ -807,6 +863,7 @@ class DeleteUserResponse(TypedDict, total=False):
     user_id: str
     kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
+    credential_id: NotRequired[str]
     org_id: NotRequired[str]
     tenant_id: NotRequired[str]
     permissions: NotRequired[list[str]]
@@ -853,6 +910,7 @@ class CreateUserResponse(TypedDict, total=False):
     user_id: str
     kind: Literal["CustomerEmployee", "EndUser"]
     credential_uuid: str
+    credential_id: NotRequired[str]
     org_id: NotRequired[str]
     tenant_id: NotRequired[str]
     permissions: NotRequired[list[str]]
@@ -881,6 +939,9 @@ CompleteUserLoginRequest = LoginRequest
 
 # Deprecated: use OidcLoginRequest instead.
 CompleteOidcLoginRequest = OidcLoginRequest
+
+# Deprecated: use OidcLoginResponse instead.
+CompleteOidcLoginResponse = OidcLoginResponse
 
 # Deprecated: use OidcLoginInitRequest instead.
 InitiateOidcLoginRequest = OidcLoginInitRequest

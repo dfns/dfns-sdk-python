@@ -105,6 +105,9 @@ class UpdatePermissionRequest(TypedDict, total=False):
                 "Registry:ContractSchemas:Create",
                 "Registry:ContractSchemas:Read",
                 "Registry:ContractSchemas:Delete",
+                "Registry:VerifiedAssets:Create",
+                "Registry:VerifiedAssets:Read",
+                "Registry:VerifiedAssets:Delete",
                 "Stakes:Create",
                 "Stakes:Read",
                 "Stakes:Update",
@@ -349,6 +352,9 @@ class CreatePermissionRequest(TypedDict, total=False):
             "Registry:ContractSchemas:Create",
             "Registry:ContractSchemas:Read",
             "Registry:ContractSchemas:Delete",
+            "Registry:VerifiedAssets:Create",
+            "Registry:VerifiedAssets:Read",
+            "Registry:VerifiedAssets:Delete",
             "Stakes:Create",
             "Stakes:Read",
             "Stakes:Update",
@@ -478,7 +484,7 @@ class CreatePermissionResponse(TypedDict, total=False):
 class RevokePermissionQuery(TypedDict, total=False):
     """revokePermission query parameters."""
 
-    force: NotRequired[bool]
+    force: NotRequired[Any]
 
 
 # Deprecated: use ListAssignmentsResponse instead.
