@@ -22,6 +22,8 @@ classifiers = [
 ]
 dependencies = [
     "httpx>=0.25.0",
+    # httpx trusts certifi's CA bundle; 2026.10.19+ drops the compromised eMudhra (emSign) CAs
+    "certifi>=2026.10.19",
     "cryptography>=41.0.0",
     "typing_extensions>=4.5.0",
 ]
