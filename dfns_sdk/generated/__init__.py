@@ -15,6 +15,7 @@ from .policies import DelegatedPoliciesClient, PoliciesClient
 from .signers import DelegatedSignersClient, SignersClient
 from .staking import DelegatedStakingClient, StakingClient
 from .swaps import DelegatedSwapsClient, SwapsClient
+from .tenant import DelegatedTenantClient, TenantClient
 from .vaults import DelegatedVaultsClient, VaultsClient
 from .wallets import DelegatedWalletsClient, WalletsClient
 from .webhooks import DelegatedWebhooksClient, WebhooksClient
@@ -50,6 +51,8 @@ __all__ = [
     "DelegatedStakingClient",
     "SwapsClient",
     "DelegatedSwapsClient",
+    "TenantClient",
+    "DelegatedTenantClient",
     "VaultsClient",
     "DelegatedVaultsClient",
     "WalletsClient",

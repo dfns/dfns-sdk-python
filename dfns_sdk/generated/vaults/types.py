@@ -75,6 +75,8 @@ class CreateVaultAddressRequest(TypedDict, total=False):
         "FlareCCoston2",
         "FlowEvm",
         "FlowEvmTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "Monad",
@@ -164,6 +166,8 @@ class CreateVaultLockRequest(TypedDict, total=False):
         "FlareCCoston2",
         "FlowEvm",
         "FlowEvmTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "Monad",
@@ -255,6 +259,8 @@ class CreateVaultTransferRequest(TypedDict, total=False):
         "FlareCCoston2",
         "FlowEvm",
         "FlowEvmTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "Monad",
@@ -303,6 +309,7 @@ class CreateVaultTransferResponse(TypedDict, total=False):
     metadata: dict[str, Any]
     status: Literal["Pending", "Executing", "Broadcasted", "Confirmed", "Failed", "Rejected"]
     reason: NotRequired[str]
+    debug_trace: NotRequired[dict[str, Any]]
     tx_hash: NotRequired[str]
     fee: NotRequired[str]
     date_requested: str
@@ -457,6 +464,8 @@ class ListVaultHistoryQuery(TypedDict, total=False):
             "FlareCCoston2",
             "FlowEvm",
             "FlowEvmTestnet",
+            "HyperEvm",
+            "HyperEvmTestnet",
             "Ink",
             "InkSepolia",
             "Monad",
@@ -521,6 +530,8 @@ class ListVaultHistoryQuery(TypedDict, total=False):
                 "FlareCCoston2",
                 "FlowEvm",
                 "FlowEvmTestnet",
+                "HyperEvm",
+                "HyperEvmTestnet",
                 "Ink",
                 "InkSepolia",
                 "Monad",
@@ -660,6 +671,7 @@ class TransferVaultLockResponse(TypedDict, total=False):
     metadata: dict[str, Any]
     status: Literal["Pending", "Executing", "Broadcasted", "Confirmed", "Failed", "Rejected"]
     reason: NotRequired[str]
+    debug_trace: NotRequired[dict[str, Any]]
     tx_hash: NotRequired[str]
     fee: NotRequired[str]
     date_requested: str

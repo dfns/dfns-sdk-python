@@ -59,6 +59,8 @@ class AbortTransactionResponse(TypedDict, total=False):
         "FlowEvmTestnet",
         "Hedera",
         "HederaTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "InternetComputer",
@@ -130,6 +132,7 @@ class AbortTransactionResponse(TypedDict, total=False):
     request_body: dict[str, Any]
     status: Literal["Pending", "Executing", "Broadcasted", "Confirmed", "Failed", "Rejected"]
     reason: NotRequired[str]
+    debug_trace: NotRequired[dict[str, Any]]
     tx_hash: NotRequired[str]
     fee: NotRequired[str]
     approval_id: NotRequired[str]
@@ -153,6 +156,7 @@ class AbortTransferResponse(TypedDict, total=False):
     metadata: dict[str, Any]
     status: Literal["Pending", "Executing", "Broadcasted", "Confirmed", "Failed", "Rejected"]
     reason: NotRequired[str]
+    debug_trace: NotRequired[dict[str, Any]]
     tx_hash: NotRequired[str]
     fee: NotRequired[str]
     date_requested: str
@@ -220,6 +224,8 @@ class ActivateWalletResponse(TypedDict, total=False):
         "FlowEvmTestnet",
         "Hedera",
         "HederaTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "InternetComputer",
@@ -291,6 +297,7 @@ class ActivateWalletResponse(TypedDict, total=False):
     request_body: dict[str, Any]
     status: Literal["Pending", "Executing", "Broadcasted", "Confirmed", "Failed", "Rejected"]
     reason: NotRequired[str]
+    debug_trace: NotRequired[dict[str, Any]]
     tx_hash: NotRequired[str]
     fee: NotRequired[str]
     approval_id: NotRequired[str]
@@ -456,6 +463,8 @@ class SignAndBroadcastTransactionResponse(TypedDict, total=False):
         "FlowEvmTestnet",
         "Hedera",
         "HederaTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "InternetComputer",
@@ -527,6 +536,7 @@ class SignAndBroadcastTransactionResponse(TypedDict, total=False):
     request_body: dict[str, Any]
     status: Literal["Pending", "Executing", "Broadcasted", "Confirmed", "Failed", "Rejected"]
     reason: NotRequired[str]
+    debug_trace: NotRequired[dict[str, Any]]
     tx_hash: NotRequired[str]
     fee: NotRequired[str]
     approval_id: NotRequired[str]
@@ -593,6 +603,8 @@ class CancelTransactionResponse(TypedDict, total=False):
         "FlowEvmTestnet",
         "Hedera",
         "HederaTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "InternetComputer",
@@ -664,6 +676,7 @@ class CancelTransactionResponse(TypedDict, total=False):
     request_body: dict[str, Any]
     status: Literal["Pending", "Executing", "Broadcasted", "Confirmed", "Failed", "Rejected"]
     reason: NotRequired[str]
+    debug_trace: NotRequired[dict[str, Any]]
     tx_hash: NotRequired[str]
     fee: NotRequired[str]
     approval_id: NotRequired[str]
@@ -730,6 +743,8 @@ class CancelTransferResponse(TypedDict, total=False):
         "FlowEvmTestnet",
         "Hedera",
         "HederaTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "InternetComputer",
@@ -801,6 +816,7 @@ class CancelTransferResponse(TypedDict, total=False):
     request_body: dict[str, Any]
     status: Literal["Pending", "Executing", "Broadcasted", "Confirmed", "Failed", "Rejected"]
     reason: NotRequired[str]
+    debug_trace: NotRequired[dict[str, Any]]
     tx_hash: NotRequired[str]
     fee: NotRequired[str]
     approval_id: NotRequired[str]
@@ -875,6 +891,8 @@ class SpeedUpTransactionResponse(TypedDict, total=False):
         "FlowEvmTestnet",
         "Hedera",
         "HederaTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "InternetComputer",
@@ -946,6 +964,7 @@ class SpeedUpTransactionResponse(TypedDict, total=False):
     request_body: dict[str, Any]
     status: Literal["Pending", "Executing", "Broadcasted", "Confirmed", "Failed", "Rejected"]
     reason: NotRequired[str]
+    debug_trace: NotRequired[dict[str, Any]]
     tx_hash: NotRequired[str]
     fee: NotRequired[str]
     approval_id: NotRequired[str]
@@ -1012,6 +1031,8 @@ class SpeedUpTransferResponse(TypedDict, total=False):
         "FlowEvmTestnet",
         "Hedera",
         "HederaTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "InternetComputer",
@@ -1083,6 +1104,7 @@ class SpeedUpTransferResponse(TypedDict, total=False):
     request_body: dict[str, Any]
     status: Literal["Pending", "Executing", "Broadcasted", "Confirmed", "Failed", "Rejected"]
     reason: NotRequired[str]
+    debug_trace: NotRequired[dict[str, Any]]
     tx_hash: NotRequired[str]
     fee: NotRequired[str]
     approval_id: NotRequired[str]
@@ -1164,6 +1186,8 @@ class CreateWalletRequest(TypedDict, total=False):
         "FlowEvmTestnet",
         "Hedera",
         "HederaTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "InternetComputer",
@@ -1292,6 +1316,8 @@ class CreateWalletResponse(TypedDict, total=False):
         "FlowEvmTestnet",
         "Hedera",
         "HederaTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "InternetComputer",
@@ -1427,6 +1453,8 @@ class GetTransactionResponse(TypedDict, total=False):
         "FlowEvmTestnet",
         "Hedera",
         "HederaTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "InternetComputer",
@@ -1498,6 +1526,7 @@ class GetTransactionResponse(TypedDict, total=False):
     request_body: dict[str, Any]
     status: Literal["Pending", "Executing", "Broadcasted", "Confirmed", "Failed", "Rejected"]
     reason: NotRequired[str]
+    debug_trace: NotRequired[dict[str, Any]]
     tx_hash: NotRequired[str]
     fee: NotRequired[str]
     approval_id: NotRequired[str]
@@ -1521,6 +1550,7 @@ class GetTransferResponse(TypedDict, total=False):
     metadata: dict[str, Any]
     status: Literal["Pending", "Executing", "Broadcasted", "Confirmed", "Failed", "Rejected"]
     reason: NotRequired[str]
+    debug_trace: NotRequired[dict[str, Any]]
     tx_hash: NotRequired[str]
     fee: NotRequired[str]
     date_requested: str
@@ -1587,6 +1617,8 @@ class GetWalletResponse(TypedDict, total=False):
         "FlowEvmTestnet",
         "Hedera",
         "HederaTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "InternetComputer",
@@ -1728,6 +1760,8 @@ class UpdateWalletResponse(TypedDict, total=False):
         "FlowEvmTestnet",
         "Hedera",
         "HederaTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "InternetComputer",
@@ -1862,6 +1896,8 @@ class GetWalletAssetsResponse(TypedDict, total=False):
         "FlowEvmTestnet",
         "Hedera",
         "HederaTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "InternetComputer",
@@ -1994,6 +2030,8 @@ class GetWalletHistoryResponse(TypedDict, total=False):
         "FlowEvmTestnet",
         "Hedera",
         "HederaTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "InternetComputer",
@@ -2157,6 +2195,8 @@ class GetWalletNftsResponse(TypedDict, total=False):
         "FlowEvmTestnet",
         "Hedera",
         "HederaTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "InternetComputer",
@@ -2284,6 +2324,8 @@ class ImportWalletRequest(TypedDict, total=False):
         "FlowEvmTestnet",
         "Hedera",
         "HederaTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "InternetComputer",
@@ -2407,6 +2449,8 @@ class ImportWalletResponse(TypedDict, total=False):
         "FlowEvmTestnet",
         "Hedera",
         "HederaTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "InternetComputer",
@@ -2514,6 +2558,7 @@ class TransferAssetResponse(TypedDict, total=False):
     metadata: dict[str, Any]
     status: Literal["Pending", "Executing", "Broadcasted", "Confirmed", "Failed", "Rejected"]
     reason: NotRequired[str]
+    debug_trace: NotRequired[dict[str, Any]]
     tx_hash: NotRequired[str]
     fee: NotRequired[str]
     date_requested: str
@@ -2606,6 +2651,8 @@ class GetOfferResponse(TypedDict, total=False):
         "FlowEvmTestnet",
         "Hedera",
         "HederaTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "InternetComputer",
@@ -2781,6 +2828,8 @@ class AcceptOfferResponse(TypedDict, total=False):
         "FlowEvmTestnet",
         "Hedera",
         "HederaTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "InternetComputer",
@@ -2942,6 +2991,8 @@ class RejectOfferResponse(TypedDict, total=False):
         "FlowEvmTestnet",
         "Hedera",
         "HederaTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "InternetComputer",

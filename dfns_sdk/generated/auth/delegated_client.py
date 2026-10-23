@@ -657,7 +657,7 @@ class DelegatedAuthClient:
         """
         Oidc Login Credentials.
 
-        Registers the first credential for an OIDC-authenticated user, bootstrapping from the credential challenge issued by [OIDC Login](/api-reference/auth/oidc-login). Rejected if the user already has an active first-factor credential; use [Create Credential](/api-reference/auth/create-credential) in that case.
+        Registers the first credential for an OIDC-authenticated user, bootstrapping from the credential challenge issued by [Complete OIDC Login](/api-reference/auth/complete-oidc-login). Rejected if the user already has an active first-factor credential; use [Create Credential](/api-reference/auth/create-credential) in that case.
 
         Args:
             body: Request body.
@@ -1241,15 +1241,17 @@ class DelegatedAuthClient:
 
     def create_recovery_challenge(self, body: T.CreateRecoveryChallengeRequest) -> T.CreateRecoveryChallengeResponse:
         """
-        Create Recovery Challenge.
+                Create Recovery Challenge.
 
-        Starts a user recovery session, returning a challenge that will be used to verify the user's identity.
+                Starts a user recovery session from the recovery code received by email. It returns a challenge that will be used to verify the user's identity.
 
-        Args:
-            body: Request body.
+        <Note>This endpoint is for users that registered through the "Direct" registration flow. For users registered through the "Delegated" registration flow, the endpoint [Create Delegated Recovery Challenge](https://docs.dfns.co/api-reference/auth/create-delegated-recovery-challenge) should be used.</Note>
 
-        Returns:
-            T.CreateRecoveryChallengeResponse: The API response.
+                Args:
+                    body: Request body.
+
+                Returns:
+                    T.CreateRecoveryChallengeResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -1263,15 +1265,17 @@ class DelegatedAuthClient:
 
     def send_recovery_code(self, body: T.SendRecoveryCodeRequest) -> T.SendRecoveryCodeResponse:
         """
-        Send Recovery Code Email.
+              Send Recovery Code Email.
 
-        Send the user a recovery verification code. This code is used as a second factor to verify the user initiated the recovery request.
+              Send the user a recovery verification code. This code is used as a second factor to verify the user initiated the recovery request.
 
-        Args:
-            body: Request body.
+        <Note>This endpoint is for users that registered through the "Direct" registration flow. For users registered through the "Delegated" registration flow, the endpoint [Create Delegated Recovery Challenge](https://docs.dfns.co/api-reference/auth/create-delegated-recovery-challenge) should be used.</Note>
 
-        Returns:
-            T.SendRecoveryCodeResponse: The API response.
+              Args:
+                  body: Request body.
+
+              Returns:
+                  T.SendRecoveryCodeResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -1344,15 +1348,19 @@ class DelegatedAuthClient:
         self, body: T.CreateRegistrationChallengeRequest
     ) -> T.CreateRegistrationChallengeResponse:
         """
-        Create Registration Challenge.
+                Create Registration Challenge.
 
-        Starts a user registration session. It returns a challenge that will need to be signed by a passkey and used to perform the step [Complete User Registration](/api-reference/auth/complete-user-registration)
+                Starts a user registration session from the registration code received by email. It returns a challenge that will need to be signed by a passkey and used to perform the step [Complete User Registration](/api-reference/auth/complete-user-registration). Either `orgId` or `tenantId` needs to be specified.
 
-        Args:
-            body: Request body.
+        <Note>
+        This endpoint is for users previously created through [Create User](https://docs.dfns.co/api-reference/auth/create-user) endpoint with `registration: "Direct"`, and received a registration code by email.
+        </Note>
 
-        Returns:
-            T.CreateRegistrationChallengeResponse: The API response.
+                Args:
+                    body: Request body.
+
+                Returns:
+                    T.CreateRegistrationChallengeResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -1466,15 +1474,19 @@ class DelegatedAuthClient:
 
     def resend_registration_code(self, body: T.ResendRegistrationCodeRequest) -> T.ResendRegistrationCodeResponse:
         """
-        Resend Registration Code.
+                Resend Registration Code.
 
-        Sends the user a new registration code. The previous registration code will be marked invalid. If the user has already completed their registration no action will be taken.
+                Sends the user a new registration code. The previous registration code will be marked invalid. If the user has already completed their registration no action will be taken.
 
-        Args:
-            body: Request body.
+        <Note>
+        This endpoint is for users previously created through [Create User](https://docs.dfns.co/api-reference/auth/create-user) endpoint with `registration: "Direct"`, and received a registration code by email.
+        </Note>
 
-        Returns:
-            T.ResendRegistrationCodeResponse: The API response.
+                Args:
+                    body: Request body.
+
+                Returns:
+                    T.ResendRegistrationCodeResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="PUT",
@@ -1956,7 +1968,7 @@ class DelegatedAuthClient:
         )
         return cast(T.ActivateUserResponse, response)
 
-    def deactivate_user_init(self, user_id: str) -> UserActionChallengeResponse:
+    def deactivate_user_init(self, user_id: str, body: T.DeactivateUserRequest) -> UserActionChallengeResponse:
         """
         Initialize Deactivate User.
 
@@ -1964,13 +1976,14 @@ class DelegatedAuthClient:
 
         Args:
             user_id: User id.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
         """  # noqa: E501
         path = "/auth/users/{userId}/deactivate"
         path = path.replace("{userId}", str(user_id))
-        payload = ""
+        payload = json.dumps(body, separators=(",", ":")) if body else ""
 
         return BaseAuthApi.create_user_action_challenge(
             self._http,
@@ -1980,7 +1993,7 @@ class DelegatedAuthClient:
         )
 
     def deactivate_user_complete(
-        self, user_id: str, signed_challenge: SignUserActionChallengeRequest
+        self, user_id: str, body: T.DeactivateUserRequest, signed_challenge: SignUserActionChallengeRequest
     ) -> T.DeactivateUserResponse:
         """
         Complete Deactivate User.
@@ -1989,6 +2002,7 @@ class DelegatedAuthClient:
 
         Args:
             user_id: User id.
+            body: Request body.
             signed_challenge: The signed challenge from external signing.
 
         Returns:
@@ -2002,7 +2016,7 @@ class DelegatedAuthClient:
             path="/auth/users/{userId}/deactivate",
             path_params={"userId": user_id},
             query_params=None,
-            body=None,
+            body=body,
             user_action=user_action_token,
         )
         return cast(T.DeactivateUserResponse, response)
@@ -2254,3 +2268,339 @@ class DelegatedAuthClient:
             user_action=user_action_token,
         )
         return cast(T.InviteTenantUserResponse, response)
+
+    def list_user_groups(self, query: T.ListUserGroupsQuery | None = None) -> T.ListUserGroupsResponse:
+        """
+        List User Groups.
+
+        List the user groups in the caller's org.
+
+        Args:
+            query: Query parameters.
+
+        Returns:
+            T.ListUserGroupsResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="GET",
+            path="/auth/user-groups",
+            path_params={},
+            query_params=query,
+            body=None,
+            requires_signature=False,
+        )
+        return cast(T.ListUserGroupsResponse, response)
+
+    def create_user_group_init(self, body: T.CreateUserGroupRequest) -> UserActionChallengeResponse:
+        """
+        Initialize Create User Group.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+            body: Request body.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """  # noqa: E501
+        path = "/auth/user-groups"
+        payload = json.dumps(body, separators=(",", ":")) if body else ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="POST",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def create_user_group_complete(
+        self, body: T.CreateUserGroupRequest, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.CreateUserGroupResponse:
+        """
+        Complete Create User Group.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
+
+        Returns:
+            T.CreateUserGroupResponse: The API response.
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+        user_action_token = user_action_result["userAction"]
+
+        response = self._http.request_with_user_action(
+            method="POST",
+            path="/auth/user-groups",
+            path_params={},
+            query_params=None,
+            body=body,
+            user_action=user_action_token,
+        )
+        return cast(T.CreateUserGroupResponse, response)
+
+    def get_user_group(self, user_group_id: str) -> T.GetUserGroupResponse:
+        """
+        Get User Group.
+
+        Get a specific user group.
+
+        Args:
+            user_group_id: User group id.
+
+        Returns:
+            T.GetUserGroupResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="GET",
+            path="/auth/user-groups/{userGroupId}",
+            path_params={"userGroupId": user_group_id},
+            query_params=None,
+            body=None,
+            requires_signature=False,
+        )
+        return cast(T.GetUserGroupResponse, response)
+
+    def update_user_group_init(self, user_group_id: str, body: T.UpdateUserGroupRequest) -> UserActionChallengeResponse:
+        """
+        Initialize Update User Group.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+            user_group_id: User group id.
+            body: Request body.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """  # noqa: E501
+        path = "/auth/user-groups/{userGroupId}"
+        path = path.replace("{userGroupId}", str(user_group_id))
+        payload = json.dumps(body, separators=(",", ":")) if body else ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="PUT",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def update_user_group_complete(
+        self, user_group_id: str, body: T.UpdateUserGroupRequest, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.UpdateUserGroupResponse:
+        """
+        Complete Update User Group.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+            user_group_id: User group id.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
+
+        Returns:
+            T.UpdateUserGroupResponse: The API response.
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+        user_action_token = user_action_result["userAction"]
+
+        response = self._http.request_with_user_action(
+            method="PUT",
+            path="/auth/user-groups/{userGroupId}",
+            path_params={"userGroupId": user_group_id},
+            query_params=None,
+            body=body,
+            user_action=user_action_token,
+        )
+        return cast(T.UpdateUserGroupResponse, response)
+
+    def delete_user_group_init(self, user_group_id: str) -> UserActionChallengeResponse:
+        """
+        Initialize Delete User Group.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+            user_group_id: User group id.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """  # noqa: E501
+        path = "/auth/user-groups/{userGroupId}"
+        path = path.replace("{userGroupId}", str(user_group_id))
+        payload = ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="DELETE",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def delete_user_group_complete(
+        self, user_group_id: str, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.DeleteUserGroupResponse:
+        """
+        Complete Delete User Group.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+            user_group_id: User group id.
+            signed_challenge: The signed challenge from external signing.
+
+        Returns:
+            T.DeleteUserGroupResponse: The API response.
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+        user_action_token = user_action_result["userAction"]
+
+        response = self._http.request_with_user_action(
+            method="DELETE",
+            path="/auth/user-groups/{userGroupId}",
+            path_params={"userGroupId": user_group_id},
+            query_params=None,
+            body=None,
+            user_action=user_action_token,
+        )
+        return cast(T.DeleteUserGroupResponse, response)
+
+    def list_user_group_members(
+        self, user_group_id: str, query: T.ListUserGroupMembersQuery | None = None
+    ) -> T.ListUserGroupMembersResponse:
+        """
+        List User Group Members.
+
+        List the members of a user group.
+
+        Args:
+            user_group_id: User group id.
+            query: Query parameters.
+
+        Returns:
+            T.ListUserGroupMembersResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="GET",
+            path="/auth/user-groups/{userGroupId}/members",
+            path_params={"userGroupId": user_group_id},
+            query_params=query,
+            body=None,
+            requires_signature=False,
+        )
+        return cast(T.ListUserGroupMembersResponse, response)
+
+    def add_user_group_members_init(
+        self, user_group_id: str, body: T.AddUserGroupMembersRequest
+    ) -> UserActionChallengeResponse:
+        """
+        Initialize Add User Group Members.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+            user_group_id: User group id.
+            body: Request body.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """  # noqa: E501
+        path = "/auth/user-groups/{userGroupId}/members"
+        path = path.replace("{userGroupId}", str(user_group_id))
+        payload = json.dumps(body, separators=(",", ":")) if body else ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="POST",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def add_user_group_members_complete(
+        self, user_group_id: str, body: T.AddUserGroupMembersRequest, signed_challenge: SignUserActionChallengeRequest
+    ) -> T.AddUserGroupMembersResponse:
+        """
+        Complete Add User Group Members.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+            user_group_id: User group id.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
+
+        Returns:
+            T.AddUserGroupMembersResponse: The API response.
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+        user_action_token = user_action_result["userAction"]
+
+        response = self._http.request_with_user_action(
+            method="POST",
+            path="/auth/user-groups/{userGroupId}/members",
+            path_params={"userGroupId": user_group_id},
+            query_params=None,
+            body=body,
+            user_action=user_action_token,
+        )
+        return cast(T.AddUserGroupMembersResponse, response)
+
+    def remove_user_group_members_init(
+        self, user_group_id: str, body: T.RemoveUserGroupMembersRequest
+    ) -> UserActionChallengeResponse:
+        """
+        Initialize Remove User Group Members.
+
+        Creates a user action challenge for external signing.
+
+        Args:
+            user_group_id: User group id.
+            body: Request body.
+
+        Returns:
+            UserActionChallengeResponse: The challenge to sign externally.
+        """  # noqa: E501
+        path = "/auth/user-groups/{userGroupId}/members"
+        path = path.replace("{userGroupId}", str(user_group_id))
+        payload = json.dumps(body, separators=(",", ":")) if body else ""
+
+        return BaseAuthApi.create_user_action_challenge(
+            self._http,
+            user_action_http_method="DELETE",
+            user_action_http_path=path,
+            user_action_payload=payload,
+        )
+
+    def remove_user_group_members_complete(
+        self,
+        user_group_id: str,
+        body: T.RemoveUserGroupMembersRequest,
+        signed_challenge: SignUserActionChallengeRequest,
+    ) -> T.RemoveUserGroupMembersResponse:
+        """
+        Complete Remove User Group Members.
+
+        Submits the signed challenge and makes the API request.
+
+        Args:
+            user_group_id: User group id.
+            body: Request body.
+            signed_challenge: The signed challenge from external signing.
+
+        Returns:
+            T.RemoveUserGroupMembersResponse: The API response.
+        """  # noqa: E501
+        user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
+        user_action_token = user_action_result["userAction"]
+
+        response = self._http.request_with_user_action(
+            method="DELETE",
+            path="/auth/user-groups/{userGroupId}/members",
+            path_params={"userGroupId": user_group_id},
+            query_params=None,
+            body=body,
+            user_action=user_action_token,
+        )
+        return cast(T.RemoveUserGroupMembersResponse, response)

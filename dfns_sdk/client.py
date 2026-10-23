@@ -18,6 +18,7 @@ from .generated.policies import PoliciesClient
 from .generated.signers import SignersClient
 from .generated.staking import StakingClient
 from .generated.swaps import SwapsClient
+from .generated.tenant import TenantClient
 from .generated.vaults import VaultsClient
 from .generated.wallets import WalletsClient
 from .generated.webhooks import WebhooksClient
@@ -52,6 +53,7 @@ class DfnsClient:
     signers: SignersClient
     staking: StakingClient
     swaps: SwapsClient
+    tenant: TenantClient
     vaults: VaultsClient
     wallets: WalletsClient
     webhooks: WebhooksClient
@@ -80,6 +82,7 @@ class DfnsClient:
         self.signers = SignersClient(self._http)
         self.staking = StakingClient(self._http)
         self.swaps = SwapsClient(self._http)
+        self.tenant = TenantClient(self._http)
         self.vaults = VaultsClient(self._http)
         self.wallets = WalletsClient(self._http)
         self.webhooks = WebhooksClient(self._http)

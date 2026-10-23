@@ -18,6 +18,7 @@ from .generated.policies import DelegatedPoliciesClient
 from .generated.signers import DelegatedSignersClient
 from .generated.staking import DelegatedStakingClient
 from .generated.swaps import DelegatedSwapsClient
+from .generated.tenant import DelegatedTenantClient
 from .generated.vaults import DelegatedVaultsClient
 from .generated.wallets import DelegatedWalletsClient
 from .generated.webhooks import DelegatedWebhooksClient
@@ -68,6 +69,7 @@ class DfnsDelegatedClient:
     signers: DelegatedSignersClient
     staking: DelegatedStakingClient
     swaps: DelegatedSwapsClient
+    tenant: DelegatedTenantClient
     vaults: DelegatedVaultsClient
     wallets: DelegatedWalletsClient
     webhooks: DelegatedWebhooksClient
@@ -96,6 +98,7 @@ class DfnsDelegatedClient:
         self.signers = DelegatedSignersClient(self._http)
         self.staking = DelegatedStakingClient(self._http)
         self.swaps = DelegatedSwapsClient(self._http)
+        self.tenant = DelegatedTenantClient(self._http)
         self.vaults = DelegatedVaultsClient(self._http)
         self.wallets = DelegatedWalletsClient(self._http)
         self.webhooks = DelegatedWebhooksClient(self._http)

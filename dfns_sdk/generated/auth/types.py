@@ -555,7 +555,7 @@ class CreateDelegatedRegistrationChallengeRequest(TypedDict, total=False):
     """createDelegatedRegistrationChallenge request body."""
 
     email: str
-    kind: Literal["EndUser"]
+    kind: Literal["CustomerEmployee", "EndUser"]
     external_id: NotRequired[str]
 
 
@@ -779,7 +779,7 @@ class ActivateUserResponse(TypedDict, total=False):
     username: str
     name: str
     user_id: str
-    kind: Literal["CustomerEmployee", "EndUser"]
+    kind: Literal["TenantUser", "CustomerEmployee", "EndUser"]
     credential_uuid: str
     credential_id: NotRequired[str]
     org_id: NotRequired[str]
@@ -792,13 +792,19 @@ class ActivateUserResponse(TypedDict, total=False):
     permission_assignments: list[dict[str, Any]]
 
 
+class DeactivateUserRequest(TypedDict, total=False):
+    """deactivateUser request body."""
+
+    force: NotRequired[bool]
+
+
 class DeactivateUserResponse(TypedDict, total=False):
     """deactivateUser response."""
 
     username: str
     name: str
     user_id: str
-    kind: Literal["CustomerEmployee", "EndUser"]
+    kind: Literal["TenantUser", "CustomerEmployee", "EndUser"]
     credential_uuid: str
     credential_id: NotRequired[str]
     org_id: NotRequired[str]
@@ -817,7 +823,7 @@ class GetUserResponse(TypedDict, total=False):
     username: str
     name: str
     user_id: str
-    kind: Literal["CustomerEmployee", "EndUser"]
+    kind: Literal["TenantUser", "CustomerEmployee", "EndUser"]
     credential_uuid: str
     credential_id: NotRequired[str]
     org_id: NotRequired[str]
@@ -842,7 +848,7 @@ class UpdateUserResponse(TypedDict, total=False):
     username: str
     name: str
     user_id: str
-    kind: Literal["CustomerEmployee", "EndUser"]
+    kind: Literal["TenantUser", "CustomerEmployee", "EndUser"]
     credential_uuid: str
     credential_id: NotRequired[str]
     org_id: NotRequired[str]
@@ -861,7 +867,7 @@ class DeleteUserResponse(TypedDict, total=False):
     username: str
     name: str
     user_id: str
-    kind: Literal["CustomerEmployee", "EndUser"]
+    kind: Literal["TenantUser", "CustomerEmployee", "EndUser"]
     credential_uuid: str
     credential_id: NotRequired[str]
     org_id: NotRequired[str]
@@ -896,10 +902,10 @@ class CreateUserRequest(TypedDict, total=False):
     """createUser request body."""
 
     email: str
-    kind: Literal["CustomerEmployee"]
-    public_key: NotRequired[str]
+    kind: Literal["CustomerEmployee", "EndUser"]
     external_id: NotRequired[str]
     is_s_s_o_required: NotRequired[bool]
+    registration: NotRequired[Literal["Direct", "Delegated"]]
 
 
 class CreateUserResponse(TypedDict, total=False):
@@ -908,7 +914,7 @@ class CreateUserResponse(TypedDict, total=False):
     username: str
     name: str
     user_id: str
-    kind: Literal["CustomerEmployee", "EndUser"]
+    kind: Literal["TenantUser", "CustomerEmployee", "EndUser"]
     credential_uuid: str
     credential_id: NotRequired[str]
     org_id: NotRequired[str]
@@ -930,6 +936,117 @@ class InviteTenantUserRequest(TypedDict, total=False):
 
 class InviteTenantUserResponse(TypedDict, total=False):
     """inviteTenantUser response."""
+
+    pass
+
+
+class ListUserGroupsResponse(TypedDict, total=False):
+    """listUserGroups response."""
+
+    items: list[dict[str, Any]]
+    next_page_token: NotRequired[str]
+
+
+class ListUserGroupsQuery(TypedDict, total=False):
+    """listUserGroups query parameters."""
+
+    limit: NotRequired[int]
+    pagination_token: NotRequired[str]
+
+
+class CreateUserGroupRequest(TypedDict, total=False):
+    """createUserGroup request body."""
+
+    name: str
+    description: NotRequired[str]
+
+
+class CreateUserGroupResponse(TypedDict, total=False):
+    """createUserGroup response."""
+
+    id: str
+    org_id: NotRequired[str]
+    tenant_id: NotRequired[str]
+    name: str
+    description: NotRequired[str]
+    member_count: int
+    date_created: str
+    date_updated: str
+
+
+class GetUserGroupResponse(TypedDict, total=False):
+    """getUserGroup response."""
+
+    id: str
+    org_id: NotRequired[str]
+    tenant_id: NotRequired[str]
+    name: str
+    description: NotRequired[str]
+    member_count: int
+    date_created: str
+    date_updated: str
+
+
+class UpdateUserGroupRequest(TypedDict, total=False):
+    """updateUserGroup request body."""
+
+    name: NotRequired[str]
+    description: NotRequired[Any]
+
+
+class UpdateUserGroupResponse(TypedDict, total=False):
+    """updateUserGroup response."""
+
+    id: str
+    org_id: NotRequired[str]
+    tenant_id: NotRequired[str]
+    name: str
+    description: NotRequired[str]
+    member_count: int
+    date_created: str
+    date_updated: str
+
+
+class DeleteUserGroupResponse(TypedDict, total=False):
+    """deleteUserGroup response."""
+
+    pass
+
+
+class ListUserGroupMembersResponse(TypedDict, total=False):
+    """listUserGroupMembers response."""
+
+    items: list[dict[str, Any]]
+    next_page_token: NotRequired[str]
+
+
+class ListUserGroupMembersQuery(TypedDict, total=False):
+    """listUserGroupMembers query parameters."""
+
+    limit: NotRequired[int]
+    pagination_token: NotRequired[str]
+
+
+class AddUserGroupMembersRequest(TypedDict, total=False):
+    """addUserGroupMembers request body."""
+
+    user_ids: list[str]
+
+
+class AddUserGroupMembersResponse(TypedDict, total=False):
+    """addUserGroupMembers response."""
+
+    pass
+
+
+class RemoveUserGroupMembersRequest(TypedDict, total=False):
+    """removeUserGroupMembers request body."""
+
+    user_ids: list[str]
+
+
+class RemoveUserGroupMembersResponse(TypedDict, total=False):
+    """removeUserGroupMembers response."""
 
     pass
 
