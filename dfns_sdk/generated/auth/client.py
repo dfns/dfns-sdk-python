@@ -493,7 +493,7 @@ class AuthClient:
         """
         Oidc Login Credentials.
 
-        Registers the first credential for an OIDC-authenticated user, bootstrapping from the credential challenge issued by [OIDC Login](/api-reference/auth/oidc-login). Rejected if the user already has an active first-factor credential; use [Create Credential](/api-reference/auth/create-credential) in that case.
+        Registers the first credential for an OIDC-authenticated user, bootstrapping from the credential challenge issued by [Complete OIDC Login](/api-reference/auth/complete-oidc-login). Rejected if the user already has an active first-factor credential; use [Create Credential](/api-reference/auth/create-credential) in that case.
 
         Args:
             body: Request body.
@@ -853,9 +853,11 @@ class AuthClient:
         Only a [Service Account](https://docs.dfns.co/api-reference/auth/service-accounts) can use this endpoint.
         </Warning>
 
-        Starts a recovery session for an end user under your brand, without sending a Dfns recovery email. Call this after you have verified the user's identity with your own auth system.
+        Starts a recovery session for a user under your brand, without sending a Dfns recovery email. Call this after you have verified the user's identity with your own auth system.
 
         The response returns a recovery challenge. Pass it to your frontend so the user can decrypt their recovery credential and sign, then call [Recover User](https://docs.dfns.co/api-reference/auth/recover-user) to complete the recovery and register fresh credentials.
+
+        <Note>This endpoint is for users that registered through the "Delegated" registration flow. For users registered through the "Direct" registration flow, the endpoints [Send Recovery Code Email](https://docs.dfns.co/api-reference/auth/send-recovery-code-email) + [Create Recovery Challenge](https://docs.dfns.co/api-reference/auth/create-recovery-challenge) should be used.</Note>
 
                 Args:
                     body: Request body.
@@ -910,15 +912,17 @@ class AuthClient:
 
     def create_recovery_challenge(self, body: T.CreateRecoveryChallengeRequest) -> T.CreateRecoveryChallengeResponse:
         """
-        Create Recovery Challenge.
+                Create Recovery Challenge.
 
-        Starts a user recovery session, returning a challenge that will be used to verify the user's identity.
+                Starts a user recovery session from the recovery code received by email. It returns a challenge that will be used to verify the user's identity.
 
-        Args:
-            body: Request body.
+        <Note>This endpoint is for users that registered through the "Direct" registration flow. For users registered through the "Delegated" registration flow, the endpoint [Create Delegated Recovery Challenge](https://docs.dfns.co/api-reference/auth/create-delegated-recovery-challenge) should be used.</Note>
 
-        Returns:
-            T.CreateRecoveryChallengeResponse: The API response.
+                Args:
+                    body: Request body.
+
+                Returns:
+                    T.CreateRecoveryChallengeResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -932,15 +936,17 @@ class AuthClient:
 
     def send_recovery_code(self, body: T.SendRecoveryCodeRequest) -> T.SendRecoveryCodeResponse:
         """
-        Send Recovery Code Email.
+              Send Recovery Code Email.
 
-        Send the user a recovery verification code. This code is used as a second factor to verify the user initiated the recovery request.
+              Send the user a recovery verification code. This code is used as a second factor to verify the user initiated the recovery request.
 
-        Args:
-            body: Request body.
+        <Note>This endpoint is for users that registered through the "Direct" registration flow. For users registered through the "Delegated" registration flow, the endpoint [Create Delegated Recovery Challenge](https://docs.dfns.co/api-reference/auth/create-delegated-recovery-challenge) should be used.</Note>
 
-        Returns:
-            T.SendRecoveryCodeResponse: The API response.
+              Args:
+                  body: Request body.
+
+              Returns:
+                  T.SendRecoveryCodeResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -967,15 +973,25 @@ class AuthClient:
         Only a [Service Account](https://docs.dfns.co/api-reference/auth/service-accounts) can use this endpoint.
         </Warning>
 
-        Registers a new End User in your organization and returns a registration challenge, without sending a Dfns registration email. Use this when your application owns the authentication system and you want delegated signing under your brand.
+        Returns a registration challenge for the targeted user, which can be passed to the user for passkey creation and registration completion.
 
         The response includes:
-        1. A new `EndUser` attached to your organization.
-        2. A registration challenge plus a `temporaryAuthenticationToken` to authenticate the next call.
+        - Basic info about the targeted user
+        - A registration challenge
+        - A `temporaryAuthenticationToken` to authenticate the next request in the flow
 
-        Pass the challenge to your frontend so the user can create a passkey, then call [Complete User Registration](https://docs.dfns.co/api-reference/auth/complete-user-registration) or [Complete End User Registration with Wallets](https://docs.dfns.co/api-reference/auth/complete-end-user-registration-with-wallets) with that challenge signed.
+        Next steps are
+        1. pass the challenge to your user in your frontend / app, so he can create new passkey & recovery credentials and sign the challenge with it. All credentials registered need to sign this challenge. See [Implement end-user recovery](https://docs.dfns.co/guides/developers/end-user-recovery).
+        2. then call [Complete User Registration](https://docs.dfns.co/api-reference/auth/complete-user-registration) or [Complete End User Registration with Wallets](https://docs.dfns.co/api-reference/auth/complete-end-user-registration-with-wallets) with that signed challenge, using the `temporaryAuthenticationToken` as Bearer token.
 
-        Bundle a `recoveryCredential` in the completion call alongside the first passkey. All credentials in that call sign the same challenge returned here. See [Implement end-user recovery](https://docs.dfns.co/guides/developers/end-user-recovery).
+        <Note>
+        This endpoint is for users previously created through [Create User](https://docs.dfns.co/api-reference/auth/create-user) endpoint with `registration: 'Delegated'`(*).
+
+        _(*) Legacy behaviour - still supported:_
+
+        If you target an `EndUser`, which was not previously created with "Create User" endpoint, then this end user will be created on-the-fly within this endpoint.
+        If you previously relied on this behaviour, update your code, before this legacy behaviour deprecation. Instead, you should call the "Create User" endpoint first, passing `registration: "Delegated"`, after which you can call this endpoint.
+        </Note>
 
                 Args:
                     body: Request body.
@@ -997,15 +1013,19 @@ class AuthClient:
         self, body: T.CreateRegistrationChallengeRequest
     ) -> T.CreateRegistrationChallengeResponse:
         """
-        Create Registration Challenge.
+                Create Registration Challenge.
 
-        Starts a user registration session. It returns a challenge that will need to be signed by a passkey and used to perform the step [Complete User Registration](/api-reference/auth/complete-user-registration)
+                Starts a user registration session from the registration code received by email. It returns a challenge that will need to be signed by a passkey and used to perform the step [Complete User Registration](/api-reference/auth/complete-user-registration). Either `orgId` or `tenantId` needs to be specified.
 
-        Args:
-            body: Request body.
+        <Note>
+        This endpoint is for users previously created through [Create User](https://docs.dfns.co/api-reference/auth/create-user) endpoint with `registration: "Direct"`, and received a registration code by email.
+        </Note>
 
-        Returns:
-            T.CreateRegistrationChallengeResponse: The API response.
+                Args:
+                    body: Request body.
+
+                Returns:
+                    T.CreateRegistrationChallengeResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -1119,15 +1139,19 @@ class AuthClient:
 
     def resend_registration_code(self, body: T.ResendRegistrationCodeRequest) -> T.ResendRegistrationCodeResponse:
         """
-        Resend Registration Code.
+                Resend Registration Code.
 
-        Sends the user a new registration code. The previous registration code will be marked invalid. If the user has already completed their registration no action will be taken.
+                Sends the user a new registration code. The previous registration code will be marked invalid. If the user has already completed their registration no action will be taken.
 
-        Args:
-            body: Request body.
+        <Note>
+        This endpoint is for users previously created through [Create User](https://docs.dfns.co/api-reference/auth/create-user) endpoint with `registration: "Direct"`, and received a registration code by email.
+        </Note>
 
-        Returns:
-            T.ResendRegistrationCodeResponse: The API response.
+                Args:
+                    body: Request body.
+
+                Returns:
+                    T.ResendRegistrationCodeResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="PUT",
@@ -1256,7 +1280,7 @@ class AuthClient:
         """
         Activate Service Account.
 
-        Activate a specific Service Account.
+        Re-activate a previously deactivated Service Account. New Service Accounts are active as soon as they are created, so this is only needed after a Service Account has been deactivated.
 
         Args:
             service_account_id: ID of the service account.
@@ -1367,7 +1391,7 @@ class AuthClient:
         )
         return cast(T.ActivateUserResponse, response)
 
-    def deactivate_user(self, user_id: str) -> T.DeactivateUserResponse:
+    def deactivate_user(self, user_id: str, body: T.DeactivateUserRequest) -> T.DeactivateUserResponse:
         """
         Deactivate User.
 
@@ -1375,6 +1399,7 @@ class AuthClient:
 
         Args:
             user_id: User id.
+            body: Request body.
 
         Returns:
             T.DeactivateUserResponse: The API response.
@@ -1384,7 +1409,7 @@ class AuthClient:
             path="/auth/users/{userId}/deactivate",
             path_params={"userId": user_id},
             query_params=None,
-            body=None,
+            body=body,
             requires_signature=True,
         )
         return cast(T.DeactivateUserResponse, response)
@@ -1480,19 +1505,27 @@ class AuthClient:
 
     def create_user(self, body: T.CreateUserRequest) -> T.CreateUserResponse:
         """
-              Create User.
+                Create User.
 
-              Invite a new user in the caller's org. This will create the user and send a registration email to the created User's email, with a registration code, and pointing him to complete his registration on Dfns Dashboard. The user is created without any permissions.
+                Creates a new user in the caller's org.
 
-        <Note>If you want the created User to not know about about Dfns, and don't want him to
-        receive the registration email from Dfns, you should rather use the Delegated Registration
-        endpoint.</Note>
+        The registration flow this user will go through depends on the `registration` kind specified:
+        - If `Direct`, we orchestrate the user's registration: he will receive an email from us directly. Then be redirected to our dashboard to finish registration and onboard there. This is only available for `CustomerEmployee`. This is for users meant to use our dashboard directly (in addition to custom apps you may build).
+        - if `Delegated`, you orchestrate the user's registration: he won't receive an email from us. It's your responsibility to verify your user's identity & email, before you programmatically kick-off their registration (cf [Delegated Registration doc](https://docs.dfns.co/api-reference/auth/registration-flows#delegated-users-registration-flow)). This is available for either `CustomerEmployee` or `EndUser`. This is for users meant to only use your own apps (not our dashboard), who should not interact with us directly.
 
-              Args:
-                  body: Request body.
+        If `registration` is unspecified, the default behaviour depends on the user kind:
+        - `CustomerEmployee`: defaults to `Direct` registration: sends a registration email from us.
+        - `EndUser`: defaults to `Delegated` registration (only option for those): does not send a registration email.
 
-              Returns:
-                  T.CreateUserResponse: The API response.
+        Permission-wise, when the new user gets created:
+        - `CustomerEmployee` hold no permissions upon creation. Use permission endpoints to grant some.
+        - `EndUser` hold the default `ManagedDefaultEndUserAccess` which is granted by default to all EndUsers. Use permission endpoints to update this default end-user permission. (cf [Managed Permissions](https://docs.dfns.co/core-concepts/roles-and-permissions#manageddefaultenduseraccess))
+
+                Args:
+                    body: Request body.
+
+                Returns:
+                    T.CreateUserResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -1525,3 +1558,189 @@ class AuthClient:
             requires_signature=True,
         )
         return cast(T.InviteTenantUserResponse, response)
+
+    def list_user_groups(self, query: T.ListUserGroupsQuery | None = None) -> T.ListUserGroupsResponse:
+        """
+        List User Groups.
+
+        List the user groups in the caller's org.
+
+        Args:
+            query: Query parameters.
+
+        Returns:
+            T.ListUserGroupsResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="GET",
+            path="/auth/user-groups",
+            path_params={},
+            query_params=query,
+            body=None,
+            requires_signature=False,
+        )
+        return cast(T.ListUserGroupsResponse, response)
+
+    def create_user_group(self, body: T.CreateUserGroupRequest) -> T.CreateUserGroupResponse:
+        """
+        Create User Group.
+
+        Create a user group in the caller's org. A group holds permissions through the regular permission assignment endpoint, and its members hold those permissions in addition to their own.
+
+        Args:
+            body: Request body.
+
+        Returns:
+            T.CreateUserGroupResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="POST",
+            path="/auth/user-groups",
+            path_params={},
+            query_params=None,
+            body=body,
+            requires_signature=True,
+        )
+        return cast(T.CreateUserGroupResponse, response)
+
+    def get_user_group(self, user_group_id: str) -> T.GetUserGroupResponse:
+        """
+        Get User Group.
+
+        Get a specific user group.
+
+        Args:
+            user_group_id: User group id.
+
+        Returns:
+            T.GetUserGroupResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="GET",
+            path="/auth/user-groups/{userGroupId}",
+            path_params={"userGroupId": user_group_id},
+            query_params=None,
+            body=None,
+            requires_signature=False,
+        )
+        return cast(T.GetUserGroupResponse, response)
+
+    def update_user_group(self, user_group_id: str, body: T.UpdateUserGroupRequest) -> T.UpdateUserGroupResponse:
+        """
+        Update User Group.
+
+        Rename a user group or change its description. Fields left out keep their value. Its permissions and members are unaffected. Returns the group on success (200), or the pending user action if a policy requires approval (202).
+
+        Args:
+            user_group_id: User group id.
+            body: Request body.
+
+        Returns:
+            T.UpdateUserGroupResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="PUT",
+            path="/auth/user-groups/{userGroupId}",
+            path_params={"userGroupId": user_group_id},
+            query_params=None,
+            body=body,
+            requires_signature=True,
+        )
+        return cast(T.UpdateUserGroupResponse, response)
+
+    def delete_user_group(self, user_group_id: str) -> T.DeleteUserGroupResponse:
+        """
+        Delete User Group.
+
+        Delete a user group. Its permission assignments are revoked and its members are removed. The name can be reused. Returns an empty body on success (200), or the pending user action if a policy requires approval (202).
+
+        Args:
+            user_group_id: User group id.
+
+        Returns:
+            T.DeleteUserGroupResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="DELETE",
+            path="/auth/user-groups/{userGroupId}",
+            path_params={"userGroupId": user_group_id},
+            query_params=None,
+            body=None,
+            requires_signature=True,
+        )
+        return cast(T.DeleteUserGroupResponse, response)
+
+    def list_user_group_members(
+        self, user_group_id: str, query: T.ListUserGroupMembersQuery | None = None
+    ) -> T.ListUserGroupMembersResponse:
+        """
+        List User Group Members.
+
+        List the members of a user group.
+
+        Args:
+            user_group_id: User group id.
+            query: Query parameters.
+
+        Returns:
+            T.ListUserGroupMembersResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="GET",
+            path="/auth/user-groups/{userGroupId}/members",
+            path_params={"userGroupId": user_group_id},
+            query_params=query,
+            body=None,
+            requires_signature=False,
+        )
+        return cast(T.ListUserGroupMembersResponse, response)
+
+    def add_user_group_members(
+        self, user_group_id: str, body: T.AddUserGroupMembersRequest
+    ) -> T.AddUserGroupMembersResponse:
+        """
+        Add User Group Members.
+
+        Add users to a user group. Each member gains every permission assigned to the group, in addition to their own. Returns an empty body on success (200), or the pending user action if a policy requires approval (202).
+
+        Args:
+            user_group_id: User group id.
+            body: Request body.
+
+        Returns:
+            T.AddUserGroupMembersResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="POST",
+            path="/auth/user-groups/{userGroupId}/members",
+            path_params={"userGroupId": user_group_id},
+            query_params=None,
+            body=body,
+            requires_signature=True,
+        )
+        return cast(T.AddUserGroupMembersResponse, response)
+
+    def remove_user_group_members(
+        self, user_group_id: str, body: T.RemoveUserGroupMembersRequest
+    ) -> T.RemoveUserGroupMembersResponse:
+        """
+        Remove User Group Members.
+
+        Remove users from a user group. Each removed user loses every permission they held only through this group. Returns an empty body on success (200), or the pending user action if a policy requires approval (202).
+
+        Args:
+            user_group_id: User group id.
+            body: Request body.
+
+        Returns:
+            T.RemoveUserGroupMembersResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="DELETE",
+            path="/auth/user-groups/{userGroupId}/members",
+            path_params={"userGroupId": user_group_id},
+            query_params=None,
+            body=body,
+            requires_signature=True,
+        )
+        return cast(T.RemoveUserGroupMembersResponse, response)

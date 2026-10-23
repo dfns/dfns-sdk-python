@@ -67,6 +67,13 @@ class CreateWebhookRequest(TypedDict, total=False):
             "address_watch.blockchain_event.transfer.confirmed",
             "address_watch.blockchain_event.misc.confirmed",
             "payout.action.required",
+            "allocation.action.created",
+            "allocation.action.completed",
+            "allocation.action.failed",
+            "swap.requested",
+            "swap.rejected",
+            "swap.completed",
+            "swap.failed",
         ]
         | Literal["*"]
     ]
@@ -119,6 +126,13 @@ class CreateWebhookResponse(TypedDict, total=False):
             "address_watch.blockchain_event.transfer.confirmed",
             "address_watch.blockchain_event.misc.confirmed",
             "payout.action.required",
+            "allocation.action.created",
+            "allocation.action.completed",
+            "allocation.action.failed",
+            "swap.requested",
+            "swap.rejected",
+            "swap.completed",
+            "swap.failed",
         ]
         | Literal["*"]
     ]
@@ -176,6 +190,13 @@ class GetWebhookResponse(TypedDict, total=False):
             "address_watch.blockchain_event.transfer.confirmed",
             "address_watch.blockchain_event.misc.confirmed",
             "payout.action.required",
+            "allocation.action.created",
+            "allocation.action.completed",
+            "allocation.action.failed",
+            "swap.requested",
+            "swap.rejected",
+            "swap.completed",
+            "swap.failed",
         ]
         | Literal["*"]
     ]
@@ -233,6 +254,13 @@ class UpdateWebhookRequest(TypedDict, total=False):
                 "address_watch.blockchain_event.transfer.confirmed",
                 "address_watch.blockchain_event.misc.confirmed",
                 "payout.action.required",
+                "allocation.action.created",
+                "allocation.action.completed",
+                "allocation.action.failed",
+                "swap.requested",
+                "swap.rejected",
+                "swap.completed",
+                "swap.failed",
             ]
             | Literal["*"]
         ]
@@ -287,6 +315,13 @@ class UpdateWebhookResponse(TypedDict, total=False):
             "address_watch.blockchain_event.transfer.confirmed",
             "address_watch.blockchain_event.misc.confirmed",
             "payout.action.required",
+            "allocation.action.created",
+            "allocation.action.completed",
+            "allocation.action.failed",
+            "swap.requested",
+            "swap.rejected",
+            "swap.completed",
+            "swap.failed",
         ]
         | Literal["*"]
     ]
@@ -355,6 +390,13 @@ class GetWebhookEventResponse(TypedDict, total=False):
         "address_watch.blockchain_event.transfer.confirmed",
         "address_watch.blockchain_event.misc.confirmed",
         "payout.action.required",
+        "allocation.action.created",
+        "allocation.action.completed",
+        "allocation.action.failed",
+        "swap.requested",
+        "swap.rejected",
+        "swap.completed",
+        "swap.failed",
     ]
     data: dict[str, Any]
     status: str
@@ -414,6 +456,13 @@ class ListWebhookEventsQuery(TypedDict, total=False):
             "address_watch.blockchain_event.transfer.confirmed",
             "address_watch.blockchain_event.misc.confirmed",
             "payout.action.required",
+            "allocation.action.created",
+            "allocation.action.completed",
+            "allocation.action.failed",
+            "swap.requested",
+            "swap.rejected",
+            "swap.completed",
+            "swap.failed",
         ]
     ]
     delivery_failed: NotRequired[Literal["true", "false"]]

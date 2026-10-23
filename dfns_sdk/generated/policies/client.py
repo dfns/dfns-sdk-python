@@ -156,7 +156,7 @@ class PoliciesClient:
         """
         Get Sumsub Travel Rule public key.
 
-        Retrieve the RSA public key (JWK, RFC 7517) of the org's Sumsub Travel Rule integration. Use it to JWE-encrypt (RSA-OAEP-256 / A256GCM) the IVMS101 payload client-side before submitting a transfer screened by a Sumsub Travel Rule policy. Requires Travel Rule to be enabled for the tenant and an activated Sumsub integration on the org.
+        Retrieve the RSA public key (JWK, RFC 7517) of the org's Sumsub Travel Rule integration. Use it to JWE-encrypt (RSA-OAEP-256 / A256GCM, compact serialization) the JWS-signed IVMS101 payload client-side before submitting a transfer screened by a Sumsub Travel Rule policy. Requires Travel Rule to be enabled for the tenant and an activated Sumsub integration on the org.
 
         Returns:
             T.GetSumsubTravelRulePublicKeyResponse: The API response.

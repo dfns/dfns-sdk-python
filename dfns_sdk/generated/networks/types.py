@@ -42,6 +42,8 @@ class EstimateFeesQuery(TypedDict, total=False):
         "FlareCCoston2",
         "FlowEvm",
         "FlowEvmTestnet",
+        "HyperEvm",
+        "HyperEvmTestnet",
         "Ink",
         "InkSepolia",
         "Monad",

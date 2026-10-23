@@ -141,7 +141,7 @@ class PermissionsClient:
         """
         Assign Permission.
 
-        Assigns a permission (role) to an identity (user, PAT or service account), granting it access to the operations defined in the permission. Returns the assignment on success (200), or a pending change request if approval is required (202).
+        Assigns a permission (role) to an identity (user, PAT, service account or user group), granting it access to the operations defined in the permission. Returns the assignment on success (200), or a pending change request if approval is required (202).
 
         Args:
             permission_id: ID of the permission (also referred to as "role" in the dashboard).
