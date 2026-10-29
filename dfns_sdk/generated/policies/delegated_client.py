@@ -334,3 +334,25 @@ class DelegatedPoliciesClient:
             requires_signature=False,
         )
         return cast(T.ListApprovalsResponse, response)
+
+    def lookup_sumsub_travel_rule_vasp(self, body: T.LookupSumsubTravelRuleVaspRequest) -> dict[str, Any]:
+        """
+        Look up the Sumsub Travel Rule VASP of a wallet address.
+
+        Ask the org's Sumsub Travel Rule integration which VASP controls a counterparty wallet address on a network. Use the returned `vaspId` as `travelRule.beneficiaryVaspId` on a transfer screened by a Sumsub Travel Rule policy. `found: false` means Sumsub could not attribute the address (it may still be hosted). Read-only, so no user action signature is required. Requires Travel Rule to be enabled for the tenant, an activated Sumsub integration on the org, and wallet attribution enabled on the org's Sumsub account.
+
+        Args:
+            body: Request body.
+
+        Returns:
+            dict[str, Any]: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="POST",
+            path="/v2/policies/travel-rule/sumsub/vasp-lookup",
+            path_params={},
+            query_params=None,
+            body=body,
+            requires_signature=False,
+        )
+        return cast(dict[str, Any], response)

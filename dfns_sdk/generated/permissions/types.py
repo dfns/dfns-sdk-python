@@ -481,10 +481,10 @@ class CreatePermissionResponse(TypedDict, total=False):
     date_updated: str
 
 
-class RevokePermissionQuery(TypedDict, total=False):
-    """revokePermission query parameters."""
+class RevokePermissionRequest(TypedDict, total=False):
+    """revokePermission request body."""
 
-    force: NotRequired[Any]
+    force: NotRequired[bool]
 
 
 # Deprecated: use ListAssignmentsResponse instead.

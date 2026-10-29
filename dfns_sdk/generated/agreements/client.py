@@ -36,6 +36,25 @@ class AgreementsClient:
         )
         return cast(T.GetLatestUnacceptedAgreementResponse, response)
 
+    def get_latest_agreements(self) -> T.GetLatestAgreementsResponse:
+        """
+        Get Latest Agreements.
+
+        Get the latest agreements
+
+        Returns:
+            T.GetLatestAgreementsResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="GET",
+            path="/dashboard/agreements/latest",
+            path_params={},
+            query_params=None,
+            body=None,
+            requires_signature=False,
+        )
+        return cast(T.GetLatestAgreementsResponse, response)
+
     def record_agreement_acceptance(self, agreement_id: str) -> T.RecordAgreementAcceptanceResponse:
         """
         Record Agreement Acceptance.

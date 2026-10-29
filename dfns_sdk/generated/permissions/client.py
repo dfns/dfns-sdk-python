@@ -204,9 +204,7 @@ class PermissionsClient:
         )
         return cast(T.CreatePermissionResponse, response)
 
-    def revoke_permission(
-        self, permission_id: str, assignment_id: str, query: T.RevokePermissionQuery | None = None
-    ) -> None:
+    def revoke_permission(self, permission_id: str, assignment_id: str, body: T.RevokePermissionRequest) -> None:
         """
         Revoke Permission.
 
@@ -215,13 +213,13 @@ class PermissionsClient:
         Args:
             permission_id: ID of the permission (also referred to as "role" in the dashboard).
             assignment_id: ID of the permission assignment.
-            query: Query parameters.
+            body: Request body.
         """  # noqa: E501
         self._http.request(
             method="DELETE",
             path="/permissions/{permissionId}/assignments/{assignmentId}",
             path_params={"permissionId": permission_id, "assignmentId": assignment_id},
-            query_params=query,
-            body=None,
+            query_params=None,
+            body=body,
             requires_signature=True,
         )

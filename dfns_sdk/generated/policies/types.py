@@ -88,3 +88,10 @@ class ListApprovalsQuery(TypedDict, total=False):
     status: NotRequired[Literal["Pending", "Approved", "Denied", "Expired"]]
     initiator_id: NotRequired[str]
     approver_id: NotRequired[str]
+
+
+class LookupSumsubTravelRuleVaspRequest(TypedDict, total=False):
+    """lookupSumsubTravelRuleVasp request body."""
+
+    network: dict[str, Any]
+    wallet_address: str
