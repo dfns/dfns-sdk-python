@@ -15,6 +15,12 @@ class GetLatestUnacceptedAgreementQuery(TypedDict, total=False):
     agreement_type: Literal["PrivacyPolicy", "TermsAndConditions", "UniswapTermsOfService", "UniswapPrivacyPolicy"]
 
 
+class GetLatestAgreementsResponse(TypedDict, total=False):
+    """getLatestAgreements response."""
+
+    latest_agreements: list[dict[str, Any]]
+
+
 class RecordAgreementAcceptanceResponse(TypedDict, total=False):
     """recordAgreementAcceptance response."""
 

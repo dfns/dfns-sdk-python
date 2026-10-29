@@ -364,7 +364,7 @@ class DelegatedPermissionsClient:
         return cast(T.CreatePermissionResponse, response)
 
     def revoke_permission_init(
-        self, permission_id: str, assignment_id: str, query: T.RevokePermissionQuery | None = None
+        self, permission_id: str, assignment_id: str, body: T.RevokePermissionRequest
     ) -> UserActionChallengeResponse:
         """
         Initialize Revoke Permission.
@@ -374,7 +374,7 @@ class DelegatedPermissionsClient:
         Args:
             permission_id: ID of the permission (also referred to as "role" in the dashboard).
             assignment_id: ID of the permission assignment.
-            query: Query parameters.
+            body: Request body.
 
         Returns:
             UserActionChallengeResponse: The challenge to sign externally.
@@ -382,7 +382,7 @@ class DelegatedPermissionsClient:
         path = "/permissions/{permissionId}/assignments/{assignmentId}"
         path = path.replace("{permissionId}", str(permission_id))
         path = path.replace("{assignmentId}", str(assignment_id))
-        payload = ""
+        payload = json.dumps(body, separators=(",", ":")) if body else ""
 
         return BaseAuthApi.create_user_action_challenge(
             self._http,
@@ -395,8 +395,8 @@ class DelegatedPermissionsClient:
         self,
         permission_id: str,
         assignment_id: str,
+        body: T.RevokePermissionRequest,
         signed_challenge: SignUserActionChallengeRequest,
-        query: T.RevokePermissionQuery | None = None,
     ) -> None:
         """
         Complete Revoke Permission.
@@ -406,8 +406,8 @@ class DelegatedPermissionsClient:
         Args:
             permission_id: ID of the permission (also referred to as "role" in the dashboard).
             assignment_id: ID of the permission assignment.
+            body: Request body.
             signed_challenge: The signed challenge from external signing.
-            query: Query parameters.
         """  # noqa: E501
         user_action_result = BaseAuthApi.sign_user_action_challenge(self._http, signed_challenge)
         user_action_token = user_action_result["userAction"]
@@ -416,7 +416,7 @@ class DelegatedPermissionsClient:
             method="DELETE",
             path="/permissions/{permissionId}/assignments/{assignmentId}",
             path_params={"permissionId": permission_id, "assignmentId": assignment_id},
-            query_params=query,
-            body=None,
+            query_params=None,
+            body=body,
             user_action=user_action_token,
         )
