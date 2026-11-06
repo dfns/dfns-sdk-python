@@ -413,9 +413,11 @@ class AuthClient:
         Only a [Service Account](https://docs.dfns.co/api-reference/auth/service-accounts) can use this endpoint.
         </Warning>
 
-        Logs a user into an organization without the user's credentials.
+        Logs an end user (`EndUser`) into an organization without the user's credentials. It cannot log in employees.
 
         If you want to use your own authentication system, while still using `Delegated Signing`, you can use this endpoint to authenticate a user without needing the user's credentials.
+
+        The service account needs the `Auth:Delegated:Login` permission, and the request must be signed with a [user action signature](https://docs.dfns.co/api-reference/auth/signing-flows) (`X-DFNS-USERACTION` header) from the service account's key. The DFNS SDKs do this for you when the client is configured with the service account's signer.
 
         The user authentication token can be used for read operations within the Dfns API, however, write operations will still require the user to sign the action.
 
@@ -540,15 +542,17 @@ class AuthClient:
 
     def oidc_login_init(self, body: T.OidcLoginInitRequest) -> T.OidcLoginInitResponse:
         """
-        Initiate OIDC Login.
+                Initiate OIDC Login.
 
-        Initialize the OIDC login process by returning the identity provider authorization URL to redirect the user to.
+                Initialize the OIDC login process by returning the identity provider authorization URL to redirect the user to.
 
-        Args:
-            body: Request body.
+        This is SSO where your identity provider also manages users, available on request: DFNS enables it for your organization or tenant. Users are created on their first sign-in, and their roles and group memberships follow your identity provider's role claims at each login. For standard SSO configured in the dashboard, use [Initiate SSO Login](https://docs.dfns.co/api-reference/auth/initiate-sso-login). Pass exactly one of `orgId` or `tenantId`.
 
-        Returns:
-            T.OidcLoginInitResponse: The API response.
+                Args:
+                    body: Request body.
+
+                Returns:
+                    T.OidcLoginInitResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -591,15 +595,19 @@ class AuthClient:
 
     def social_login(self, body: T.SocialLoginRequest) -> T.SocialLoginResponse:
         """
-        Social Login.
+                Social Login.
 
-        Logs a user in with a JWT id token issued by a social login provider and provides the authenticated user with their authentication token.
+                Logs an end user in with a Google ID token and returns their authentication token.
 
-        Args:
-            body: Request body.
+        Only ID tokens issued by Google are accepted (issuer `accounts.google.com`). Tokens from any other identity provider are rejected with `401` "ID Token issued by unsupported issuer". To use your own identity provider for end users, authenticate them in your application and use [Delegated Login](https://docs.dfns.co/api-reference/auth/delegated-login) instead.
 
-        Returns:
-            T.SocialLoginResponse: The API response.
+        The user must have registered with [Create Social Registration Challenge](https://docs.dfns.co/api-reference/auth/create-social-registration-challenge). DFNS matches the returning user by the token's `email` claim (their DFNS username) and checks that its `sub` claim matches the Google account used at registration. The response contains only `token`.
+
+                Args:
+                    body: Request body.
+
+                Returns:
+                    T.SocialLoginResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -640,15 +648,17 @@ class AuthClient:
 
     def sso_login_init(self, body: T.SsoLoginInitRequest) -> T.SsoLoginInitResponse:
         """
-        Initiate SSO Login.
+                Initiate SSO Login.
 
-        Initialize the login process with SSO by returning the IdP URL to call.
+                Initialize the login process with SSO by returning the IdP URL to call.
 
-        Args:
-            body: Request body.
+        SSO is for employees (`CustomerEmployee`) of an organization that configured SSO in the dashboard (**Integrations** > **OpenID**). The user must already exist in the organization and have `isSSORequired` set. See [Set up SSO](https://docs.dfns.co/guides/set-up-sso).
 
-        Returns:
-            T.SsoLoginInitResponse: The API response.
+                Args:
+                    body: Request body.
+
+                Returns:
+                    T.SsoLoginInitResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",
@@ -1041,15 +1051,17 @@ class AuthClient:
         self, body: T.CreateSocialRegistrationChallengeRequest
     ) -> T.CreateSocialRegistrationChallengeResponse:
         """
-        Create Social Registration Challenge.
+                Create Social Registration Challenge.
 
-        Starts an end-user registration session by passing a JWT obtained by an IdP. It returns a challenge that will need to be signed by a passkey and used to perform [Complete End User Registration with Wallets](/api-reference/auth/complete-end-user-registration-with-wallets).
+                Starts an end-user registration session by passing a Google ID token. It creates the end user (`EndUser`) if needed and returns a challenge that will need to be signed by a passkey and used to perform [Complete End User Registration with Wallets](/api-reference/auth/complete-end-user-registration-with-wallets).
 
-        Args:
-            body: Request body.
+        Only ID tokens issued by Google are accepted, and their audience must be one of the Google OAuth client IDs set in your organization's social login settings. Tokens from any other identity provider are rejected with `401` "ID Token issued by unsupported issuer". To register end users authenticated by your own identity provider, use [Create Delegated Registration Challenge](https://docs.dfns.co/api-reference/auth/create-delegated-registration-challenge).
 
-        Returns:
-            T.CreateSocialRegistrationChallengeResponse: The API response.
+                Args:
+                    body: Request body.
+
+                Returns:
+                    T.CreateSocialRegistrationChallengeResponse: The API response.
         """  # noqa: E501
         response = self._http.request(
             method="POST",

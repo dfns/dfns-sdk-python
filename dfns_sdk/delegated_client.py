@@ -4,7 +4,6 @@ from typing import Any
 
 from ._internal import HttpClient
 from .generated.address_watches import DelegatedAddressWatchesClient
-from .generated.agreements import DelegatedAgreementsClient
 from .generated.allocations import DelegatedAllocationsClient
 from .generated.auth import DelegatedAuthClient
 from .generated.exchanges import DelegatedExchangesClient
@@ -55,7 +54,6 @@ class DfnsDelegatedClient:
     """
 
     address_watches: DelegatedAddressWatchesClient
-    agreements: DelegatedAgreementsClient
     allocations: DelegatedAllocationsClient
     auth: DelegatedAuthClient
     exchanges: DelegatedExchangesClient
@@ -84,7 +82,6 @@ class DfnsDelegatedClient:
         self._config = config
         self._http = HttpClient(config)
         self.address_watches = DelegatedAddressWatchesClient(self._http)
-        self.agreements = DelegatedAgreementsClient(self._http)
         self.allocations = DelegatedAllocationsClient(self._http)
         self.auth = DelegatedAuthClient(self._http)
         self.exchanges = DelegatedExchangesClient(self._http)
