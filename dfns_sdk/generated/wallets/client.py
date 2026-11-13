@@ -79,7 +79,7 @@ class WalletsClient:
 
         - **Starknet**: Deploys the account contract using the wallet's public key to initialize the account on the blockchain. No additional parameters required.
         - **Concordium**: Deploys the account using credential deployment information and cryptographic randomness returned by the IDApp.
-        - **Canton**: Registers the wallet on a validator. You must specify the `validatorId` to activate the wallet. Before activation, the wallet cannot be used and its address will not have a prefix.
+        - **Canton**: Registers the wallet on a validator. You must specify the `validatorId` to activate the wallet, and can optionally specify the `partyHint` used as the prefix of the wallet address. Before activation, the wallet cannot be used and its address will not have a prefix.
 
             Args:
                 wallet_id: Wallet id.
@@ -431,7 +431,7 @@ class WalletsClient:
         """
         List Wallets.
 
-        Retrieves the list of Wallets in your organization. You can filter the results by owner (either by owner id or owner username). The list cannot be filtered by tags or externalId — those are set at wallet creation only; to segment wallets by tag or externalId, list them and filter client-side, or maintain the mapping in your own system. Pagination is supported via limit and paginationToken parameters.
+        Retrieves the list of Wallets in your organization. You can filter the results by owner (either by owner id or owner username). To find wallets by tag, external id, name, network, status or token held, use [Search Wallets](https://docs.dfns.co/api-reference/wallets/search-wallets). Pagination is supported via limit and paginationToken parameters.
 
         Args:
             query: Query parameters.
@@ -732,6 +732,68 @@ class WalletsClient:
             requires_signature=True,
         )
         return cast(T.TransferAssetResponse, response)
+
+    def search_wallets(self, body: T.SearchWalletsRequest) -> T.SearchWalletsResponse:
+        """
+                Search Wallets.
+
+                Searches the wallets of your organization: find a wallet from an identifier you already have, from a word in its name, or from a token it holds, and narrow the results with filters.
+
+        **How `q` matches**
+
+        `q` is compared with five kinds of identifier, then with wallet names. Unless `sort` is set, results come in the order below.
+
+        *Identifiers*, matched exactly:
+
+        | If `q` is | Example | You get |
+        | --- | --- | --- |
+        | a wallet id | `wa-1f04s-lqc9q-xxxxxxxxxxxxxxxx` | that wallet |
+        | an external id | `cust-00412` | that wallet, followed by the exact and prefix name matches |
+        | a vault id | `vlt-2b9kq-7m4rt-xxxxxxxxxxxxxxxx` | the wallets of that vault |
+        | an address, in any case | `0x00e3495cf6af59008f22ffaf32d4c92ac33dac47` | the wallets at that address |
+        | the hash of a transfer or transaction made from one of your wallets | `0x8e88793607610a83798eb5ec6dde861f3e459c7e4a22e78b0d2e675b86d0d1e7` | the wallet that made it |
+
+        A wallet id, vault id, address or hash match returns only those wallets, with no name matches.
+
+        *Names*, ignoring case and accents. For a wallet named `Trading Hot Wallet`:
+
+        1. **Exact:** the name is the text, as with `trading hot wallet`.
+        2. **Prefix:** the name starts with the text, as with `trad`.
+        3. **Loose:** the name contains the text, or matches it with a small typo, as with `wallet` or `tradng`. Loose matches are left out when an identifier matches, when a wallet has the exact name, and when `matching` is `precise`.
+
+        Without `q`, every wallet that passes the filters is returned.
+
+        **Filters** all apply together. `filters.asset` returns the wallets holding a positive balance of a token. Archived wallets are left out unless `filters.statuses` includes `Archived`.
+
+        **Order.** By default, results are ranked by relevance when `q` is set, by the filtered token's balance (largest first) with an asset filter, and newest first otherwise. `sort` orders by `name` or `dateCreated` instead. With an asset filter, the only accepted sort is `assetBalance`.
+
+        **Pages.** A page holds up to `limit` wallets (50 by default, at most 500). For the next page, send the same body again with `paginationToken` set to the `nextPageToken` of the previous response, and keep the rest of the body unchanged: a token only continues the order it was issued for. See [Pagination](https://docs.dfns.co/api-reference/pagination).
+
+        **Incomplete results.** A very broad search on a large organization can reach an internal cap. The response then carries `partial: 'capped'`: the results are a subset of the matches and paging ends early. Narrow the search with a longer term or another filter to get a complete answer.
+
+        **Errors** (see [Error codes](https://docs.dfns.co/api-reference/error-codes)):
+
+        * `400` with `details.kind` `SearchTimeout`: the search could not finish in time. The message says what to change: a longer search term, fewer filters, or ordering by date instead of name.
+        * `400` with `details.kind` `UnsupportedAssetSelector`: `filters.asset.token` is not supported yet. Use `filters.asset.symbol`.
+        * `503` with `details.kind` `DependencyUnavailable`: search is briefly unavailable. Retry the request.
+
+        Requires the `Wallets:Read` permission. Not available to end users of delegated wallets, because a search spans the whole organization.
+
+                Args:
+                    body: Request body.
+
+                Returns:
+                    T.SearchWalletsResponse: The API response.
+        """  # noqa: E501
+        response = self._http.request(
+            method="POST",
+            path="/wallets/search",
+            path_params={},
+            query_params=None,
+            body=body,
+            requires_signature=False,
+        )
+        return cast(T.SearchWalletsResponse, response)
 
     def tag_wallet(self, wallet_id: str, body: T.TagWalletRequest) -> T.TagWalletResponse:
         """

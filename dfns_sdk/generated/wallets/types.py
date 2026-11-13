@@ -2727,6 +2727,26 @@ class TransferAssetResponse(TypedDict, total=False):
     details: NotRequired[dict[str, Any]]
 
 
+class SearchWalletsRequest(TypedDict, total=False):
+    """searchWallets request body."""
+
+    q: NotRequired[str]
+    sort: NotRequired[dict[str, Any]]
+    limit: NotRequired[int]
+    pagination_token: NotRequired[str]
+    include_assets: NotRequired[Literal["native", "verified"]]
+    matching: NotRequired[Literal["precise", "broad"]]
+    filters: NotRequired[dict[str, Any]]
+
+
+class SearchWalletsResponse(TypedDict, total=False):
+    """searchWallets response."""
+
+    items: list[dict[str, Any]]
+    next_page_token: NotRequired[str]
+    partial: NotRequired[Literal["capped"]]
+
+
 class TagWalletRequest(TypedDict, total=False):
     """tagWallet request body."""
 
