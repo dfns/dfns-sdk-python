@@ -71,6 +71,11 @@ class UpdatePermissionRequest(TypedDict, total=False):
                 "Auth:Delegated:Recover",
                 "Agreements:Read",
                 "Agreements:Accept",
+                "Custodians:Create",
+                "Custodians:Read",
+                "Custodians:Delete",
+                "Custodians:Addresses:Create",
+                "Custodians:Transfers:Create",
                 "Exchanges:Create",
                 "Exchanges:Read",
                 "Exchanges:Delete",
@@ -128,6 +133,10 @@ class UpdatePermissionRequest(TypedDict, total=False):
                 "Tokens:Actions:Read",
                 "Tokens:Navs:Create",
                 "Tokens:Navs:Read",
+                "Tokens:Orders:Read",
+                "Tokens:Orders:Create",
+                "Tokens:Orders:Settle",
+                "Tokens:Orders:Cancel",
                 "Keys:Create",
                 "Keys:Read",
                 "Keys:Update",
@@ -222,8 +231,6 @@ class UpdatePermissionRequest(TypedDict, total=False):
                 "KeyStores:Fleets:KeyHarvest",
                 "KeyStores:ProofOfControl:Create",
                 "KeyStores:OnchainSignatures:Create",
-                "Tenant:Billing:Write",
-                "Tenant:Settings:Write",
             ]
         ]
     ]
@@ -325,6 +332,11 @@ class CreatePermissionRequest(TypedDict, total=False):
             "Auth:Delegated:Recover",
             "Agreements:Read",
             "Agreements:Accept",
+            "Custodians:Create",
+            "Custodians:Read",
+            "Custodians:Delete",
+            "Custodians:Addresses:Create",
+            "Custodians:Transfers:Create",
             "Exchanges:Create",
             "Exchanges:Read",
             "Exchanges:Delete",
@@ -382,6 +394,10 @@ class CreatePermissionRequest(TypedDict, total=False):
             "Tokens:Actions:Read",
             "Tokens:Navs:Create",
             "Tokens:Navs:Read",
+            "Tokens:Orders:Read",
+            "Tokens:Orders:Create",
+            "Tokens:Orders:Settle",
+            "Tokens:Orders:Cancel",
             "Keys:Create",
             "Keys:Read",
             "Keys:Update",
@@ -476,8 +492,6 @@ class CreatePermissionRequest(TypedDict, total=False):
             "KeyStores:Fleets:KeyHarvest",
             "KeyStores:ProofOfControl:Create",
             "KeyStores:OnchainSignatures:Create",
-            "Tenant:Billing:Write",
-            "Tenant:Settings:Write",
         ]
     ]
 
